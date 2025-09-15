@@ -63,6 +63,7 @@ const LoginScreen = () => {
     // } finally {
     //   setLoading(false);
     // }
+    navigate(Screen_Name.BottomTab_Navigator);
   };
 
   const handleGoogleLogin = async () => {
