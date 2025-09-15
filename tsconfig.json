@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "jsx": "react-native",  // Đảm bảo rằng cấu hình jsx được set là react-native
+    "jsx": "react-native", // Đảm bảo rằng cấu hình jsx được set là react-native
     "moduleResolution": "node",
     "allowJs": true,
     "strict": true,

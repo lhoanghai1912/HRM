@@ -37,7 +37,6 @@ const RegisterScreen = () => {
     //   setLoading(true);
     //   const res = await register(mail);
     //   console.log(res);
-
     //   setModalEnterOtp(true);
     // } catch (error) {
     //   console.log('error:', error);

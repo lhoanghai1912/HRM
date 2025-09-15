@@ -63,7 +63,8 @@ const LoginScreen = () => {
     // } finally {
     //   setLoading(false);
     // }
-    navigate(Screen_Name.BottomTab_Navigator);
+    dispatch(setToken({ token: 'dummy-token' })); // ✅ tạm thời set token
+    // navigate(Screen_Name.BottomTab_Navigator); // Navigate to BottomTab_Navigator after setting token
   };
 
   const handleGoogleLogin = async () => {
@@ -71,21 +72,17 @@ const LoginScreen = () => {
     //   setLoading(true);
     //   await GoogleSignin.hasPlayServices();
     //   const userInfo = await GoogleSignin.signIn();
-
     //   const idToken = userInfo?.data?.idToken || '';
     //   const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-
     //   const userCredential = await auth().signInWithCredential(
     //     googleCredential,
     //   );
     //   const firebaseIdToken = await userCredential.user.getIdToken();
     //   console.log('firebaseIdToken', firebaseIdToken);
     //   const res = await loginFirebase(firebaseIdToken);
-
     //   dispatch(setToken({ token: res.token }));
     //   dispatch(setUserId({ userId: res.id }));
     //   console.log('token', res.token);
-
     //   navigate(Screen_Name.BottomTab_Navigator);
     //   console.log(userInfo);
     // } catch (error) {
@@ -172,7 +169,7 @@ const LoginScreen = () => {
       <View style={styles.body}>
         <Text style={AppStyles.title}>{t('button.login')}</Text>
         <View>
-        <AppInput
+          <AppInput
             leftIcon={icons.company}
             value={company}
             placeholder={t('label.company')}
@@ -319,20 +316,20 @@ const LoginScreen = () => {
             {t('message.guest')}
           </Text>
         </TouchableOpacity> */}
-              <View>
-                <TouchableOpacity
-                  style={styles.language}
-                  onPress={() => setModalLanguage(true)}
-                >
-                  <View>
-                    {/* <Text style={AppStyles.text}>{t('label.language')}</Text> */}
-                    <Text style={AppStyles.text}>{t('label.language')}</Text>
-                  </View>
-                  <View>
-                    <Image source={icons.down} style={AppStyles.icon} />
-                  </View>
-                </TouchableOpacity>
-              </View>
+        <View>
+          <TouchableOpacity
+            style={styles.language}
+            onPress={() => setModalLanguage(true)}
+          >
+            <View>
+              {/* <Text style={AppStyles.text}>{t('label.language')}</Text> */}
+              <Text style={AppStyles.text}>{t('label.language')}</Text>
+            </View>
+            <View>
+              <Image source={icons.down} style={AppStyles.icon} />
+            </View>
+          </TouchableOpacity>
+        </View>
       </View>
       {loading && (
         <View

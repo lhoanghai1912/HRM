@@ -58,7 +58,6 @@ const ModalEnterOtp: React.FC<EnterOtpProp> = ({
       //     setVerificationToken({ verificationToken: otpRes.verificationToken }),
       //   );
       //   console.log('otpRes', otpRes);
-
       //   onSuccess(otpString);
       // } catch (error) {
       //   console.log('error', error);

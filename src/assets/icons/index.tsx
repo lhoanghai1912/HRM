@@ -46,9 +46,17 @@ import clock from './clock.png';
 import mark from './mark.png';
 import left_arrow from './left_arrow.png';
 import down from './down.png';
+import menu from './menu.png';
+import list from './list.png';
+import calendar from './calendar.png';
+import dollar from './dollar.png';
 
 export default {
+  list,
+  menu,
   down,
+  calendar,
+  dollar,
   left_arrow,
   mark,
   clock,

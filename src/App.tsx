@@ -27,13 +27,13 @@ enableScreens(); // Bật tính năng screens để sử dụng trong navigation
 function App() {
   return (
     // <GestureHandlerRootView style={{ flex: 1 }}>
-      <Provider store={store}>
-        <StatusBar barStyle="light-content" translucent={false} />
-        <SafeAreaProvider initialMetrics={initialWindowMetrics}>
-          <AppNavigator />
-          <Toast />
-        </SafeAreaProvider>
-      </Provider>
+    <Provider store={store}>
+      <StatusBar barStyle="light-content" translucent={false} />
+      <SafeAreaProvider initialMetrics={initialWindowMetrics}>
+        <AppNavigator />
+        <Toast />
+      </SafeAreaProvider>
+    </Provider>
     // </GestureHandlerRootView>
   );
 }

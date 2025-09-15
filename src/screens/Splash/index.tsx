@@ -1,11 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import {
-  StyleSheet,
-  Image,
-  Animated,
-} from 'react-native';
+import { StyleSheet, Image, Animated } from 'react-native';
 import images from '../../assets/images';
-
 
 const SplashScreen = ({ onAnimationEnd }: { onAnimationEnd: () => void }) => {
   const fadeAnim = useRef(new Animated.Value(1)).current;
@@ -26,10 +21,7 @@ const SplashScreen = ({ onAnimationEnd }: { onAnimationEnd: () => void }) => {
     <Animated.View
       style={[styles.container, { transform: [{ translateY: fadeAnim }] }]}
     >
-      <Image
-        source={images.company_logo}
-        style={styles.splash}
-      />
+      <Image source={images.company_logo} style={styles.splash} />
     </Animated.View>
   );
 };

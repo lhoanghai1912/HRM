@@ -11,7 +11,10 @@ const AuthNavigator = () => {
       screenOptions={{ headerShown: false, animation: 'slide_from_right' }}
     >
       <Stack.Screen name={Screen_Name.Login_Screen} component={LoginScreen} />
-      <Stack.Screen name={Screen_Name.Register_Screen} component={RegisterScreen} />
+      <Stack.Screen
+        name={Screen_Name.Register_Screen}
+        component={RegisterScreen}
+      />
     </Stack.Navigator>
   );
 };

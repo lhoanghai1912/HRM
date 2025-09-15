@@ -23,8 +23,8 @@ const AppNavigator = () => {
 
   return (
     <NavigationContainer ref={navigationRef}>
-      {/* { token ? <HomeNavigator /> : <AuthNavigator/>} */}
-      <AuthNavigator />
+      {token ? <HomeNavigator /> : <AuthNavigator />}
+      {/* <AuthNavigator /> */}
     </NavigationContainer>
   );
 };

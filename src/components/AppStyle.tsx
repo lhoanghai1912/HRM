@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { Fonts } from '../utils/fontSize';
 import { colors } from '../utils/color';
-import { spacing } from '../utils/spacing';
+import { ms, spacing } from '../utils/spacing';
 
 const AppStyles = StyleSheet.create({
   title: {
@@ -66,7 +66,7 @@ const AppStyles = StyleSheet.create({
     color: colors.white,
   },
 
-  icon: { width: 35, height: 35 },
+  icon: { width: ms(24), height: ms(24) },
 
   iconSingle: {
     width: 30,
