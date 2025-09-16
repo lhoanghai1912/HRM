@@ -80,17 +80,18 @@ const styles = StyleSheet.create({
   navBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingBottom: spacing.small,
+    paddingVertical: spacing.small,
+    marginBottom: spacing.medium,
     position: 'relative',
+    backgroundColor: colors.white,
   },
 
   titleWrap: {
     flex: 1,
-    alignItems: 'center',
     justifyContent: 'center',
   },
   navTitle: {
-    fontSize: Fonts.xxlarge,
+    fontSize: Fonts.xlarge,
     color: colors.black,
     fontWeight: '500',
     textAlign: 'center',

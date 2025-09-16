@@ -16,8 +16,10 @@ const AppStyles = StyleSheet.create({
     color: '#333',
   },
   line: {
+    marginTop: spacing.small,
+    marginBottom: spacing.medium,
     borderColor: colors.Gray,
-    borderWidth: 0.5,
+    borderWidth: 0.7,
     width: '100%',
   },
   input: {

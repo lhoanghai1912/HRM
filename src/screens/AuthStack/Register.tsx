@@ -8,6 +8,7 @@ import {
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
+  ScrollView,
 } from 'react-native';
 import images from '../../assets/images';
 import { ms, spacing } from '../../utils/spacing';
@@ -22,27 +23,40 @@ import AppButton from '../../components/AppButton';
 import { navigate } from '../../navigation/RootNavigator';
 import { Screen_Name } from '../../navigation/ScreenName';
 import ModalEnterOtp from '../../components/modal/ModalEnterOtp';
+import { register } from '../../services/auth';
 // import { enterOtp, register } from '../../services/auth';
 
 const RegisterScreen = () => {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
+  const [username, setUsername] = useState('');
   const [mail, setMail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirm, setConfirm] = useState('');
   const [modalEnterOtp, setModalEnterOtp] = useState(false);
   const [resetOtp, setResetOtp] = useState('');
   const [Loading, setLoading] = useState(false);
 
+  const hasMinLength = password.length >= 8;
+  const hasUpperCase = /[A-Z]/.test(password);
+  const hasNumber = /\d/.test(password);
+  const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+  const isMatch = password && confirm && password === confirm;
+  const isValid =
+    hasMinLength && hasUpperCase && hasNumber && hasSpecialChar && isMatch;
+
   const handleregister = async () => {
-    // try {
-    //   setLoading(true);
-    //   const res = await register(mail);
-    //   console.log(res);
-    //   setModalEnterOtp(true);
-    // } catch (error) {
-    //   console.log('error:', error);
-    // } finally {
-    //   setLoading(false);
-    // }
+    try {
+      setLoading(true);
+      const res = await register(username, mail, password);
+      console.log(res);
+      // setModalEnterOtp(true);
+    } catch (error) {
+      console.log('error:', error);
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     <View style={styles.container}>
@@ -77,77 +91,133 @@ const RegisterScreen = () => {
             onChangeText={setMail}
             style={{ fontSize: Fonts.normal }}
           />
+          <AppInput
+            leftIcon={icons.username}
+            value={username}
+            placeholder={t('label.username')}
+            onChangeText={setUsername}
+            style={{ fontSize: Fonts.normal }}
+          />
+          <AppInput
+            leftIcon={icons.password}
+            value={password}
+            placeholder={t('label.password')}
+            secureTextEntry
+            onChangeText={setPassword}
+            style={{ fontSize: Fonts.normal }}
+          />
+          <AppInput
+            leftIcon={icons.password}
+            value={confirm}
+            placeholder={t('label.confirm_password')}
+            secureTextEntry
+            onChangeText={setConfirm}
+            style={{ fontSize: Fonts.normal }}
+          />
         </View>
-        <TouchableOpacity>
-          <Text
-            style={[
-              AppStyles.text,
-              {
-                textAlign: 'right',
-                color: colors.blue,
-                textDecorationLine: 'underline',
-                marginBottom: spacing.medium,
-              },
-            ]}
-          >
-            {t('button.forgot_pw')}
-          </Text>
-        </TouchableOpacity>
+        {password && (
+          <View style={{ marginBottom: spacing.large }}>
+            <View style={{ flexDirection: 'row' }}>
+              <Image
+                source={hasMinLength ? icons.valid : icons.dot}
+                style={{ width: 20, height: 20 }}
+              />
+              <Text
+                style={{
+                  color: !password
+                    ? colors.Gray
+                    : hasMinLength
+                    ? colors.Gray
+                    : colors.red,
+                }}
+              >
+                Mật khẩu tối thiểu 8 ký tự
+              </Text>
+            </View>
+            <View style={{ flexDirection: 'row' }}>
+              <Image
+                source={hasUpperCase ? icons.valid : icons.dot}
+                style={{ width: 20, height: 20 }}
+              />
+              <Text
+                style={{
+                  color: !password
+                    ? colors.Gray
+                    : hasUpperCase
+                    ? colors.Gray
+                    : colors.red,
+                }}
+              >
+                Chứa ít nhất 1 ký tự viết hoa
+              </Text>
+            </View>
+            <View style={{ flexDirection: 'row' }}>
+              <Image
+                source={hasNumber ? icons.valid : icons.dot}
+                style={{ width: 20, height: 20 }}
+              />
+              <Text
+                style={{
+                  color: !password
+                    ? colors.Gray
+                    : hasNumber
+                    ? colors.Gray
+                    : colors.red,
+                }}
+              >
+                Chứa ít nhất 1 ký tự số
+              </Text>
+            </View>
+            <View style={{ flexDirection: 'row' }}>
+              <Image
+                source={hasSpecialChar ? icons.valid : icons.dot}
+                style={{ width: 20, height: 20 }}
+              />
+              <Text
+                style={{
+                  color: !password
+                    ? colors.Gray
+                    : hasSpecialChar
+                    ? colors.Gray
+                    : colors.red,
+                }}
+              >
+                Chứa ít nhất 1 ký tự đặc biệt
+              </Text>
+            </View>
+            <View style={{ flexDirection: 'row' }}>
+              <Image
+                source={isMatch ? icons.valid : icons.dot}
+                style={{ width: 20, height: 20 }}
+              />
+              <Text
+                style={{
+                  color: !password
+                    ? colors.Gray
+                    : isMatch
+                    ? colors.Gray
+                    : colors.red,
+                }}
+              >
+                Mật khẩu và xác nhận mật khẩu trùng khớp
+              </Text>
+            </View>
+          </View>
+        )}
+
         <AppButton
           title={t('button.register')}
+          disabled={!isValid}
           onPress={() => handleregister()}
           textStyle={{ fontSize: Fonts.large }}
           customStyle={{ marginBottom: spacing.medium }}
         />
         <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            flex: 1,
-            marginBottom: spacing.medium,
-          }}
-        >
-          <View style={[AppStyles.line, { width: '35%', flex: 1 }]} />
-          <Text style={[AppStyles.text, { marginHorizontal: spacing.small }]}>
-            {t('message.other_register')}
-          </Text>
-          <View style={[AppStyles.line, { width: '35%', flex: 1 }]} />
-        </View>
-        <View style={styles.iconGroup}>
-          <TouchableOpacity
-            style={{
-              padding: spacing.small,
-              borderWidth: 1,
-              borderColor: colors.Gray,
-              borderRadius: 50,
-              marginRight: spacing.medium,
-            }}
-          >
-            <Image source={icons.facebook} style={[AppStyles.icon]} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              padding: spacing.small,
-              borderWidth: 1,
-              borderColor: colors.Gray,
-              borderRadius: 50,
-              marginRight: spacing.medium,
-            }}
-          >
-            <Image source={icons.google} style={[AppStyles.icon]} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              padding: spacing.small,
-              borderWidth: 1,
-              borderColor: colors.Gray,
-              borderRadius: 50,
-            }}
-          >
-            <Image source={icons.apple} style={[AppStyles.icon]} />
-          </TouchableOpacity>
-        </View>
+          style={[
+            AppStyles.line,
+            { width: '60%', alignSelf: 'center', marginBottom: spacing.medium },
+          ]}
+        />
         <View style={styles.notHave_account}>
           <Text style={AppStyles.text}>{t('message.have_account')}</Text>
           <TouchableOpacity
@@ -165,12 +235,7 @@ const RegisterScreen = () => {
             </Text>
           </TouchableOpacity>
         </View>
-        <View
-          style={[
-            AppStyles.line,
-            { width: '60%', alignSelf: 'center', marginBottom: spacing.medium },
-          ]}
-        />
+
         {/* <TouchableOpacity
           onPress={() => navigate(Screen_Name.BottomTab_Navigator)}
         >
@@ -192,7 +257,7 @@ const RegisterScreen = () => {
           setModalEnterOtp(false);
           navigate(Screen_Name.SetPassword_Screen, { mail, otp });
         }}
-        contact={mail}
+        email={mail}
       />
       {Loading && (
         <View

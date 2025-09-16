@@ -29,6 +29,8 @@ import {
 } from '../../store/reducers/userSlice';
 import i18n from '../../language';
 import LanguageModal from '../../components/modal/ModalLanguage';
+import { login } from '../../services/auth';
+import { languages } from '../../utils/language';
 // import { login, loginFirebase } from '../../services/auth';
 // import { GoogleSignin } from '@react-native-google-signin/google-signin';
 // import auth from '@react-native-firebase/auth';
@@ -37,34 +39,29 @@ const LoginScreen = () => {
   const insets = useSafeAreaInsets();
   const dispatch = useDispatch();
   const { t } = useTranslation();
-  const [mail, setMail] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUserName] = useState('lhoanghai');
+  const [password, setPassword] = useState('Hoanghai02@');
   const [company, setCompany] = useState('');
   const [loading, setLoading] = useState(false);
   const [modalLanguage, setModalLanguage] = useState(false);
 
   const handleLogin = async () => {
-    // try {
-    //   setLoading(true);
-    //   const res = await login(mail, password);
-    //   console.log('login res', res);
-    //   dispatch(setUserId({ userId: res.id }));
-    //   dispatch(setUserData({ userData: res.profile }));
-    //   dispatch(setToken({ token: res.token }));
+    try {
+      setLoading(true);
+      const res = await login(username, password);
+      console.log('login res', res);
+      dispatch(setUserData({ userData: res.user }));
+      dispatch(setToken({ token: res.accessToken }));
 
-    //   navigate(Screen_Name.BottomTab_Navigator);
-
-    //   Toast.show({
-    //     type: 'success',
-    //     text1: `${t('message.welcome')} `,
-    //     text2: `${t('message.welcome_back')} ${res.profile.fullName}`,
-    //   });
-    // } catch (error) {
-    // } finally {
-    //   setLoading(false);
-    // }
-    dispatch(setToken({ token: 'dummy-token' })); // ✅ tạm thời set token
-    // navigate(Screen_Name.BottomTab_Navigator); // Navigate to BottomTab_Navigator after setting token
+      Toast.show({
+        type: 'success',
+        text1: `${t('message.welcome')} `,
+        text2: `${t('message.welcome_back')} ${res.profile.fullName}`,
+      });
+    } catch (error) {
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleGoogleLogin = async () => {
@@ -133,11 +130,6 @@ const LoginScreen = () => {
       });
     }
   };
-  const languages = [
-    { code: 'vi', label: '🇻🇳 Tiếng Việt' },
-    { code: 'lo', label: '🇱🇦 ພາສາລາວ' },
-    { code: 'en', label: '🇬🇧 English' },
-  ];
 
   const handleChangeLanguage = (lang: string) => {
     i18n.changeLanguage(lang);
@@ -178,9 +170,9 @@ const LoginScreen = () => {
           />
           <AppInput
             leftIcon={icons.mail}
-            value={mail}
+            value={username}
             placeholder={t('label.username')}
-            onChangeText={setMail}
+            onChangeText={setUserName}
             style={{ fontSize: Fonts.normal }}
           />
           <AppInput
@@ -192,7 +184,9 @@ const LoginScreen = () => {
             style={{ fontSize: Fonts.normal }}
           />
         </View>
-        <TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => navigate(Screen_Name.ForgotPassword_Screen)}
+        >
           <Text
             style={[
               AppStyles.text,

@@ -1,3 +1,5 @@
+import SetPassword from '../../components/SetPassword';
+
 export default {
   message: {
     welcome: 'Welcome to topcv',
@@ -67,6 +69,7 @@ export default {
   },
 
   button: {
+    change_pw: 'Change password',
     cancel: 'Cancel',
     confirm: 'Confirm',
     close: 'Close',
@@ -75,7 +78,7 @@ export default {
     forgot_pw: 'Forgot password',
     logout: 'Log out',
     edit: 'Edit',
-    choose_language: 'Select language',
+    choose_language: 'Current language',
     apply_now: 'Apply now',
     follow: 'Follow',
     following: 'Following',
@@ -90,6 +93,7 @@ export default {
   },
 
   label: {
+    setPassword: 'Set Password',
     username: 'Username',
     password: 'Password',
     confirm_password: 'Confirm password',
@@ -102,6 +106,7 @@ export default {
     location: 'Location',
     location_desire: 'Desired location',
     profile_management: 'Profile management',
+    notification: ' Notifications',
     contact_allow: 'Allow contact',
     contact_by: 'Contact via',
     contact_topCV: 'Message via topcv',

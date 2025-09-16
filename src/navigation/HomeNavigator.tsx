@@ -1,11 +1,10 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import HomeScreen from '../screens/HomeStack/HomeScreen';
 import { Screen_Name } from './ScreenName';
 import BottomTabNavigator from './BottomTabNavigator';
-import AddForm from '../screens/HomeStack/AddForm';
-import PayRoll from '../screens/HomeStack/PayRoll';
-import QuickPin from '../screens/HomeStack/QuickPin';
-import TimeSheet from '../screens/HomeStack/TimeSheet';
+
+import Profile from '../screens/HomeStack/Profile';
+import Menu from '../screens/HomeStack/Menu';
+import Notifications from '../screens/HomeStack/Noti';
 
 const Stack = createNativeStackNavigator();
 
@@ -19,7 +18,12 @@ const HomeNavigator = () => {
         name={Screen_Name.BottomTab_Navigator}
         component={BottomTabNavigator}
       />
-      <Stack.Screen name={Screen_Name.Home_Screen} component={HomeScreen} />
+      <Stack.Screen name={Screen_Name.Profile_Screen} component={Profile} />
+      <Stack.Screen
+        name={Screen_Name.Notification_Screen}
+        component={Notifications}
+      />
+      <Stack.Screen name={Screen_Name.Menu_Screen} component={Menu} />
       {/* <Stack.Screen name={Screen_Name.AddForm_Screen} component={AddForm} />
       <Stack.Screen name={Screen_Name.PayRoll_Screen} component={PayRoll} />
       <Stack.Screen name={Screen_Name.QuickPin_Screen} component={QuickPin} />

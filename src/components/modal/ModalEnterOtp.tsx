@@ -4,20 +4,21 @@ import { View, Text, StyleSheet, Modal, TextInput } from 'react-native';
 import AppButton from '../AppButton';
 import { useDispatch } from 'react-redux';
 import { setVerificationToken } from '../../store/reducers/userSlice';
+import { forgot_pw } from '../../services/auth';
 // import { enterOtp } from '../../services/auth';
 
 interface EnterOtpProp {
   visible: boolean;
   onClose: () => void;
   onSuccess: (otpString: string) => void;
-  contact: string;
+  email: string;
 }
 
 const ModalEnterOtp: React.FC<EnterOtpProp> = ({
   visible,
   onClose,
   onSuccess,
-  contact,
+  email,
 }) => {
   const { t } = useTranslation();
   const [error, setError] = useState(false); // Lỗi nếu mã OTP không hợp lệ
@@ -48,20 +49,20 @@ const ModalEnterOtp: React.FC<EnterOtpProp> = ({
   const handleSubmit = async () => {
     const otpString = otp.join('');
     if (otpString.length === 6) {
-      // try {
-      //   console.log('📤 Gửi OTP verify:', {
-      //     contact,
-      //     otp: otpString,
-      //   });
-      //   const otpRes = await enterOtp(contact, otpString);
-      //   dispatch(
-      //     setVerificationToken({ verificationToken: otpRes.verificationToken }),
-      //   );
-      //   console.log('otpRes', otpRes);
-      //   onSuccess(otpString);
-      // } catch (error) {
-      //   console.log('error', error);
-      // }
+      try {
+        console.log('📤 Gửi OTP verify:', {
+          email,
+          otp: otpString,
+        });
+        const otpRes = await forgot_pw(email, otpString);
+        // dispatch(
+        //   setVerificationToken({ verificationToken: otpRes.verificationToken }),
+        // );
+        console.log('otpRes', otpRes);
+        onSuccess(otpString);
+      } catch (error) {
+        console.log('error', error);
+      }
     } else {
       setError(true); // Nếu mã OTP không hợp lệ, hiển thị lỗi
     }

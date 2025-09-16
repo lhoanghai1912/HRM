@@ -1,4 +1,5 @@
 // app/utils/colors.ts
+import tinycolor from 'tinycolor2';
 
 export const colors = {
   primary: '#598CD2',
@@ -16,4 +17,11 @@ export const colors = {
   button: '#095286',
   buttonDisable: '#F0EFF4',
   default: '#F2F2F2',
+};
+export const darken = (color: string, amount: number = 20) => {
+  return tinycolor(color).darken(amount).toHexString();
+};
+
+export const lighten = (color: string, amount: number = 20) => {
+  return tinycolor(color).lighten(amount).toHexString();
 };

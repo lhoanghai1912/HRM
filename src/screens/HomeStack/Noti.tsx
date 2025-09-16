@@ -4,13 +4,18 @@ import { useTranslation } from 'react-i18next';
 import { colors } from '../../utils/color';
 import { ms, spacing } from '../../utils/spacing';
 import { Fonts } from '../../utils/fontSize';
+import NavBar from '../../components/Navbar';
 
-const Notifications = () => {
+const Notifications = ({ navigation }) => {
   const { t } = useTranslation();
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{`Notifications`}</Text>
+      <NavBar
+        title="Notifications"
+        onPress={() => navigation.goBack()}
+        textStyle={{ textAlign: 'auto' }}
+      />
       {/* ✨ Your content goes here */}
     </View>
   );
@@ -21,8 +26,6 @@ export default Notifications;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.white,
-    padding: spacing.medium,
   },
   title: {
     fontSize: Fonts.normal,

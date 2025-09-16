@@ -53,6 +53,7 @@ export default {
   },
 
   button: {
+    change_pw: 'ປ່ຽນລະຫັດຜ່ານ',
     cancel: 'ຍົກເລີກ',
     confirm: 'ຢືນຢັນ',
     close: 'ປິດ',
@@ -61,7 +62,7 @@ export default {
     forgot_pw: 'ລືມລະຫັດຜ່ານ',
     logout: 'ອອກຈາກລະບົບ',
     edit: 'ແກ້ໄຂ',
-    choose_language: 'ເລືອກພາສາ',
+    choose_language: 'ພາສາປະຈຸບັນ',
     apply_now: 'ສະໝັກຕອນນີ້',
     follow: 'ຕິດຕາມ',
     following: 'ກຳລັງຕິດຕາມ',
@@ -74,6 +75,7 @@ export default {
   },
 
   label: {
+    setPassword: 'ຕັ້ງລະຫັດ',
     username: 'ຊື່ຜູ້ໃຊ້',
     password: 'ລະຫັດຜ່ານ',
     confirm_password: 'ຢືນຢັນລະຫັດຜ່ານ',
@@ -85,6 +87,7 @@ export default {
     position: 'ຕຳແໜ່ງ',
     location_desire: 'ສະຖານທີ່ປະສົມບັດ',
     profile_management: 'ການຈັດການໂປຣໄຟລ໌',
+    notification: 'ແຈ້ງເຕືອນ',
     contact_allow: 'ອະນຸຍາດໃຫ້ຕິດຕໍ່',
     contact_by: 'ຕິດຕໍ່ຜ່ານ',
     contact_topCV: 'ຂໍ້ຄວາມຜ່ານ topcv',

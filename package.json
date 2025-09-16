@@ -27,7 +27,8 @@
     "react-native-screens": "^4.11.1",
     "react-native-toast-message": "^2.3.3",
     "react-redux": "^9.2.0",
-    "redux": "^5.0.1"
+    "redux": "^5.0.1",
+    "tinycolor2": "^1.6.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

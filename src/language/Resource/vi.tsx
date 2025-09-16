@@ -53,6 +53,7 @@ export default {
   },
 
   button: {
+    change_pw: 'Đổi mật khẩu',
     cancel: 'Hủy',
     confirm: 'Xác nhận',
     close: 'Đóng',
@@ -61,7 +62,7 @@ export default {
     forgot_pw: 'Quên mật khẩu',
     logout: 'Đăng xuất',
     edit: 'Chỉnh sửa',
-    choose_language: 'Chọn ngôn ngữ',
+    choose_language: 'Ngôn ngữ hiện tại',
     apply_now: 'Ứng tuyển ngay',
     follow: 'Theo dõi',
     following: 'Đang theo dõi',
@@ -74,6 +75,7 @@ export default {
   },
 
   label: {
+    setPassword: 'Đặt mật khẩu',
     username: 'Tên đăng nhập',
     password: 'Mật khẩu',
     confirm_password: 'Xác nhận mật khẩu',
@@ -85,6 +87,7 @@ export default {
     position: 'Vị trí',
     location_desire: 'Địa điểm mong muốn',
     profile_management: 'Quản lý hồ sơ',
+    notification: ' Thông báo',
     contact_allow: 'Cho phép liên hệ',
     contact_by: 'Liên hệ qua',
     contact_topCV: 'Nhắn tin qua topcv',
