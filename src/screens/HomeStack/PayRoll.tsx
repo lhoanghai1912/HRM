@@ -9,7 +9,7 @@ const PayRoll = () => {
   const { t } = useTranslation();
 
   return (
-    <View>
+    <View style={styles.container}>
       <Text style={styles.title}>{`PayRoll`}</Text>
       {/* ✨ Your content goes here */}
     </View>

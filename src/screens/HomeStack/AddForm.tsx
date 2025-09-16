@@ -9,7 +9,7 @@ const AddForm = () => {
   const { t } = useTranslation();
 
   return (
-    <View>
+    <View style={styles.container}>
       <Text style={styles.title}>{`Add form`}</Text>
       {/* ✨ Your content goes here */}
     </View>
@@ -21,6 +21,8 @@ export default AddForm;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: colors.white,
     padding: spacing.medium,
   },

@@ -9,7 +9,7 @@ const QuickPin = () => {
   const { t } = useTranslation();
 
   return (
-    <View>
+    <View style={styles.container}>
       <Text style={styles.title}>{'Quick Pin'}</Text>
       {/* ✨ Your content goes here */}
     </View>
@@ -23,6 +23,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.white,
     padding: spacing.medium,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   title: {
     fontSize: Fonts.normal,

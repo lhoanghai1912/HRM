@@ -9,7 +9,7 @@ const Profile = () => {
   const { t } = useTranslation();
 
   return (
-    <View>
+    <View style={styles.container}>
       <Text style={styles.title}>{`Profile`}</Text>
       {/* ✨ Your content goes here */}
     </View>
