@@ -1,4 +1,5 @@
 import add from './add.png';
+import add_focus from './add_focus.png';
 import arrow from './arrow.png';
 import back from './back.png';
 import clear from './clear.png';
@@ -48,10 +49,17 @@ import left_arrow from './left_arrow.png';
 import down from './down.png';
 import menu from './menu.png';
 import list from './list.png';
+import list_focus from './list_focus.png';
 import calendar from './calendar.png';
+import calendar_focus from './calendar_focus.png';
 import dollar from './dollar.png';
+import dollar_focus from './dollar_focus.png';
 
 export default {
+  list_focus,
+  dollar_focus,
+  add_focus,
+  calendar_focus,
   list,
   menu,
   down,

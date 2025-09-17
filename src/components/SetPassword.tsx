@@ -49,7 +49,7 @@ const SetPassword: React.FC<Props> = ({ navigation, route }) => {
         );
         console.log(response);
         Toast.show({ type: 'success', text2: t('message.update_success') });
-        navigate(Screen_Name.Login_Screen);
+        navigate(Screen_Name.Login);
       }
     } catch (error) {
     } finally {

@@ -12,7 +12,7 @@ import { colors, darken } from '../../utils/color';
 import { ms, spacing } from '../../utils/spacing';
 import { Fonts } from '../../utils/fontSize';
 import NavBar from '../../components/Navbar';
-import { item_HRM } from '../../utils/menu';
+import { form_itemHRM } from '../../utils/form';
 import AppStyles from '../../components/AppStyle';
 
 const Menu = ({ navigation }) => {
@@ -28,7 +28,7 @@ const Menu = ({ navigation }) => {
       <View style={styles.bodyItem}>
         <Text style={AppStyles.label}>HRM</Text>
         <View style={styles.grid}>
-          {item_HRM.map(item => (
+          {form_itemHRM.map(item => (
             <TouchableOpacity
               key={item.id}
               style={[styles.item, { backgroundColor: item.bg }]}

@@ -21,15 +21,26 @@ import i18n from '../../language';
 import { languages } from '../../utils/language';
 import LanguageModal from '../../components/modal/ModalLanguage';
 import { link } from '../../utils/constants';
+import AppButton from '../../components/AppButton';
+import { useDispatch } from 'react-redux';
+import { logout } from '../../store/reducers/userSlice';
+import { navigate } from '../../navigation/RootNavigator';
+import { Screen_Name } from '../../navigation/ScreenName';
 
 const Setting = ({ navigation }) => {
+  const dispatch = useDispatch();
   const { t } = useTranslation();
   const [modalLanguage, setModalLanguage] = useState(false);
   const handleChangeLanguage = (lang: string) => {
     i18n.changeLanguage(lang);
     setModalLanguage(false);
   };
+  const handleLogout = () => {
+    // Logic to handle logout, e.g., clearing token from Redux
 
+    dispatch(logout());
+    console.log('Logout pressed');
+  };
   return (
     <View style={styles.container}>
       <NavBar
@@ -104,6 +115,43 @@ const Setting = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       </View>
+
+      <View
+        style={{
+          marginTop: spacing.medium,
+          paddingHorizontal: 20,
+          marginBottom: spacing.medium,
+        }}
+      >
+        <Text
+          style={[
+            AppStyles.label,
+            { fontWeight: '500', marginBottom: spacing.small },
+          ]}
+        >
+          {t('label.hr')}
+        </Text>
+        <View>
+          <TouchableOpacity
+            style={styles.link}
+            onPress={() => navigate(Screen_Name.Employee)}
+          >
+            <View>
+              <Text style={AppStyles.text}>{t('label.hr_add_employee')}</Text>
+            </View>
+            <View>
+              <Image source={icons.arrow} style={AppStyles.icon} />
+            </View>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      <AppButton
+        title="Logout"
+        onPress={() => handleLogout()}
+        customStyle={{ marginHorizontal: spacing.medium }}
+      />
+
       <LanguageModal
         visible={modalLanguage}
         onClose={() => setModalLanguage(false)}

@@ -222,7 +222,7 @@ const RegisterScreen = () => {
           <Text style={AppStyles.text}>{t('message.have_account')}</Text>
           <TouchableOpacity
             onPress={() => {
-              navigate(Screen_Name.Login_Screen);
+              navigate(Screen_Name.Login);
             }}
           >
             <Text
@@ -255,7 +255,7 @@ const RegisterScreen = () => {
         onSuccess={otp => {
           setResetOtp(otp);
           setModalEnterOtp(false);
-          navigate(Screen_Name.SetPassword_Screen, { mail, otp });
+          navigate(Screen_Name.SetPassword, { mail, otp });
         }}
         email={mail}
       />

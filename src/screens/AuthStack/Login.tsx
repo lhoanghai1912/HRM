@@ -39,8 +39,8 @@ const LoginScreen = () => {
   const insets = useSafeAreaInsets();
   const dispatch = useDispatch();
   const { t } = useTranslation();
-  const [username, setUserName] = useState('lhoanghai');
-  const [password, setPassword] = useState('Hoanghai02@');
+  const [username, setUserName] = useState('haihl01');
+  const [password, setPassword] = useState('1234@Abcd');
   const [company, setCompany] = useState('');
   const [loading, setLoading] = useState(false);
   const [modalLanguage, setModalLanguage] = useState(false);
@@ -184,9 +184,7 @@ const LoginScreen = () => {
             style={{ fontSize: Fonts.normal }}
           />
         </View>
-        <TouchableOpacity
-          onPress={() => navigate(Screen_Name.ForgotPassword_Screen)}
-        >
+        <TouchableOpacity onPress={() => navigate(Screen_Name.ForgotPassword)}>
           <Text
             style={[
               AppStyles.text,
@@ -279,7 +277,7 @@ const LoginScreen = () => {
           <Text style={AppStyles.text}>{t('message.nothave_account')}</Text>
           <TouchableOpacity
             onPress={() => {
-              navigate(Screen_Name.Register_Screen);
+              navigate(Screen_Name.Register);
             }}
           >
             <Text

@@ -15,7 +15,7 @@ const CustomHeader = () => {
     <View style={[styles.header, { paddingTop: inset.top }]}>
       <View style={[styles.headerItem, { width: '75%' }]}>
         <TouchableOpacity
-          onPress={() => navigate(Screen_Name.Menu_Screen)}
+          onPress={() => navigate(Screen_Name.Menu)}
           style={{ marginRight: spacing.medium }}
         >
           <Image
@@ -35,16 +35,14 @@ const CustomHeader = () => {
           { width: '20%', justifyContent: 'space-between' },
         ]}
       >
-        <TouchableOpacity
-          onPress={() => navigate(Screen_Name.Notification_Screen)}
-        >
+        <TouchableOpacity onPress={() => navigate(Screen_Name.Notification)}>
           <Image
             source={icons.noti}
             style={AppStyles.icon}
             resizeMode="contain"
           />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigate(Screen_Name.Profile_Screen)}>
+        <TouchableOpacity onPress={() => navigate(Screen_Name.Profile)}>
           <Image
             source={icons.username}
             style={AppStyles.icon}

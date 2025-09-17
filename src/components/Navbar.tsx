@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     fontSize: Fonts.xlarge,
     color: colors.black,
     fontWeight: '500',
-    textAlign: 'center',
+    // textAlign: 'center',
   },
   rightIcons: {
     flexDirection: 'row',

@@ -135,12 +135,11 @@ const styles = StyleSheet.create({
   input: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: 50,
-    borderRadius: 20,
+    borderRadius: 15,
     paddingHorizontal: spacing.medium,
     color: '999999',
-    backgroundColor: '#F4F5F5',
     fontSize: Fonts.normal,
+    borderWidth: 0.5,
   },
   errorBorder: {
     borderColor: '#ff5a5f',

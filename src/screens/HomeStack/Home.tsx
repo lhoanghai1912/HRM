@@ -14,20 +14,13 @@ const Home = () => {
   const dispatch = useDispatch();
   const inset = useSafeAreaInsets();
   const { userData } = useSelector((state: any) => state.user);
-  const handleLogout = () => {
-    // Logic to handle logout, e.g., clearing token from Redux
 
-    dispatch(logout());
-    console.log('Logout pressed');
-  };
   console.log('userData', userData);
 
   return (
     <View style={styles.container}>
       <CustomHeader />
-      <View style={styles.body}>
-        <AppButton title="Logout" onPress={() => handleLogout()} />
-      </View>
+      <View style={styles.body}></View>
     </View>
   );
 };

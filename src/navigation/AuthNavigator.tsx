@@ -12,19 +12,13 @@ const AuthNavigator = () => {
     <Stack.Navigator
       screenOptions={{ headerShown: false, animation: 'slide_from_right' }}
     >
-      <Stack.Screen name={Screen_Name.Login_Screen} component={LoginScreen} />
+      <Stack.Screen name={Screen_Name.Login} component={LoginScreen} />
+      <Stack.Screen name={Screen_Name.Register} component={RegisterScreen} />
       <Stack.Screen
-        name={Screen_Name.Register_Screen}
-        component={RegisterScreen}
-      />
-      <Stack.Screen
-        name={Screen_Name.ForgotPassword_Screen}
+        name={Screen_Name.ForgotPassword}
         component={ForgotPassword}
       />
-      <Stack.Screen
-        name={Screen_Name.SetPassword_Screen}
-        component={SetPassword}
-      />
+      <Stack.Screen name={Screen_Name.SetPassword} component={SetPassword} />
     </Stack.Navigator>
   );
 };

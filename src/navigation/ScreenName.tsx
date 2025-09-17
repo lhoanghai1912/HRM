@@ -5,22 +5,23 @@ import QuickPin from '../screens/HomeStack/QuickPin';
 
 export const Screen_Name = {
   //AuthStack
-  Login_Screen: 'Login_Screen',
-  Register_Screen: 'Register_Screen',
-  SetPassword_Screen: 'SetPassword_Screen',
-  ForgotPassword_Screen: 'ForgotPassword_Screen',
+  Login: 'Login',
+  Register: 'Register',
+  SetPassword: 'SetPassword',
+  ForgotPassword: 'ForgotPassword',
 
-  Home_Screen: 'Home_Screen',
-  Profile_Screen: 'Profile_Screen',
-  TimeSheet_Screen: 'TimeSheet_Screen',
-  PayRoll_Screen: 'PayRoll_Screen',
-  QuickPin_Screen: 'QuickPin_Screen',
-  AddForm_Screen: 'AddForm_Screen',
-  Menu_Screen: 'Menu_Screen',
-  Notification_Screen: 'Notification_Screen',
+  Home: 'Home',
+  Profile: 'Profile',
+  TimeSheet: 'TimeSheet',
+  PayRoll: 'PayRoll',
+  QuickPin: 'QuickPin',
+  AddForm: 'AddForm',
+  Menu: 'Menu',
+  Notification: 'Notification',
+  Employee: 'Employee',
 
   //Other
-  Splash_Screen: 'Splash_Screen',
-  Loading_Screen: 'Splash_Screen',
+  Splash: 'Splash',
+  Loading: 'Splash',
   BottomTab_Navigator: 'BottomTab_Navigator',
 };

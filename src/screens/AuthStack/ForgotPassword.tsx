@@ -44,7 +44,7 @@ const ForgotPassword = ({ navigation }) => {
     } finally {
       setLoading(false);
     }
-    // navigate(Screen_Name.SetPassword_Screen, {
+    // navigate(Screen_Name.SetPassword, {
     //   soure: 'forgot',
     //   email,
     //   otp: '123456',
@@ -94,7 +94,7 @@ const ForgotPassword = ({ navigation }) => {
             onSuccess={otp => {
               setResetOtp(otp);
               setIsEnterOtpModalVisible(false);
-              navigate(Screen_Name.SetPassword_Screen, {
+              navigate(Screen_Name.SetPassword, {
                 source: 'forgot',
                 email,
                 otp,

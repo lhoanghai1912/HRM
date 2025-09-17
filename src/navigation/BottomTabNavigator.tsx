@@ -11,7 +11,7 @@ import PayRoll from '../screens/HomeStack/PayRoll';
 import QuickPin from '../screens/HomeStack/QuickPin';
 import TimeSheet from '../screens/HomeStack/TimeSheet';
 import Home from '../screens/HomeStack/Home';
-import { quickPinItems } from '../utils/menu';
+import { form_quickPinItems } from '../utils/form';
 
 // Các màn hình cho các tab
 
@@ -27,42 +27,50 @@ const BottomTabNavigator = ({ navigation }) => {
       <Tab.Navigator
         screenOptions={({ route }) => ({
           headerShown: false,
-          tabBarShowLabel: false,
+          tabBarShowLabel: true,
           tabBarStyle: {
             paddingVertical: spacing.medium,
+            paddingBottom: ms(spacing.medium + insets.bottom),
             height: ms(49 + insets.bottom),
-            paddingTop: spacing.small,
           },
           tabBarIcon: ({ focused }) => {
             const iconMap = {
-              Home_Screen: focused ? icons.home_focus : icons.home,
-              QuickPin_Screen: focused ? icons.list : icons.list,
-              TimeSheet_Screen: focused ? icons.calendar : icons.calendar,
-              AddForm_Screen: focused ? icons.add : icons.add,
-              PayRoll_Screen: focused ? icons.dollar : icons.dollar,
+              Home: focused ? icons.home_focus : icons.home,
+              QuickPin: focused ? icons.list_focus : icons.list,
+              TimeSheet: focused ? icons.calendar_focus : icons.calendar,
+              AddForm: focused ? icons.add_focus : icons.add,
+              PayRoll: focused ? icons.dollar_focus : icons.dollar,
             };
-
+            const labelKeyMap: Record<string, string> = {
+              Home_Screen: 'label.screen_home',
+              QuickPin_Screen: 'label.screen_quickpin',
+              TimeSheet_Screen: 'label.screen_timesheet',
+              AddForm_Screen: 'label.screen_add',
+              PayRoll_Screen: 'label.screen_payroll',
+            };
             return (
-              <Image
-                source={iconMap[route.name]}
-                style={{ width: ms(24), height: ms(24) }}
-                resizeMode="contain"
-              />
+              <>
+                <Image
+                  source={iconMap[route.name]}
+                  style={{ width: ms(24), height: ms(24) }}
+                  resizeMode="contain"
+                />
+              </>
             );
           },
           tabBarActiveTintColor: '#820201',
           tabBarInactiveTintColor: '#888',
         })}
       >
-        {/* <Tab.Screen name={Screen_Name.Home_Screen} component={HomeScreen} /> */}
+        {/* <Tab.Screen name={Screen_Name.Home} component={HomeScreen} /> */}
 
-        <Tab.Screen name={Screen_Name.Home_Screen} component={Home} />
-        <Tab.Screen name={Screen_Name.TimeSheet_Screen} component={TimeSheet} />
-        <Tab.Screen name={Screen_Name.AddForm_Screen} component={AddForm} />
-        <Tab.Screen name={Screen_Name.PayRoll_Screen} component={PayRoll} />
+        <Tab.Screen name={Screen_Name.Home} component={Home} />
+        <Tab.Screen name={Screen_Name.TimeSheet} component={TimeSheet} />
+        <Tab.Screen name={Screen_Name.AddForm} component={AddForm} />
+        <Tab.Screen name={Screen_Name.PayRoll} component={PayRoll} />
         {/* 👇 Quick Pin: KHÔNG ĐIỀU HƯỚNG, CHỈ MỞ MODAL */}
         <Tab.Screen
-          name={Screen_Name.QuickPin_Screen}
+          name={Screen_Name.QuickPin}
           component={Home} // dummy component
           options={{
             tabBarButton: props => (
@@ -86,7 +94,7 @@ const BottomTabNavigator = ({ navigation }) => {
       <QuickPin
         visible={showQuick}
         onClose={() => setShowQuick(false)}
-        items={quickPinItems}
+        items={form_quickPinItems}
         title="Chọn nhanh"
         onSelect={screen => {
           setShowQuick(false);
