@@ -1,4 +1,4 @@
-// src/components/QuickPin.tsx
+// src/components/User.tsx
 import React from 'react';
 import {
   Modal,
@@ -11,30 +11,28 @@ import {
 } from 'react-native';
 import { colors, darken } from '../../utils/color';
 import { ms, spacing } from '../../utils/spacing';
-import { fonts } from '../../utils/fontSize';
 import AppStyles from '../../components/AppStyle';
 
 interface Item {
   id: string;
   title: string;
   icon: any;
-  bg: string;
-  screen: string;
+  action: () => void;
 }
 interface Props {
   visible: boolean;
   onClose: () => void;
   items: Item[];
-  onSelect: (screen: string, item: Item) => void;
+  onSelect: (item: Item) => void;
   title?: string;
 }
 
-const QuickPin: React.FC<Props> = ({
+const User: React.FC<Props> = ({
   visible,
   onClose,
   items,
   onSelect,
-  title = 'Quick Pin',
+  title = 'User',
 }) => {
   return (
     <Modal
@@ -45,29 +43,20 @@ const QuickPin: React.FC<Props> = ({
     >
       <Pressable style={styles.backdrop} onPress={onClose} />
       <View style={styles.sheet}>
-        <View style={{}}>
-          {items.map(it => {
-            const tint = darken(it.bg, 35);
-            return (
-              <TouchableOpacity
-                key={it.id}
-                style={[styles.card]}
-                onPress={() => onSelect(it.screen, it)}
-                activeOpacity={0.8}
-              >
-                <Image
-                  source={it.icon}
-                  style={[styles.icon, { tintColor: tint }]}
-                />
-                <Text
-                  style={[AppStyles.text, { color: tint }]}
-                  numberOfLines={1}
-                >
-                  {it.title}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
+        <View>
+          {items.map(it => (
+            <TouchableOpacity
+              key={it.id}
+              style={[styles.card]}
+              onPress={() => onSelect(it)} // Gọi onSelect với item được chọn
+              activeOpacity={0.8}
+            >
+              <Image source={it.icon} style={[styles.icon]} />
+              <Text style={[AppStyles.text]} numberOfLines={1}>
+                {it.title}
+              </Text>
+            </TouchableOpacity>
+          ))}
         </View>
       </View>
     </Modal>
@@ -99,4 +88,4 @@ const styles = StyleSheet.create({
   icon: { width: ms(24), height: ms(24), marginRight: spacing.medium },
 });
 
-export default QuickPin;
+export default User;

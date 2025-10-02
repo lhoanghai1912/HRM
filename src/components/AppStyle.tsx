@@ -1,18 +1,18 @@
 import { StyleSheet } from 'react-native';
-import { Fonts } from '../utils/fontSize';
+import { fonts } from '../utils/fontSize';
 import { colors } from '../utils/color';
 import { ms, spacing } from '../utils/spacing';
 
 const AppStyles = StyleSheet.create({
   title: {
-    fontSize: Fonts.xlarge,
+    fontSize: fonts.xlarge,
     color: colors.black,
     textAlign: 'left',
     fontWeight: 500,
     marginBottom: spacing.small,
   },
   label: {
-    fontSize: Fonts.large,
+    fontSize: fonts.large,
     color: '#333',
   },
   line: {
@@ -28,7 +28,7 @@ const AppStyles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: spacing.medium,
     verticalAlign: 'middle',
-    fontSize: Fonts.normal,
+    fontSize: fonts.normal,
     borderWidth: 1,
     borderColor: '#ddd',
     shadowColor: '#000',
@@ -45,7 +45,7 @@ const AppStyles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: spacing.medium,
     verticalAlign: 'middle',
-    fontSize: Fonts.normal,
+    fontSize: fonts.normal,
     borderWidth: 1,
     borderColor: '#ddd',
     shadowColor: '#000',
@@ -61,10 +61,10 @@ const AppStyles = StyleSheet.create({
     borderRadius: 500,
   },
   text: {
-    fontSize: Fonts.normal,
+    fontSize: fonts.normal,
   },
   whitetext: {
-    fontSize: Fonts.normal,
+    fontSize: fonts.normal,
     color: colors.white,
   },
 
@@ -126,7 +126,7 @@ const AppStyles = StyleSheet.create({
 
   linkText: {
     color: colors.primary,
-    fontSize: Fonts.normal,
+    fontSize: fonts.normal,
     textDecorationLine: 'underline',
     textDecorationColor: colors.blue,
   },

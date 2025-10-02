@@ -25,6 +25,8 @@ export default {
     noti_login: 'Đăng nhập để xem thông báo',
     noti_no_more: 'Không còn thông báo nào',
     noti_empty: 'Chưa có thông báo nào',
+
+    empty: 'Không có dữ liệu',
   },
 
   button: {
@@ -84,14 +86,97 @@ export default {
     address: 'Địa chỉ',
     overview: 'Tổng quan',
     requirement_skill: 'Kỹ năng yêu cầu',
-    male: 'Nam',
-    female: 'Nữ',
-    other: 'Khác',
-    single: 'Độc thân',
-    married: 'Đã kết hôn',
-    divorced: 'Đã ly hôn',
 
     hr: 'Nhà tuyển dụng',
     hr_add_employee: 'Thêm nhân sự',
+    hr_ornStruct: 'Cơ cấu tổ chức',
+
+    add_employee_firstName: 'Tên',
+    add_employee_lastName: 'Họ',
+    add_employee_otherName: 'Tên Khác',
+    add_employee_gender: 'Giới Tính',
+    add_employee_birthDay: 'Ngày Sinh',
+    add_employee_birthPlace: 'Nơi Sinh',
+    add_employee_homeLand: 'Quê Quán',
+    add_employee_maritalStatusName: 'Tình Trạng Hôn Nhân',
+    add_employee_familyClassBackgroundName: 'Thành Phần Gia Đình',
+    add_employee_personalTaxCode: 'Mã Số Thuế Cá Nhân',
+    add_employee_personalClassBackgroundName: 'Thành Phần Cá Nhân',
+    add_employee_ethnicName: 'Dân Tộc',
+    add_employee_religionName: 'Tôn Giáo',
+    add_employee_nationalityName: 'Quốc Tịch',
+    add_employee_educationLevel: 'Trình Độ Học Vấn',
+    add_employee_levelName: 'Trình Độ (Chi Tiết)',
+    add_employee_educationPlaceName: 'Cơ Sở Đào Tạo',
+    add_employee_educationFacultyName: 'Khoa',
+    add_employee_educationMajorName: 'Chuyên Ngành',
+    add_employee_awardedYear: 'Năm Tốt Nghiệp',
+    add_employee_educationDegreeName: 'Bằng Cấp',
+    add_employee_kindOfPaperName: 'Loại Giấy Tờ',
+    add_employee_identifyNumber: 'Số CMND/CCCD',
+    add_employee_identifyNumberIssuedDate: 'Ngày Cấp CMND/CCCD',
+    add_employee_identifyNumberIssuedPlace: 'Nơi Cấp CMND/CCCD',
+    add_employee_identifyNumberExpiredDate: 'Ngày Hết Hạn CMND/CCCD',
+    add_employee_passportNumber: 'Số Hộ Chiếu',
+    add_employee_passportIssuedDate: 'Ngày Cấp Hộ Chiếu',
+    add_employee_passportIssuedPlaceName: 'Nơi Cấp Hộ Chiếu',
+    add_employee_passportEffectToDate: 'Ngày Hết Hạn Hộ Chiếu',
+
+    gender_male: 'Nam',
+    gender_female: 'Nữ',
+    gender_other: 'Khác',
+
+    marri_single: 'Độc thân',
+    marri_married: 'Đã kết hôn',
+    marri_divorced: 'Đã ly hôn',
+
+    country_vn: 'Việt Nam',
+    country_la: 'Lào',
+    country_kh: 'Campuchia',
+    country_th: 'Thái Lan',
+    country_us: 'Hoa Kỳ',
+
+    education_highschool: 'Trung học phổ thông',
+    education_college: 'Cao đẳng',
+    education_bachelor: 'Cử nhân',
+    education_master: 'Thạc sĩ',
+    education_doctor: 'Tiến sĩ',
+
+    level_average: 'Trung bình',
+    level_good: 'Tốt',
+    level_very_good: 'Rất tốt',
+    level_excellent: 'Xuất sắc',
+
+    user_profile: 'Hồ sơ',
+    user_settings: 'Cài đặt',
+    user_logout: 'Đăng xuất',
+    user_about: 'Giới thiệu về công ty',
+    user_term: 'Điều khoản dịch vụ',
+    user_privacy: 'Chính sách bảo mật',
+    user_language: 'Ngôn ngữ',
+
+    hrm_menu_requests: 'Yêu cầu',
+
+    hrm_menu_recruitment: 'Tuyển dụng',
+
+    hrm_menu_human: 'Nhân sự',
+
+    hrm_menu_evaluation: 'Đánh giá',
+
+    hrm_menu_training: 'Đào tạo',
+
+    hrm_menu_attendance: 'Điểm danh',
+
+    hrm_menu_payroll: 'Bảng lương',
+
+    hrm_menu_kpi: 'KPI',
+
+    hrm_menu_okr: 'OKR',
+
+    hrm_quickPins_projects: 'Dự án',
+
+    hrm_quickPins_employeeFile: 'Tệp nhân viên',
+    hrm_quickPins_tasks: 'Nhiệm vụ',
+    hrm_quickPins_process: 'Quy trình',
   },
 };

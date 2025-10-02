@@ -8,7 +8,7 @@ import { colors } from '../../utils/color';
 import icons from '../../assets/icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import AppStyles from '../../components/AppStyle';
-import CustomHeader from '../../components/CustomHeader';
+import CustomHeader from '../../navigation/CustomHeader';
 
 const Home = () => {
   const dispatch = useDispatch();

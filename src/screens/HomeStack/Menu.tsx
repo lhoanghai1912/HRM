@@ -10,7 +10,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { colors, darken } from '../../utils/color';
 import { ms, spacing } from '../../utils/spacing';
-import { Fonts } from '../../utils/fontSize';
+import { fonts } from '../../utils/fontSize';
 import NavBar from '../../components/Navbar';
 import { form_itemHRM } from '../../utils/form';
 import AppStyles from '../../components/AppStyle';
@@ -28,7 +28,7 @@ const Menu = ({ navigation }) => {
       <View style={styles.bodyItem}>
         <Text style={AppStyles.label}>HRM</Text>
         <View style={styles.grid}>
-          {form_itemHRM.map(item => (
+          {form_itemHRM(t).map(item => (
             <TouchableOpacity
               key={item.id}
               style={[styles.item, { backgroundColor: item.bg }]}
@@ -39,7 +39,9 @@ const Menu = ({ navigation }) => {
                 resizeMode="contain"
                 tintColor={darken(item.bg, 50)}
               />
-              <Text style={AppStyles.text}>{item.title}</Text>
+              <Text style={[AppStyles.text, { textAlign: 'center' }]}>
+                {item.title}
+              </Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -55,7 +57,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
-    fontSize: Fonts.normal,
+    fontSize: fonts.normal,
     fontWeight: 'bold',
     color: colors.black,
   },
@@ -63,6 +65,8 @@ const styles = StyleSheet.create({
     marginHorizontal: ms(spacing.medium),
     backgroundColor: colors.white,
     padding: ms(spacing.medium),
+    marginBottom: spacing.medium,
+    borderRadius: 20,
   },
   section: {
     marginHorizontal: ms(spacing.medium),
@@ -71,7 +75,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   sectionTitle: {
-    fontSize: Fonts.normal,
+    fontSize: fonts.normal,
     fontWeight: 'bold',
     marginBottom: spacing.medium,
     color: colors.black,
@@ -99,7 +103,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.small,
   },
   label: {
-    fontSize: Fonts.small,
+    fontSize: fonts.small,
     color: colors.black,
     textAlign: 'center',
   },

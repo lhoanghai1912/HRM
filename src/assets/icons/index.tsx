@@ -54,8 +54,12 @@ import calendar from './calendar.png';
 import calendar_focus from './calendar_focus.png';
 import dollar from './dollar.png';
 import dollar_focus from './dollar_focus.png';
+import term from './term.png';
+import privacy from './privacy.png';
 
 export default {
+  term,
+  privacy,
   list_focus,
   dollar_focus,
   add_focus,

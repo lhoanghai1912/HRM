@@ -3,7 +3,7 @@ import { Modal, View, Text, Pressable, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { colors } from '../../utils/color';
 import { spacing } from '../../utils/spacing';
-import { Fonts } from '../../utils/fontSize';
+import { fonts } from '../../utils/fontSize';
 
 interface LanguageModalProps {
   visible: boolean;
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontWeight: 'bold',
-    fontSize: Fonts.normal,
+    fontSize: fonts.normal,
     marginBottom: spacing.medium,
     textAlign: 'center',
   },

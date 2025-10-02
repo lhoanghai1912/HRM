@@ -18,12 +18,14 @@ import { useTranslation } from 'react-i18next';
 import AppInput from '../../components/AppInput';
 import { colors } from '../../utils/color';
 import icons from '../../assets/icons';
-import { Fonts } from '../../utils/fontSize';
 import AppButton from '../../components/AppButton';
 import { navigate } from '../../navigation/RootNavigator';
 import { Screen_Name } from '../../navigation/ScreenName';
 import ModalEnterOtp from '../../components/modal/ModalEnterOtp';
 import { register } from '../../services/auth';
+import { useDispatch, useSelector } from 'react-redux';
+import { setToken } from '../../store/reducers/userSlice';
+import { fonts } from '../../utils/fontSize';
 // import { enterOtp, register } from '../../services/auth';
 
 const RegisterScreen = () => {
@@ -45,6 +47,9 @@ const RegisterScreen = () => {
   const isMatch = password && confirm && password === confirm;
   const isValid =
     hasMinLength && hasUpperCase && hasNumber && hasSpecialChar && isMatch;
+  const dispatch = useDispatch();
+  const token = useSelector((state: any) => state.user.token);
+  console.log('token', token);
 
   const handleregister = async () => {
     try {
@@ -52,12 +57,15 @@ const RegisterScreen = () => {
       const res = await register(username, mail, password);
       console.log(res);
       // setModalEnterOtp(true);
+      dispatch(setToken({ token: res.accessToken }));
     } catch (error) {
       console.log('error:', error);
     } finally {
       setLoading(false);
     }
   };
+  console.log();
+
   return (
     <View style={styles.container}>
       <View style={[styles.header, { paddingTop: insets.top }]}>
@@ -89,14 +97,14 @@ const RegisterScreen = () => {
             value={mail}
             placeholder={t('label.mail')}
             onChangeText={setMail}
-            style={{ fontSize: Fonts.normal }}
+            style={{ fontSize: fonts.normal }}
           />
           <AppInput
             leftIcon={icons.username}
             value={username}
             placeholder={t('label.username')}
             onChangeText={setUsername}
-            style={{ fontSize: Fonts.normal }}
+            style={{ fontSize: fonts.normal }}
           />
           <AppInput
             leftIcon={icons.password}
@@ -104,7 +112,7 @@ const RegisterScreen = () => {
             placeholder={t('label.password')}
             secureTextEntry
             onChangeText={setPassword}
-            style={{ fontSize: Fonts.normal }}
+            style={{ fontSize: fonts.normal }}
           />
           <AppInput
             leftIcon={icons.password}
@@ -112,7 +120,7 @@ const RegisterScreen = () => {
             placeholder={t('label.confirm_password')}
             secureTextEntry
             onChangeText={setConfirm}
-            style={{ fontSize: Fonts.normal }}
+            style={{ fontSize: fonts.normal }}
           />
         </View>
         {password && (
@@ -209,7 +217,7 @@ const RegisterScreen = () => {
           title={t('button.register')}
           disabled={!isValid}
           onPress={() => handleregister()}
-          textStyle={{ fontSize: Fonts.large }}
+          textStyle={{ fontSize: fonts.large }}
           customStyle={{ marginBottom: spacing.medium }}
         />
         <View

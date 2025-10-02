@@ -3,9 +3,9 @@ import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { colors } from '../../utils/color';
 import { ms, spacing } from '../../utils/spacing';
-import { Fonts } from '../../utils/fontSize';
+import { fonts } from '../../utils/fontSize';
 import AppStyles from '../../components/AppStyle';
-import CustomHeader from '../../components/CustomHeader';
+import CustomHeader from '../../navigation/CustomHeader';
 
 const AddForm = () => {
   const { t } = useTranslation();

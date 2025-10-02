@@ -12,12 +12,13 @@ import QuickPin from '../screens/HomeStack/QuickPin';
 import TimeSheet from '../screens/HomeStack/TimeSheet';
 import Home from '../screens/HomeStack/Home';
 import { form_quickPinItems } from '../utils/form';
+import { useTranslation } from 'react-i18next';
 
 // Các màn hình cho các tab
 
 const Tab = createBottomTabNavigator();
-
 const BottomTabNavigator = ({ navigation }) => {
+  const { t } = useTranslation();
   const { token } = useSelector((state: any) => state.user); // ✅ lấy token từ Redux
   const insets = useSafeAreaInsets();
   const [showQuick, setShowQuick] = useState(false);
@@ -94,7 +95,7 @@ const BottomTabNavigator = ({ navigation }) => {
       <QuickPin
         visible={showQuick}
         onClose={() => setShowQuick(false)}
-        items={form_quickPinItems}
+        items={form_quickPinItems(t)}
         title="Chọn nhanh"
         onSelect={screen => {
           setShowQuick(false);

@@ -1,195 +1,130 @@
-import React, { useState } from 'react';
+import React, { use } from 'react';
 import {
   View,
   Text,
   StyleSheet,
-  SafeAreaView,
-  TouchableOpacity,
   Image,
-  Pressable,
-  Modal,
-  Linking,
+  ScrollView,
+  TextInputComponent,
+  TextInput,
+  TouchableOpacity,
 } from 'react-native';
-import { useTranslation } from 'react-i18next';
-import { colors } from '../../utils/color';
-import { ms, spacing } from '../../utils/spacing';
-import { Fonts } from '../../utils/fontSize';
-import AppStyles from '../../components/AppStyle';
 import NavBar from '../../components/Navbar';
+import { ms, spacing } from '../../utils/spacing';
 import icons from '../../assets/icons';
-import i18n from '../../language';
-import { languages } from '../../utils/language';
-import LanguageModal from '../../components/modal/ModalLanguage';
-import { link } from '../../utils/constants';
-import AppButton from '../../components/AppButton';
-import { useDispatch } from 'react-redux';
-import { logout } from '../../store/reducers/userSlice';
-import { navigate } from '../../navigation/RootNavigator';
+import images from '../../assets/images';
+import { fonts } from '../../utils/fontSize';
+import AppInput from '../../components/AppInput';
 import { Screen_Name } from '../../navigation/ScreenName';
+import { navigate } from '../../navigation/RootNavigator';
+import { colors } from '../../utils/color';
+import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 
-const Setting = ({ navigation }) => {
-  const dispatch = useDispatch();
+const Profile = ({ navigation }) => {
+  const { userData } = useSelector((state: any) => state.user);
   const { t } = useTranslation();
-  const [modalLanguage, setModalLanguage] = useState(false);
-  const handleChangeLanguage = (lang: string) => {
-    i18n.changeLanguage(lang);
-    setModalLanguage(false);
-  };
-  const handleLogout = () => {
-    // Logic to handle logout, e.g., clearing token from Redux
-
-    dispatch(logout());
-    console.log('Logout pressed');
-  };
   return (
     <View style={styles.container}>
-      <NavBar
-        title={t('label.account_setting')}
-        onPress={() => navigation.goBack()}
-        textStyle={{ textAlign: 'auto' }}
-      />
-
-      <View
-        style={{
-          marginTop: spacing.medium,
-          paddingHorizontal: 20,
-          marginBottom: spacing.medium,
-        }}
-      >
-        <Text
-          style={[
-            AppStyles.label,
-            { fontWeight: '500', marginBottom: spacing.small },
-          ]}
+      <NavBar title="Profile" onPress={() => navigation.goBack()} />
+      <ScrollView style={{}}>
+        <View
+          style={{
+            flexDirection: 'row',
+            backgroundColor: 'red',
+            width: '100%',
+            paddingHorizontal: spacing.medium,
+            paddingVertical: spacing.medium,
+          }}
         >
-          {t('label.account_setting')}
-        </Text>
-        <View>
-          <TouchableOpacity
-            style={styles.link}
-            onPress={() => Linking.openURL(link.company)}
-          >
-            <View>
-              <Text style={AppStyles.text}>{t('label.about_us')}</Text>
-            </View>
-            <View>
-              <Image source={icons.arrow} style={AppStyles.icon} />
-            </View>
-          </TouchableOpacity>
+          <Image source={images.avt_default} style={styles.avatar} />
+          <View style={{ justifyContent: 'space-around' }}>
+            <Text
+              style={{
+                color: 'white',
+                fontSize: fonts.large,
+                marginLeft: spacing.medium,
+              }}
+            >
+              John Doe
+            </Text>
+            <Text
+              style={{
+                color: 'white',
+                fontSize: fonts.normal,
+                marginLeft: spacing.medium,
+              }}
+            >
+              Software Engineer
+            </Text>
+          </View>
         </View>
-        <View>
-          <TouchableOpacity
-            style={styles.link}
-            onPress={() => Linking.openURL(link.terms)}
-          >
-            <View>
-              <Text style={AppStyles.text}>{t('label.term_conditions')}</Text>
-            </View>
-            <View>
-              <Image source={icons.arrow} style={AppStyles.icon} />
-            </View>
-          </TouchableOpacity>
+        <View style={{ padding: spacing.medium }}>
+          <View>
+            <Text style={styles.label}>{t(`label.username`)}</Text>
+            <TextInput
+              editable={false}
+              value={userData.userName}
+              style={{
+                borderRadius: 15,
+                borderWidth: 1,
+                paddingHorizontal: spacing.small,
+                fontSize: fonts.normal,
+                backgroundColor: colors.lightGray,
+                marginBottom: spacing.medium,
+              }}
+            />
+          </View>
+          <View>
+            <Text style={styles.label}>{t(`label.password`)}</Text>
+            <TouchableOpacity
+              onPress={() => {
+                navigate(Screen_Name.ChangePassword);
+              }}
+            >
+              <TextInput
+                editable={false}
+                value={`**********`}
+                style={{
+                  borderRadius: 15,
+                  borderWidth: 1,
+                  paddingHorizontal: spacing.small,
+                  fontSize: fonts.normal,
+                  backgroundColor: colors.lightGray,
+                  marginBottom: spacing.medium,
+                }}
+              />
+              <Image
+                source={icons.edit}
+                style={{
+                  position: 'absolute',
+                  right: spacing.small,
+                  top: '20%',
+                  width: ms(25),
+                  height: ms(25),
+                }}
+              />
+            </TouchableOpacity>
+          </View>
         </View>
-        <View>
-          <TouchableOpacity
-            style={styles.link}
-            onPress={() => Linking.openURL(link.privacy)}
-          >
-            <View>
-              <Text style={AppStyles.text}>{t('label.privacy_policy')}</Text>
-            </View>
-            <View>
-              <Image source={icons.arrow} style={AppStyles.icon} />
-            </View>
-          </TouchableOpacity>
-        </View>
-        <View>
-          <TouchableOpacity
-            style={styles.link}
-            onPress={() => setModalLanguage(true)}
-          >
-            <Text style={AppStyles.text}>{t(`button.choose_language`)}</Text>
-            <View>
-              <Text style={AppStyles.text}>{t('label.language')}</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      <View
-        style={{
-          marginTop: spacing.medium,
-          paddingHorizontal: 20,
-          marginBottom: spacing.medium,
-        }}
-      >
-        <Text
-          style={[
-            AppStyles.label,
-            { fontWeight: '500', marginBottom: spacing.small },
-          ]}
-        >
-          {t('label.hr')}
-        </Text>
-        <View>
-          <TouchableOpacity
-            style={styles.link}
-            onPress={() => navigate(Screen_Name.Employee)}
-          >
-            <View>
-              <Text style={AppStyles.text}>{t('label.hr_add_employee')}</Text>
-            </View>
-            <View>
-              <Image source={icons.arrow} style={AppStyles.icon} />
-            </View>
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      <AppButton
-        title="Logout"
-        onPress={() => handleLogout()}
-        customStyle={{ marginHorizontal: spacing.medium }}
-      />
-
-      <LanguageModal
-        visible={modalLanguage}
-        onClose={() => setModalLanguage(false)}
-        onSelectLanguage={handleChangeLanguage}
-        selectedLanguage={i18n.language}
-        languages={languages}
-      />
+      </ScrollView>
     </View>
   );
 };
-
-export default Setting;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  body: {
-    marginHorizontal: spacing.medium,
+  avatar: {
+    width: ms(80),
+    height: ms(80),
+    borderRadius: 50,
   },
-  bodyItem: {
-    marginHorizontal: spacing.medium,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  title: {
-    fontSize: Fonts.normal,
-    fontWeight: 'bold',
-    color: colors.black,
-  },
-  link: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  label: {
+    fontSize: fonts.normal,
     marginBottom: spacing.small,
-    paddingBottom: spacing.small,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.Gray,
-    justifyContent: 'space-between',
   },
 });
+
+export default Profile;

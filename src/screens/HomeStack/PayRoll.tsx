@@ -3,8 +3,8 @@ import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { colors } from '../../utils/color';
 import { ms, spacing } from '../../utils/spacing';
-import { Fonts } from '../../utils/fontSize';
-import CustomHeader from '../../components/CustomHeader';
+import { fonts } from '../../utils/fontSize';
+import CustomHeader from '../../navigation/CustomHeader';
 import AppStyles from '../../components/AppStyle';
 
 const PayRoll = () => {

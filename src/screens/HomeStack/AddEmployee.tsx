@@ -28,7 +28,7 @@ import { Picker } from '@react-native-picker/picker';
 import moment from 'moment';
 import AppButton from '../../components/AppButton';
 import { create_employee } from '../../services/hr';
-import { Fonts } from '../../utils/fontSize';
+import { fonts } from '../../utils/fontSize';
 import Toast from 'react-native-toast-message';
 import { navigate } from '../../navigation/RootNavigator';
 import { Screen_Name } from '../../navigation/ScreenName';
@@ -43,7 +43,7 @@ const Employee = ({ route, navigation }: any) => {
 
   const [form, setForm] = useState<Record<string, string>>(() => {
     const obj: Record<string, string> = {};
-    form_employee.forEach(({ key, value }) => {
+    form_employee(t).forEach(({ key, value }) => {
       obj[key] = existing[key] ?? value; // nếu có giá trị cũ thì gán, ko thì để ''
     });
     return obj;
@@ -90,7 +90,7 @@ const Employee = ({ route, navigation }: any) => {
         onPress={() => navigation.goBack()}
       />
       <ScrollView style={styles.form}>
-        {form_employee.map(({ key, label, type }) => (
+        {form_employee(t).map(({ key, label, type }) => (
           <View key={key} style={styles.form_item}>
             <Text style={AppStyles.label}>{label}</Text>
 
@@ -117,7 +117,7 @@ const Employee = ({ route, navigation }: any) => {
                 <Picker
                   selectedValue={form[key] ?? ''}
                   onValueChange={(val: string) => setValue(key, val)}
-                  style={{ height: ms(54), fontSize: Fonts.normal }} // giảm chiều cao
+                  style={{ height: ms(54), fontSize: fonts.normal }} // giảm chiều cao
                 >
                   {/* Placeholder hiển thị khi value = "" */}
                   <Picker.Item
@@ -148,8 +148,7 @@ const Employee = ({ route, navigation }: any) => {
                     ? picker_educationLevel
                     : key === 'levelName'
                     ? picker_levelName
-                    : picker_levelName
-                  ).map(opt => (
+                    : picker_levelName)(t).map(opt => (
                     <Picker.Item
                       key={opt.value}
                       label={opt.label}

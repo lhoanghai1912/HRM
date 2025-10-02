@@ -1,5 +1,6 @@
 import ForgotPassword from '../screens/AuthStack/ForgotPassword';
 import AddForm from '../screens/HomeStack/AddForm';
+import ChangePassword from '../screens/HomeStack/ChangePassword';
 import Menu from '../screens/HomeStack/Menu';
 import QuickPin from '../screens/HomeStack/QuickPin';
 
@@ -19,7 +20,10 @@ export const Screen_Name = {
   Menu: 'Menu',
   Notification: 'Notification',
   Employee: 'Employee',
-
+  OrnStruct: 'OrnStruct',
+  Setting: 'Setting',
+  User: 'User',
+  ChangePassword: 'ChangePassword',
   //Other
   Splash: 'Splash',
   Loading: 'Splash',

@@ -10,7 +10,7 @@ import {
   ImageStyle,
 } from 'react-native';
 import AppStyles from './AppStyle';
-import { Fonts } from '../utils/fontSize';
+import { fonts } from '../utils/fontSize';
 import icons from '../assets/icons';
 import { colors } from '../utils/color';
 import { spacing } from '../utils/spacing';
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   navTitle: {
-    fontSize: Fonts.xlarge,
+    fontSize: fonts.xlarge,
     color: colors.black,
     fontWeight: '500',
     // textAlign: 'center',

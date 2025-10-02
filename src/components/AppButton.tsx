@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import { colors } from '../utils/color';
 import { spacing } from '../utils/spacing';
-import { Fonts } from '../utils/fontSize';
+import { fonts } from '../utils/fontSize';
 
 interface AppButtonProps {
   // key?: number;
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: colors.white,
-    fontSize: Fonts.normal,
+    fontSize: fonts.normal,
     fontWeight: 500,
     textAlign: 'center',
   },

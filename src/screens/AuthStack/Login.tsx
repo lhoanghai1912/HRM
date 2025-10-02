@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next';
 import AppInput from '../../components/AppInput';
 import { colors } from '../../utils/color';
 import icons from '../../assets/icons';
-import { Fonts } from '../../utils/fontSize';
+import { fonts } from '../../utils/fontSize';
 import AppButton from '../../components/AppButton';
 import { navigate } from '../../navigation/RootNavigator';
 import { Screen_Name } from '../../navigation/ScreenName';
@@ -39,8 +39,8 @@ const LoginScreen = () => {
   const insets = useSafeAreaInsets();
   const dispatch = useDispatch();
   const { t } = useTranslation();
-  const [username, setUserName] = useState('haihl01');
-  const [password, setPassword] = useState('1234@Abcd');
+  const [username, setUserName] = useState('hailh');
+  const [password, setPassword] = useState('123456Ab@');
   const [company, setCompany] = useState('');
   const [loading, setLoading] = useState(false);
   const [modalLanguage, setModalLanguage] = useState(false);
@@ -166,14 +166,14 @@ const LoginScreen = () => {
             value={company}
             placeholder={t('label.company')}
             onChangeText={setCompany}
-            style={{ fontSize: Fonts.normal }}
+            style={{ fontSize: fonts.normal }}
           />
           <AppInput
             leftIcon={icons.mail}
             value={username}
             placeholder={t('label.username')}
             onChangeText={setUserName}
-            style={{ fontSize: Fonts.normal }}
+            style={{ fontSize: fonts.normal }}
           />
           <AppInput
             leftIcon={icons.password}
@@ -181,7 +181,7 @@ const LoginScreen = () => {
             value={password}
             onChangeText={setPassword}
             secureTextEntry
-            style={{ fontSize: Fonts.normal }}
+            style={{ fontSize: fonts.normal }}
           />
         </View>
         <TouchableOpacity onPress={() => navigate(Screen_Name.ForgotPassword)}>
@@ -202,7 +202,7 @@ const LoginScreen = () => {
         <AppButton
           title={t('button.login')}
           onPress={() => handleLogin()}
-          textStyle={{ fontSize: Fonts.large }}
+          textStyle={{ fontSize: fonts.large }}
           customStyle={{ marginBottom: spacing.medium }}
         />
         <View
