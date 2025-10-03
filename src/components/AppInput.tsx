@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   label: {
-    fontSize: fonts.large,
+    fontSize: fonts.normal,
     marginBottom: spacing.small,
     color: colors.black,
   },

@@ -178,5 +178,7 @@ export default {
     hrm_quickPins_employeeFile: 'Tệp nhân viên',
     hrm_quickPins_tasks: 'Nhiệm vụ',
     hrm_quickPins_process: 'Quy trình',
+
+    basic_profile: 'Thông tin cơ bản',
   },
 };

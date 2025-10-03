@@ -45,7 +45,6 @@ import company from './company.png';
 import checked from './checked.png';
 import clock from './clock.png';
 import mark from './mark.png';
-import left_arrow from './left_arrow.png';
 import down from './down.png';
 import menu from './menu.png';
 import list from './list.png';
@@ -56,9 +55,11 @@ import dollar from './dollar.png';
 import dollar_focus from './dollar_focus.png';
 import term from './term.png';
 import privacy from './privacy.png';
+import up from './up.png';
 
 export default {
   term,
+  up,
   privacy,
   list_focus,
   dollar_focus,
@@ -69,7 +70,6 @@ export default {
   down,
   calendar,
   dollar,
-  left_arrow,
   mark,
   clock,
   checked,

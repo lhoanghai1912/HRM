@@ -4,8 +4,8 @@ import tinycolor from 'tinycolor2';
 export const colors = {
   primary: '#598CD2',
   secondary: '#A5A5A5',
-  background: '#F2F2F2',
-  white: '#FDFDFD',
+  background: '#F2F3F5',
+  white: '#FFFFFF',
   black: '#000000',
   error: '#b00020',
   border: '#e1e1e1',

@@ -68,7 +68,7 @@ const AppStyles = StyleSheet.create({
     color: colors.white,
   },
 
-  icon: { width: ms(24), height: ms(24) },
+  icon: { width: ms(25), height: ms(25) },
 
   iconSingle: {
     width: 30,

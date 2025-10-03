@@ -45,10 +45,7 @@ const NavBar = ({
       {/* Left icon */}
       <View style={styles.leftIconWrap}>
         <TouchableOpacity onPress={onPress} style={styles.iconButton}>
-          <Image
-            source={icons.left_arrow}
-            style={[AppStyles.icon, iconStyle]}
-          />
+          <Image source={icons.back} style={[AppStyles.icon, iconStyle]} />
         </TouchableOpacity>
       </View>
 

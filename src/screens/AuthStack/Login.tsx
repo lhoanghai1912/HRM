@@ -31,6 +31,7 @@ import i18n from '../../language';
 import LanguageModal from '../../components/modal/ModalLanguage';
 import { login } from '../../services/auth';
 import { languages } from '../../utils/language';
+import { getMe } from '../../services/user';
 // import { login, loginFirebase } from '../../services/auth';
 // import { GoogleSignin } from '@react-native-google-signin/google-signin';
 // import auth from '@react-native-firebase/auth';
@@ -39,19 +40,22 @@ const LoginScreen = () => {
   const insets = useSafeAreaInsets();
   const dispatch = useDispatch();
   const { t } = useTranslation();
-  const [username, setUserName] = useState('hailh');
-  const [password, setPassword] = useState('123456Ab@');
+  const [username, setUserName] = useState('haihl01');
+  const [password, setPassword] = useState('1234@Abcd');
   const [company, setCompany] = useState('');
   const [loading, setLoading] = useState(false);
   const [modalLanguage, setModalLanguage] = useState(false);
-
+  const { userData } = useSelector((state: any) => state.user);
   const handleLogin = async () => {
     try {
       setLoading(true);
       const res = await login(username, password);
       console.log('login res', res);
-      dispatch(setUserData({ userData: res.user }));
       dispatch(setToken({ token: res.accessToken }));
+      const user = await getMe();
+      console.log('user getme', user);
+
+      dispatch(setUserData({ userData: user }));
 
       Toast.show({
         type: 'success',
@@ -63,6 +67,7 @@ const LoginScreen = () => {
       setLoading(false);
     }
   };
+  console.log('userdata', userData);
 
   const handleGoogleLogin = async () => {
     // try {

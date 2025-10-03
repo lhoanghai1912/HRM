@@ -5,9 +5,13 @@ import i18next from 'i18next';
 import { Linking } from 'react-native';
 import { link } from './constants';
 import { navigate } from '../navigation/RootNavigator';
+import { useDispatch } from 'react-redux';
+import { logout } from '../store/reducers/userSlice';
+
 export const form_user = (
   t = i18next.t.bind(i18next),
   setModalLanguage?: (visible: boolean) => void,
+  dispatch?: any,
 ) => [
   {
     id: 'profile',
@@ -44,6 +48,12 @@ export const form_user = (
     title: t('label.user_language'),
     icon: icons.internet,
     action: () => setModalLanguage && setModalLanguage(true), // Đảm bảo hàm được truyền vào
+  },
+  {
+    id: 'logout',
+    title: t('label.user_logout'),
+    icon: icons.logout,
+    action: () => dispatch && dispatch(logout()), // Đảm bảo hàm được truyền vào
   },
 ];
 

@@ -175,5 +175,7 @@ export default {
     hrm_quickPins_employeeFile: 'ໄຟລ໌ພະນັກງານ',
     hrm_quickPins_tasks: 'ວຽກ',
     hrm_quickPins_process: 'ຂະບວນການ',
+
+    basic_profile: 'ໂປຣໄຟລ໌ພື້ນຖານ',
   },
 };

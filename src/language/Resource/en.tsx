@@ -171,5 +171,8 @@ export default {
     hrm_quickPins_employeeFile: 'Employee file',
     hrm_quickPins_tasks: 'Tasks',
     hrm_quickPins_process: 'Process',
+
+    profile: 'Profile',
+    basic_profile: 'Basic profile',
   },
 };

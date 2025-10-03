@@ -4,7 +4,7 @@ import { spacing } from '../utils/spacing';
 import icons from '../assets/icons';
 import AppStyles from '../components/AppStyle';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { navigate } from './RootNavigator';
 import { Screen_Name } from './ScreenName';
 import { form_user } from '../utils/form';
@@ -19,7 +19,7 @@ const CustomHeader = () => {
   const { t } = useTranslation();
   const [showUser, setShowUser] = useState(false);
   const [modalLanguage, setModalLanguage] = useState(false);
-
+  const dispatch = useDispatch();
   // const navigation = useNavigation();
   const inset = useSafeAreaInsets();
   const { userData } = useSelector((state: any) => state.user);
@@ -70,7 +70,7 @@ const CustomHeader = () => {
       <User
         visible={showUser}
         onClose={() => setShowUser(false)}
-        items={form_user(t, setModalLanguage)}
+        items={form_user(t, setModalLanguage, dispatch)}
         title="Chọn nhanh"
         onSelect={(item: any) => {
           if (item.action) {
