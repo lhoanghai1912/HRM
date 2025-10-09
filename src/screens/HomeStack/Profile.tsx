@@ -7,6 +7,7 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import NavBar from '../../components/Navbar';
 import { ms, spacing } from '../../utils/spacing';
@@ -15,10 +16,12 @@ import images from '../../assets/images';
 import { fonts } from '../../utils/fontSize';
 import { colors } from '../../utils/color';
 import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import AppStyles from '../../components/AppStyle';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { employee_Get } from '../../services/hr';
+import { employee_Update, employeeAvatar_Update } from '../../services/user';
+import { launchImageLibrary } from 'react-native-image-picker';
 
 const Profile = ({ navigation }) => {
   const { userData } = useSelector((state: any) => state.user);
@@ -26,37 +29,59 @@ const Profile = ({ navigation }) => {
   const [avatarSectionHeight, setAvatarSectionHeight] = useState(0);
   const [employee, setEmployee] = useState<any>();
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({});
+  const [editingSection, setEditingSection] = useState<string | null>(null);
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
-
+  const [originalEmployee, setOriginalEmployee] = useState<any>();
+  const [loading, setLoading] = useState(false);
   // Fetch employee data
   useEffect(() => {
     if (userData?.employeeId) {
       fetchEmployee();
     }
-  }, [userData?.employeeId]);
+  }, [userData.employeeId]);
 
   const fetchEmployee = async () => {
     try {
       const res = await employee_Get(userData.employeeId);
       console.log('Fetched employee data:', res);
-
-      setEmployee(res); // Cập nhật state employee
+      if (!editingSection) {
+        setEmployee(res);
+        setOriginalEmployee(res);
+      }
     } catch (error) {
       console.error('Error fetching employee data:', error);
     }
   };
+
+  const getEmployeeObjectKey = (sectionKey: string) => {
+    switch (sectionKey) {
+      case 'Document Information':
+        return 'employeeDocument';
+      case 'Contact Information':
+        return 'employeeContact';
+      case 'Job Information':
+        return 'employeeJobInfo';
+      default:
+        return null;
+    }
+  };
+
   const toggleSection = (sectionKey: string) => {
     setOpenSections(prev => ({
       ...prev,
-      [sectionKey]: !prev[sectionKey], // Đảo trạng thái mở/đóng
+      [sectionKey]: !prev[sectionKey],
     }));
   };
-  // Tạo danh sách sections từ dữ liệu employee
+
   const sections = useMemo(() => {
     if (!employee) return [];
-    const { employeeDocument, employeeContact, employeeJobInfo, ...basicInfo } =
-      employee;
+    const {
+      employeeDocument = {},
+      employeeContact = {},
+      employeeJobInfo = {},
+      ...basicInfo
+    } = employee;
 
     return [
       { sectionKey: 'Basic Information', data: basicInfo },
@@ -66,39 +91,164 @@ const Profile = ({ navigation }) => {
     ];
   }, [employee]);
 
-  // Hàm format giá trị hiển thị
   const formatValue = (value: any) => {
     if (value === null || value === undefined) return '';
     if (typeof value === 'boolean') return value ? 'Yes' : 'No';
     if (typeof value === 'string' && value.match(/^\d{4}-\d{2}-\d{2}/)) {
-      // Format ngày (YYYY-MM-DD)
       return value.slice(0, 10);
     }
     return String(value);
   };
 
-  // Hàm render từng trường
-  const renderField = (key: string, value: any) => {
+  const saveEmployeeData = async (sectionKey: string) => {
+    try {
+      setLoading(true);
+      let updatedEmployee;
+      if (sectionKey === 'Basic Information') {
+        const {
+          employeeDocument,
+          employeeContact,
+          employeeJobInfo,
+          ...basicInfo
+        } = employee;
+        updatedEmployee = await employee_Update(userData.employeeId, {
+          ...employee,
+          ...basicInfo,
+        });
+      } else {
+        const objectKey = getEmployeeObjectKey(sectionKey);
+        if (objectKey) {
+          // Chỉ dùng nếu objectKey là string
+          const updatedSectionData = employee[objectKey];
+          updatedEmployee = await employee_Update(userData.employeeId, {
+            ...employee,
+            [objectKey]: updatedSectionData,
+          });
+        } else {
+          // Nếu objectKey là null, không làm gì hoặc xử lý lỗi
+          return;
+        }
+      }
+      setEmployee(updatedEmployee);
+      setOriginalEmployee(updatedEmployee);
+      setEditingSection(null);
+      console.log('Employee data saved successfully');
+      fetchEmployee();
+    } catch (error) {
+      console.error('Failed to save employee data:', error);
+      setEmployee(originalEmployee);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const cancelEdit = (sectionKey: string) => {
+    if (sectionKey === 'Basic Information') {
+      const {
+        employeeDocument,
+        employeeContact,
+        employeeJobInfo,
+        ...basicInfo
+      } = originalEmployee;
+      setEmployee(prev => ({
+        ...prev,
+        ...basicInfo,
+      }));
+    } else {
+      const objectKey = getEmployeeObjectKey(sectionKey);
+      if (objectKey) {
+        setEmployee(prev => ({
+          ...prev,
+          [objectKey]: { ...(originalEmployee[objectKey] || {}) },
+        }));
+      }
+    }
+    setEditingSection(null);
+  };
+
+  const renderField = (
+    key: string,
+    value: any,
+    isEditing: boolean,
+    sectionKey: string,
+  ) => {
     const label = t(`label.${key}`, { defaultValue: key })
       .replace(/([A-Z])/g, ' $1')
       .replace(/^./, c => c.toUpperCase());
 
+    const handleChange = (text: string) => {
+      if (sectionKey === 'Basic Information') {
+        setEmployee(prev => ({
+          ...prev,
+          [key]: text,
+        }));
+      } else {
+        const objectKey = getEmployeeObjectKey(sectionKey);
+        if (objectKey) {
+          setEmployee(prev => ({
+            ...prev,
+            [objectKey]: {
+              ...(prev[objectKey] || {}),
+              [key]: text,
+            },
+          }));
+        }
+      }
+    };
+
+    const getInputType = (key: string, value: any) => {
+      if (key.toLowerCase().includes('email')) return 'email-address';
+      if (key.toLowerCase().includes('phone')) return 'phone-pad';
+      if (typeof value === 'number') return 'numeric';
+      return 'default';
+    };
+
     return (
       <View key={key} style={styles.fieldWrap}>
         <Text style={styles.fieldLabel}>{label}</Text>
-        <TextInput
-          editable={false}
-          value={formatValue(value)}
-          style={styles.readonlyInput}
-        />
+        {isEditing ? (
+          <TextInput
+            value={String(value || '')}
+            onChangeText={handleChange}
+            style={styles.editableInput}
+            keyboardType={getInputType(key, value)}
+            multiline={
+              key.toLowerCase().includes('address') ||
+              key.toLowerCase().includes('note')
+            }
+            numberOfLines={
+              key.toLowerCase().includes('address') ||
+              key.toLowerCase().includes('note')
+                ? 3
+                : 1
+            }
+          />
+        ) : (
+          <TextInput
+            editable={false}
+            value={formatValue(value)}
+            style={styles.readonlyInput}
+            multiline={
+              key.toLowerCase().includes('address') ||
+              key.toLowerCase().includes('note')
+            }
+            numberOfLines={
+              key.toLowerCase().includes('address') ||
+              key.toLowerCase().includes('note')
+                ? 3
+                : 1
+            }
+          />
+        )}
       </View>
     );
   };
 
-  // Hàm render từng section
   const renderSection = (sectionKey: string, data: Record<string, any>) => {
     if (!data || Object.keys(data).length === 0) return null;
-    const isOpen = openSections[sectionKey] ?? true; // Mặc định mở nếu chưa có trong state
+
+    const isOpen = openSections[sectionKey];
+    const isEditing = editingSection === sectionKey;
 
     return (
       <View key={sectionKey} style={styles.sectionCard}>
@@ -107,15 +257,52 @@ const Profile = ({ navigation }) => {
           style={styles.sectionHeader}
         >
           <Text style={styles.title}>{sectionKey}</Text>
-          <Image
-            source={isOpen ? icons.up : icons.down} // Hiển thị icon mũi tên
-            style={styles.sectionToggleIcon}
-          />
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            {isEditing ? (
+              <>
+                <TouchableOpacity
+                  onPress={() => cancelEdit(sectionKey)}
+                  style={styles.cancelButton}
+                >
+                  <Text style={styles.cancelButtonText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={async () => {
+                    await saveEmployeeData(sectionKey);
+                    setEditingSection(null);
+                  }}
+                  style={styles.saveButton}
+                >
+                  <Text style={styles.saveButtonText}>Save</Text>
+                </TouchableOpacity>
+              </>
+            ) : (
+              <TouchableOpacity
+                onPress={() => {
+                  // Nếu section đang đóng, mở nó ra
+                  if (!isOpen) {
+                    setOpenSections(prev => ({
+                      ...prev,
+                      [sectionKey]: true,
+                    }));
+                  }
+                  // Chuyển sang chế độ chỉnh sửa
+                  setEditingSection(sectionKey);
+                }}
+              >
+                <Text style={styles.editButton}>Edit</Text>
+              </TouchableOpacity>
+            )}
+            <Image
+              source={isOpen ? icons.up : icons.down}
+              style={styles.sectionToggleIcon}
+            />
+          </View>
         </TouchableOpacity>
         {isOpen && (
           <View style={{ marginTop: spacing.medium }}>
             {Object.entries(data).map(([key, value]) =>
-              renderField(key, value),
+              renderField(key, value, isEditing, sectionKey),
             )}
           </View>
         )}
@@ -137,13 +324,51 @@ const Profile = ({ navigation }) => {
     setAvatarSectionHeight(height);
   };
 
+  const handleSelectAvatar = async () => {
+    const result = await launchImageLibrary({
+      mediaType: 'photo',
+      includeBase64: false,
+    });
+
+    if (result.didCancel) {
+      console.log('User cancelled image picker');
+      return;
+    }
+
+    if (result.assets && result.assets.length > 0) {
+      const selectedImage = result.assets[0];
+      if (selectedImage.uri) {
+        try {
+          setLoading(true);
+          const updatedAvatar = await employeeAvatar_Update(
+            userData.employeeId,
+            {
+              uri: selectedImage.uri,
+              fileName: selectedImage.fileName,
+              type: selectedImage.type,
+            },
+          );
+
+          setEmployee((prev: any) => ({
+            ...prev,
+            employeeAvatar: updatedAvatar.avatarUrl,
+          }));
+          fetchEmployee();
+        } catch (error) {
+          console.error('Failed to upload avatar:', error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    }
+  };
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingBottom: insets.bottom }]}>
       {fixedHeader ? (
         <>
           <View
             style={[
-              // styles.fixedHeader,
               {
                 paddingTop: ms(insets.top + spacing.small),
                 paddingVertical: spacing.small,
@@ -165,7 +390,11 @@ const Profile = ({ navigation }) => {
             </TouchableOpacity>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <Image
-                source={images.avt_default}
+                source={
+                  employee?.employeeAvatar
+                    ? { uri: employee.employeeAvatar }
+                    : images.avt_default
+                }
                 style={{
                   width: ms(70),
                   height: ms(70),
@@ -203,50 +432,10 @@ const Profile = ({ navigation }) => {
           {fixedHeader ? (
             <>
               <View
-                style={[
-                  // styles.fixedHeader,
-                  {
-                    paddingTop: ms(insets.top + spacing.small),
-                    paddingVertical: spacing.small,
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                  },
-                ]}
-              >
-                <TouchableOpacity onPress={() => navigation.goBack()}>
-                  <Image
-                    source={icons.back}
-                    style={{
-                      width: ms(25),
-                      height: ms(25),
-                      tintColor: colors.white,
-                    }}
-                  />
-                </TouchableOpacity>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <Image
-                    source={
-                      // userProfile?.avatarUrl
-                      //   ? { uri: `${link.url}${userProfile?.avatarUrl}` }
-                      //   : userData?.avatarUrl
-                      //   ? { uri: userData?.avatarUrl }
-                      //   :
-                      images.avt_default
-                    }
-                    style={{
-                      width: ms(70),
-                      height: ms(70),
-                      borderRadius: ms(50),
-                      marginHorizontal: spacing.small,
-                      marginRight: spacing.medium,
-                    }}
-                  />
-                  <View>
-                    <Text style={AppStyles.label}>{`userData?.fullName`}</Text>
-                    <Text style={AppStyles.text}>{`userData?.position`}</Text>
-                  </View>
-                </View>
-              </View>
+                style={{
+                  marginBottom: ms(avatarSectionHeight + spacing.large),
+                }}
+              />
             </>
           ) : (
             <>
@@ -259,7 +448,16 @@ const Profile = ({ navigation }) => {
                   marginBottom: spacing.medium,
                 }}
               >
-                <Image source={images.avt_default} style={styles.avatar} />
+                <TouchableOpacity onPress={() => handleSelectAvatar()}>
+                  <Image
+                    source={
+                      employee?.employeeAvatar
+                        ? { uri: employee.employeeAvatar }
+                        : images.avt_default
+                    }
+                    style={styles.avatar}
+                  />
+                </TouchableOpacity>
                 <View style={{ justifyContent: 'space-around' }}>
                   <Text
                     style={{
@@ -286,6 +484,19 @@ const Profile = ({ navigation }) => {
           renderSection(sectionKey, data),
         )}
       </ScrollView>
+      {loading && (
+        <View
+          style={{
+            ...StyleSheet.absoluteFillObject,
+            backgroundColor: 'rgba(0,0,0,0.3)',
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 10,
+          }}
+        >
+          <ActivityIndicator size="large" color="#E53935" />
+        </View>
+      )}
     </View>
   );
 };
@@ -335,7 +546,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    // paddingVertical: spacing.small,
   },
   sectionToggleIcon: {
     width: ms(16),
@@ -358,6 +568,44 @@ const styles = StyleSheet.create({
     fontSize: fonts.normal,
     backgroundColor: colors.lightGray || '#F5F6F7',
     color: colors.black,
+  },
+  editButton: {
+    fontSize: fonts.normal,
+    color: colors.primary,
+    marginRight: spacing.small,
+  },
+  editableInput: {
+    borderWidth: 1,
+    borderColor: colors.primary,
+    borderRadius: 12,
+    paddingHorizontal: spacing.small,
+    paddingVertical: ms(8),
+    fontSize: fonts.normal,
+    backgroundColor: '#FFF',
+    color: colors.black,
+  },
+  cancelButton: {
+    paddingHorizontal: spacing.small,
+    paddingVertical: ms(4),
+    backgroundColor: '#f5f5f5',
+    borderRadius: 8,
+    marginRight: spacing.small,
+  },
+  cancelButtonText: {
+    fontSize: fonts.small,
+    color: '#666',
+  },
+  saveButton: {
+    paddingHorizontal: spacing.small,
+    paddingVertical: ms(4),
+    backgroundColor: colors.primary,
+    borderRadius: 8,
+    marginRight: spacing.small,
+  },
+  saveButtonText: {
+    fontSize: fonts.small,
+    color: '#fff',
+    fontWeight: '600',
   },
 });
 

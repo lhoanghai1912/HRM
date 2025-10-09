@@ -7,6 +7,7 @@ import { link } from './constants';
 import { navigate } from '../navigation/RootNavigator';
 import { useDispatch } from 'react-redux';
 import { logout } from '../store/reducers/userSlice';
+import { act } from 'react';
 
 export const form_user = (
   t = i18next.t.bind(i18next),
@@ -23,7 +24,8 @@ export const form_user = (
     id: 'settings',
     title: t('label.user_settings'),
     icon: icons.settings,
-    action: () => navigate(Screen_Name.Employee),
+    // action: () => navigate(Screen_Name.Employee),
+    action: () => navigate(Screen_Name.ChangePassword),
   },
   {
     id: 'about',

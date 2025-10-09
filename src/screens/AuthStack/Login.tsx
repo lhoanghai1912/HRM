@@ -40,8 +40,8 @@ const LoginScreen = () => {
   const insets = useSafeAreaInsets();
   const dispatch = useDispatch();
   const { t } = useTranslation();
-  const [username, setUserName] = useState('haihl01');
-  const [password, setPassword] = useState('1234@Abcd');
+  const [username, setUserName] = useState('hoanglh01');
+  const [password, setPassword] = useState('Hoanghai02@');
   const [company, setCompany] = useState('');
   const [loading, setLoading] = useState(false);
   const [modalLanguage, setModalLanguage] = useState(false);
