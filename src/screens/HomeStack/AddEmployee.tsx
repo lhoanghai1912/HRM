@@ -27,7 +27,7 @@ import DatePicker from 'react-native-date-picker';
 import { Picker } from '@react-native-picker/picker';
 import moment from 'moment';
 import AppButton from '../../components/AppButton';
-import { create_employee } from '../../services/hr';
+import { employee_Create } from '../../services/hr';
 import { fonts } from '../../utils/fontSize';
 import Toast from 'react-native-toast-message';
 import { navigate } from '../../navigation/RootNavigator';
@@ -74,7 +74,7 @@ const Employee = ({ route, navigation }: any) => {
     if (payload.awardedYear) payload.awardedYear = Number(payload.awardedYear); // "2024" -> 2024
 
     // các date string khác vẫn giữ ISO (đã set bằng toISOString())
-    const res = await create_employee(payload);
+    const res = await employee_Create(payload);
     console.log('api back', res);
     Toast.show({
       type: 'success',

@@ -70,9 +70,9 @@ const LoginScreen = () => {
   console.log('userdata', userData);
 
   const handleGoogleLogin = async () => {
-    // try {
+    // try {``
     //   setLoading(true);
-    //   await GoogleSignin.hasPlayServices();
+    //   await GoogleSignin.hasPlayServices();``
     //   const userInfo = await GoogleSignin.signIn();
     //   const idToken = userInfo?.data?.idToken || '';
     //   const googleCredential = auth.GoogleAuthProvider.credential(idToken);
