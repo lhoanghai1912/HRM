@@ -176,6 +176,11 @@ export default {
     hrm_quickPins_tasks: 'ວຽກ',
     hrm_quickPins_process: 'ຂະບວນການ',
 
+    stack_employee: 'ພະນັກງານ',
+    stack_attendance: 'ການເຂົ້າຮ່ວມ',
+    stack_payroll: 'ເງິນເດືອນ',
+    stack_recruitment: 'ການຮັບສະໝັກ',
+
     basic_profile: 'ໂປຣໄຟລ໌ພື້ນຖານ',
   },
 };

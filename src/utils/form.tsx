@@ -1,13 +1,10 @@
-import { useTranslation } from 'react-i18next';
 import icons from '../assets/icons';
 import { Screen_Name } from '../navigation/ScreenName';
 import i18next from 'i18next';
 import { Linking } from 'react-native';
 import { link } from './constants';
 import { navigate } from '../navigation/RootNavigator';
-import { useDispatch } from 'react-redux';
 import { logout } from '../store/reducers/userSlice';
-import { act } from 'react';
 
 export const form_user = (
   t = i18next.t.bind(i18next),
@@ -56,6 +53,40 @@ export const form_user = (
     title: t('label.user_logout'),
     icon: icons.logout,
     action: () => dispatch && dispatch(logout()), // Đảm bảo hàm được truyền vào
+  },
+];
+
+export const form_itemStack = (t = i18next.t.bind(i18next)) => [
+  {
+    id: 'employee',
+    title: t('label.stack_employee'),
+    icon: icons.list,
+    bg: '#EAF1FF',
+    screen: Screen_Name.AddEmployee,
+  },
+  {
+    id: 'attendance',
+    title: t('label.stack_attendance'), // Chấm công
+    icon: icons.list,
+    bg: '#EDF6FF',
+    // screen: Screen_Name.Attendance, // Đặt tên màn hình đúng với navigation
+    screen: Screen_Name.Attendance,
+  },
+  {
+    id: 'payroll',
+    title: t('label.hrm_menu_payroll'), // Lương
+    icon: icons.list,
+    bg: '#FFF0F0',
+    // screen: Screen_Name.Payroll, // Đặt tên màn hình đúng với navigation
+    screen: Screen_Name.AddEmployee,
+  },
+  {
+    id: 'recruitment',
+    title: t('label.stack_recruitment'), // Tuyển dụng
+    icon: icons.list,
+    bg: '#FFEFE5',
+    // screen: Screen_Name.Recruitment, // Đặt tên màn hình đúng với navigation
+    screen: Screen_Name.AddEmployee,
   },
 ];
 

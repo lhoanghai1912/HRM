@@ -156,28 +156,23 @@ export default {
     user_language: 'Ngôn ngữ',
 
     hrm_menu_requests: 'Yêu cầu',
-
     hrm_menu_recruitment: 'Tuyển dụng',
-
     hrm_menu_human: 'Nhân sự',
-
     hrm_menu_evaluation: 'Đánh giá',
-
     hrm_menu_training: 'Đào tạo',
-
     hrm_menu_attendance: 'Điểm danh',
-
     hrm_menu_payroll: 'Bảng lương',
-
     hrm_menu_kpi: 'KPI',
-
     hrm_menu_okr: 'OKR',
-
     hrm_quickPins_projects: 'Dự án',
-
     hrm_quickPins_employeeFile: 'Tệp nhân viên',
     hrm_quickPins_tasks: 'Nhiệm vụ',
     hrm_quickPins_process: 'Quy trình',
+
+    stack_employee: 'Nhân sự',
+    stack_attendance: 'Điểm danh',
+    stack_payroll: 'Bảng lương',
+    stack_recruitment: 'Tuyển dụng',
 
     basic_profile: 'Thông tin cơ bản',
   },

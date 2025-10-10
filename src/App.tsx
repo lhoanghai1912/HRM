@@ -5,6 +5,7 @@
  * @format
  */
 import './language'; // Import trước mọi component
+import 'react-native-gesture-handler';
 
 import { StatusBar } from 'react-native';
 import { Provider } from 'react-redux';
@@ -17,24 +18,20 @@ import {
   SafeAreaProvider,
 } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-// import { GoogleSignin } from '@react-native-google-signin/google-signin';
-// GoogleSignin.configure({
-//   webClientId:
-//     '889651278132-9gqdqpcgvhrnlvehmuuhgcf2ilnb3uhf.apps.googleusercontent.com',
-//   offlineAccess: true,
-// });
+import { NavigationContainer } from '@react-navigation/native';
+
 enableScreens(); // Bật tính năng screens để sử dụng trong navigation
 function App() {
   return (
-    // <GestureHandlerRootView style={{ flex: 1 }}>
-    <Provider store={store}>
-      <StatusBar barStyle="light-content" translucent={false} />
-      <SafeAreaProvider initialMetrics={initialWindowMetrics}>
-        <AppNavigator />
-        <Toast />
-      </SafeAreaProvider>
-    </Provider>
-    // </GestureHandlerRootView>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <Provider store={store}>
+        <StatusBar barStyle="light-content" translucent={false} />
+        <SafeAreaProvider initialMetrics={initialWindowMetrics}>
+          <AppNavigator />
+          <Toast />
+        </SafeAreaProvider>
+      </Provider>
+    </GestureHandlerRootView>
   );
 }
 

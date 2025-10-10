@@ -15,7 +15,7 @@ import i18n from '../language';
 import { languages } from '../utils/language';
 import User from '../screens/HomeStack/User';
 
-const CustomHeader = () => {
+const CustomHeader = ({ Home, onMenuPress }) => {
   const { t } = useTranslation();
   const [showUser, setShowUser] = useState(false);
   const [modalLanguage, setModalLanguage] = useState(false);
@@ -32,12 +32,14 @@ const CustomHeader = () => {
     <View style={[styles.header, { paddingTop: inset.top }]}>
       <View style={[styles.headerItem, { width: '75%' }]}>
         <TouchableOpacity
-          onPress={() => navigate(Screen_Name.Menu)}
+          onPress={() => (Home ? navigate(Screen_Name.Profile) : onMenuPress())}
           style={{ marginRight: spacing.medium }}
         >
           <Image
-            source={icons.menu}
-            style={AppStyles.icon}
+            source={
+              Home ? { uri: userData?.employee?.employeeAvatar } : icons.menu
+            }
+            style={Home ? AppStyles.avartar : AppStyles.icon}
             resizeMode="contain"
           />
         </TouchableOpacity>

@@ -32,7 +32,7 @@ import { fonts } from '../../utils/fontSize';
 import Toast from 'react-native-toast-message';
 import { navigate } from '../../navigation/RootNavigator';
 import { Screen_Name } from '../../navigation/ScreenName';
-const Employee = ({ route, navigation }: any) => {
+const AddEmployee = ({ route, navigation }: any) => {
   const existing = route?.params?.employee || {};
   const inset = useSafeAreaInsets();
   const { t } = useTranslation();
@@ -218,4 +218,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Employee;
+export default AddEmployee;

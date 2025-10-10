@@ -56,8 +56,8 @@ const AppStyles = StyleSheet.create({
     marginBottom: spacing.medium,
   },
   avartar: {
-    width: 100,
-    height: 100,
+    width: ms(50),
+    height: ms(50),
     borderRadius: 500,
   },
   text: {

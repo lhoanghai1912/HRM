@@ -172,6 +172,11 @@ export default {
     hrm_quickPins_tasks: 'Tasks',
     hrm_quickPins_process: 'Process',
 
+    stack_employee: 'Employee',
+    stack_attendance: 'Attendance',
+    stack_payroll: 'Payroll',
+    stack_recruitment: 'Recruitment',
+
     profile: 'Profile',
     basic_profile: 'Basic profile',
   },

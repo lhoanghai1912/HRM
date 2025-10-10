@@ -1,6 +1,7 @@
 import ForgotPassword from '../screens/AuthStack/ForgotPassword';
 import AddForm from '../screens/HomeStack/AddForm';
 import ChangePassword from '../screens/HomeStack/ChangePassword';
+import Details_Shift from '../screens/HomeStack/Check_InOut/Shift';
 import Menu from '../screens/HomeStack/Menu';
 import QuickPin from '../screens/HomeStack/QuickPin';
 
@@ -19,13 +20,21 @@ export const Screen_Name = {
   AddForm: 'AddForm',
   Menu: 'Menu',
   Notification: 'Notification',
-  Employee: 'Employee',
+  AddEmployee: 'AddEmployee',
   OrnStruct: 'OrnStruct',
   Setting: 'Setting',
   User: 'User',
   ChangePassword: 'ChangePassword',
+
+  // Attendance
+  Attendance: 'Attendance',
+
+  //Shift
+  Details_Shift: 'Details_Shift',
+
   //Other
   Splash: 'Splash',
   Loading: 'Splash',
   BottomTab_Navigator: 'BottomTab_Navigator',
+  Drawer_Navigator: 'Drawer_Navigator',
 };
