@@ -9,12 +9,14 @@ import Employee from '../screens/HomeStack/AddEmployee';
 import OrnStruct from '../screens/HomeStack/OrgStruct';
 import ChangePassword from '../screens/HomeStack/ChangePassword';
 import AddEmployee from '../screens/HomeStack/AddEmployee';
+import DrawerNavigator from './DrawerNavigator';
 
 const Stack = createNativeStackNavigator();
 
 const HomeNavigator = () => {
   return (
     <Stack.Navigator
+      id={undefined}
       screenOptions={{ headerShown: false, animation: 'slide_from_right' }}
       initialRouteName={Screen_Name.BottomTab_Navigator}
     >
@@ -22,7 +24,11 @@ const HomeNavigator = () => {
         name={Screen_Name.BottomTab_Navigator}
         component={BottomTabNavigator}
       />
-      <Stack.Screen name={Screen_Name.Notification} component={Notifications} />
+      <Stack.Screen
+        name={Screen_Name.Drawer_Navigator}
+        component={DrawerNavigator}
+      />
+      {/* <Stack.Screen name={Screen_Name.Notification} component={Notifications} />
       <Stack.Screen name={Screen_Name.Menu} component={Menu} />
       <Stack.Screen name={Screen_Name.AddEmployee} component={AddEmployee} />
       <Stack.Screen name={Screen_Name.OrnStruct} component={OrnStruct} />
@@ -30,7 +36,7 @@ const HomeNavigator = () => {
       <Stack.Screen
         name={Screen_Name.ChangePassword}
         component={ChangePassword}
-      />
+      /> */}
 
       {/* <Stack.Screen name={Screen_Name.Profile} component={Profile} />
       <Stack.Screen name={Screen_Name.Profile} component={Profile} />

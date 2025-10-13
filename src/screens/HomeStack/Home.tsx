@@ -22,7 +22,11 @@ const Home = () => {
 
   return (
     <View style={styles.container}>
-      <CustomHeader Home={true} onMenuPress={() => {}} />
+      <CustomHeader
+        label={userData.employee?.fullName}
+        Home={true}
+        onMenuPress={() => {}}
+      />
       <View style={styles.bodyItem}>
         <Text style={AppStyles.label}>HRM</Text>
         <View style={styles.grid}>

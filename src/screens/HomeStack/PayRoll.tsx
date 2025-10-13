@@ -12,7 +12,7 @@ const PayRoll = () => {
 
   return (
     <View style={styles.container}>
-      <CustomHeader />
+      <CustomHeader label={'Pay roll'} />
       <Text style={AppStyles.label}>{'Pay roll'}</Text>
     </View>
   );

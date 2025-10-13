@@ -20,6 +20,7 @@ const BottomTabNavigator = ({ navigation }) => {
   return (
     <>
       <Tab.Navigator
+        id={undefined}
         screenOptions={({ route }) => ({
           headerShown: false,
           tabBarShowLabel: true,
@@ -63,7 +64,7 @@ const BottomTabNavigator = ({ navigation }) => {
             ),
           }}
           listeners={{
-            tabPress: e => e.preventDefault(),
+            tabPress: (e: any) => e.preventDefault(),
           }}
         />
       </Tab.Navigator>

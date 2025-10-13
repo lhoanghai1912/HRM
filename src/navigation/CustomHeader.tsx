@@ -15,7 +15,17 @@ import i18n from '../language';
 import { languages } from '../utils/language';
 import User from '../screens/HomeStack/User';
 
-const CustomHeader = ({ Home, onMenuPress }) => {
+interface CustomHeaderProps {
+  Home?: boolean;
+  onMenuPress?: () => void;
+  label?: string;
+}
+
+const CustomHeader: React.FC<CustomHeaderProps> = ({
+  Home,
+  onMenuPress,
+  label,
+}) => {
   const { t } = useTranslation();
   const [showUser, setShowUser] = useState(false);
   const [modalLanguage, setModalLanguage] = useState(false);
@@ -43,9 +53,7 @@ const CustomHeader = ({ Home, onMenuPress }) => {
             resizeMode="contain"
           />
         </TouchableOpacity>
-        <Text style={[AppStyles.label, { textAlign: 'center' }]}>
-          {userData?.userName}
-        </Text>
+        <Text style={[AppStyles.label, { textAlign: 'center' }]}>{label}</Text>
       </View>
       <View style={[styles.headerItem, { width: '5%' }]}></View>
       <View

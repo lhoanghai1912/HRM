@@ -46,8 +46,8 @@ const Profile = ({ navigation }) => {
       const res = await employee_Get(userData.employeeId);
       console.log('Fetched employee data:', res);
       if (!editingSection) {
-        setEmployee(res);
-        setOriginalEmployee(res);
+        setEmployee(res.employee);
+        setOriginalEmployee(res.employee);
       }
     } catch (error) {
       console.error('Error fetching employee data:', error);

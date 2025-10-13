@@ -10,11 +10,10 @@ const Attendance = () => {
   return (
     <View style={styles.container}>
       <CustomHeader
+        label="Attendance"
         Home={false}
         onMenuPress={() => {
-          if (navigation.openDrawer) {
-            navigation.openDrawer();
-          }
+          navigation.openDrawer();
         }}
       />
     </View>

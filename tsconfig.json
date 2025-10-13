@@ -1,18 +1,24 @@
 {
   "compilerOptions": {
-    "jsx": "react-native", // Đảm bảo rằng cấu hình jsx được set là react-native
-    "moduleResolution": "node",
+    "target": "esnext",
+    "module": "commonjs",
+    "lib": ["es2017"],
     "allowJs": true,
-    "strict": true,
-    "noImplicitAny": false,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
+    "jsx": "react-native",
+    "noEmit": true,
+    "isolatedModules": true,
+    "strict": false,
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "module": "esnext",
-    "target": "ES2020",
-    "lib": ["ES2020", "DOM"],
-    "noEmit": true
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "types": ["react-native", "jest"]
   },
-  "include": ["src/**/*", "node_modules/@types"],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    "babel.config.js",
+    "metro.config.js",
+    "jest.config.js"
+  ]
 }
