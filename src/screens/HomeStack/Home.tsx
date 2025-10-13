@@ -23,7 +23,7 @@ const Home = () => {
   return (
     <View style={styles.container}>
       <CustomHeader
-        label={userData.employee?.fullName}
+        label={userData?.employee?.fullName}
         Home={true}
         onMenuPress={() => {}}
       />

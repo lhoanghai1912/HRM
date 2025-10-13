@@ -8,3 +8,5 @@ import App from './src/App';
 import 'react-native-gesture-handler';
 
 AppRegistry.registerComponent(appName, () => App);
+// index.js hoặc App.tsx
+import './global.css';

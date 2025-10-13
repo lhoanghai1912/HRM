@@ -9,7 +9,7 @@ import Employee from '../screens/HomeStack/AddEmployee';
 import OrnStruct from '../screens/HomeStack/OrgStruct';
 import ChangePassword from '../screens/HomeStack/ChangePassword';
 import AddEmployee from '../screens/HomeStack/AddEmployee';
-import DrawerNavigator from './DrawerNavigator';
+import { AttendanceDrawer, EmployeeDrawer } from './DrawerNavigator';
 
 const Stack = createNativeStackNavigator();
 
@@ -24,9 +24,19 @@ const HomeNavigator = () => {
         name={Screen_Name.BottomTab_Navigator}
         component={BottomTabNavigator}
       />
-      <Stack.Screen
+      {/* <Stack.Screen
         name={Screen_Name.Drawer_Navigator}
         component={DrawerNavigator}
+      /> */}
+
+      <Stack.Screen
+        name={Screen_Name.Employee_Drawer}
+        component={EmployeeDrawer}
+      />
+
+      <Stack.Screen
+        name={Screen_Name.AttendanceDrawer}
+        component={AttendanceDrawer}
       />
       {/* <Stack.Screen name={Screen_Name.Notification} component={Notifications} />
       <Stack.Screen name={Screen_Name.Menu} component={Menu} />

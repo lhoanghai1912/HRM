@@ -22,8 +22,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { employee_Get } from '../../services/hr';
 import { employee_Update, employeeAvatar_Update } from '../../services/user';
 import { launchImageLibrary } from 'react-native-image-picker';
+import { useNavigation } from '@react-navigation/native';
+import { DrawerNavigationProp } from '@react-navigation/drawer';
+import CustomHeader from '../../navigation/CustomHeader';
 
-const Profile = ({ navigation }) => {
+const Profile = () => {
+  const navigation = useNavigation<DrawerNavigationProp<any>>();
   const { userData } = useSelector((state: any) => state.user);
   const [fixedHeader, setFixedHeader] = useState(false);
   const [avatarSectionHeight, setAvatarSectionHeight] = useState(0);
@@ -372,6 +376,7 @@ const Profile = ({ navigation }) => {
               {
                 paddingTop: ms(insets.top + spacing.small),
                 paddingVertical: spacing.small,
+                paddingHorizontal: spacing.medium,
                 flexDirection: 'row',
                 backgroundColor: colors.white,
                 alignItems: 'center',
@@ -379,12 +384,13 @@ const Profile = ({ navigation }) => {
               },
             ]}
           >
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+            <TouchableOpacity onPress={() => navigation.openDrawer()}>
               <Image
-                source={icons.back}
+                source={icons.menu}
                 style={{
                   width: ms(25),
                   height: ms(25),
+                  marginRight: spacing.medium,
                 }}
               />
             </TouchableOpacity>
@@ -416,12 +422,11 @@ const Profile = ({ navigation }) => {
         </>
       ) : (
         <>
-          <NavBar
-            title="Profile"
-            onPress={() => navigation.goBack()}
-            customStyle={{
-              marginBottom: 0,
-              display: fixedHeader ? 'none' : 'flex',
+          <CustomHeader
+            label={userData?.employee?.fullName}
+            Home={false}
+            onMenuPress={() => {
+              navigation.openDrawer();
             }}
           />
         </>

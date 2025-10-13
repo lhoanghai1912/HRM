@@ -18,6 +18,7 @@ import {
   SafeAreaProvider,
 } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import '../global.css';
 
 enableScreens(); // Bật tính năng screens để sử dụng trong navigation
 function App() {
