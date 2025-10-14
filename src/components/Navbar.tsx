@@ -8,6 +8,7 @@ import {
   ViewStyle,
   TextStyle,
   ImageStyle,
+  ImageRequireSource,
 } from 'react-native';
 import AppStyles from './AppStyle';
 import { fonts } from '../utils/fontSize';
@@ -19,8 +20,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 interface NavBarProps {
   title?: string;
   onPress?: () => void;
-  icon1?: any;
-  icon2?: any;
+  icon1?: ImageRequireSource;
+  icon2?: ImageRequireSource;
   onRightPress1?: () => void;
   onRightPress2?: () => void;
   customStyle?: ViewStyle;

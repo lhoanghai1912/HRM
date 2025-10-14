@@ -8,8 +8,9 @@ import OrnStruct from '../screens/HomeStack/OrgStruct';
 import ChangePassword from '../screens/HomeStack/ChangePassword';
 import Notifications from '../screens/HomeStack/Noti';
 import Attendance from '../screens/HomeStack/Check_InOut';
-import Details_Shift from '../screens/HomeStack/Check_InOut/Shift';
 import { AttendanceDrawer, EmployeeDrawer } from './DrawerNavigator';
+import Details_Shift from '../screens/HomeStack/Shift/Details';
+import Shift from '../screens/HomeStack/Shift';
 
 const Stack = createNativeStackNavigator();
 
@@ -27,7 +28,7 @@ const HomeStack = () => (
     <Stack.Screen name={Screen_Name.Notification} component={Notifications} />
 
     <Stack.Screen name={Screen_Name.Attendance} component={AttendanceDrawer} />
-    <Stack.Screen name={Screen_Name.Details_Shift} component={EmployeeDrawer} />
+    <Stack.Screen name={Screen_Name.Shift} component={EmployeeDrawer} />
     <Stack.Screen
       name={Screen_Name.Employee_Drawer}
       component={EmployeeDrawer}

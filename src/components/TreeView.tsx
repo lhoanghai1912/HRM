@@ -9,6 +9,7 @@ import {
   UIManager,
   Platform,
   ViewStyle,
+  ActivityIndicator,
 } from 'react-native';
 
 if (
@@ -206,6 +207,11 @@ export default function CustomTreeView({
       {data.map(n => (
         <Row key={n.id} node={n} depth={0} />
       ))}
+      {loading && (
+        <View style={{ paddingVertical: 24 }}>
+          <ActivityIndicator />
+        </View>
+      )}
     </ScrollView>
   );
 }

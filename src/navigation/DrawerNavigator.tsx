@@ -1,20 +1,18 @@
-import {
-  createDrawerNavigator,
-  DrawerContentScrollView,
-  DrawerItem,
-} from '@react-navigation/drawer';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import { Screen_Name } from './ScreenName';
 import Profile from '../screens/HomeStack/Profile';
 import Setting from '../screens/HomeStack/Setting';
 import { colors } from '../utils/color';
 import Attendance from '../screens/HomeStack/Check_InOut';
-import Details_Shift from '../screens/HomeStack/Check_InOut/Shift';
-import { Text } from 'react-native-gesture-handler';
 import { Image } from 'react-native';
 import icons from '../assets/icons';
 import { ms } from '../utils/spacing';
+import Shift from '../screens/HomeStack/Shift';
+import Details_Shift from '../screens/HomeStack/Shift/Details';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 const Drawer = createDrawerNavigator();
+const Stack = createNativeStackNavigator();
 
 const AttendanceDrawer = () => (
   <Drawer.Navigator
@@ -41,33 +39,6 @@ const AttendanceDrawer = () => (
         );
       },
     })}
-    // drawerContent={props => (
-    //   <DrawerContentScrollView {...props}>
-    //     <Text>abc</Text>
-    //     <DrawerItem
-    //       label="Attendance"
-    //       icon={({ focused, color, size }) => (
-    //         <Image
-    //           source={focused ? icons.home_focus : icons.home}
-    //           style={{ width: 24, height: 24, tintColor: color }}
-    //           resizeMode="contain"
-    //         />
-    //       )}
-    //       onPress={() => props.navigation.navigate(Screen_Name.Attendance)}
-    //     />
-    //     <DrawerItem
-    //       label="Profile"
-    //       icon={({ focused, color, size }) => (
-    //         <Image
-    //           source={focused ? icons.add : icons.add}
-    //           style={{ width: 24, height: 24, tintColor: color }}
-    //           resizeMode="contain"
-    //         />
-    //       )}
-    //       onPress={() => props.navigation.navigate(Screen_Name.Profile)}
-    //     />
-    //   </DrawerContentScrollView>
-    // )}
   >
     <Drawer.Screen name={Screen_Name.Attendance} component={Attendance} />
     <Drawer.Screen name={Screen_Name.Profile} component={Profile} />
@@ -89,7 +60,7 @@ const EmployeeDrawer = () => (
       },
       drawerIcon: ({ focused }) => {
         const iconMap = {
-          [Screen_Name.Details_Shift]: focused ? icons.home_focus : icons.home,
+          [Screen_Name.Shift]: focused ? icons.home_focus : icons.home,
           [Screen_Name.Setting]: focused ? icons.list_focus : icons.list,
         };
         return (
@@ -102,9 +73,18 @@ const EmployeeDrawer = () => (
       },
     })}
   >
-    <Drawer.Screen name={Screen_Name.Details_Shift} component={Details_Shift} />
+    <Drawer.Screen name={Screen_Name.Shift} component={ShiftStack} />
     <Drawer.Screen name={Screen_Name.Setting} component={Setting} />
   </Drawer.Navigator>
 );
 
 export { EmployeeDrawer };
+
+const ShiftStack = () => (
+  <Stack.Navigator id={undefined} screenOptions={{ headerShown: false }}>
+    <Stack.Screen name={Screen_Name.Shift} component={Shift} />
+    <Stack.Screen name={Screen_Name.Details_Shift} component={Details_Shift} />
+  </Stack.Navigator>
+);
+
+export default ShiftStack;

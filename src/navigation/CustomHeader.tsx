@@ -1,4 +1,11 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  Image,
+  ImageRequireSource,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { colors } from '../utils/color';
 import { spacing } from '../utils/spacing';
 import icons from '../assets/icons';
@@ -17,14 +24,16 @@ import User from '../screens/HomeStack/User';
 
 interface CustomHeaderProps {
   Home?: boolean;
-  onMenuPress?: () => void;
   label?: string;
+  rightIcon?: ImageRequireSource;
+  rightPress?: () => void;
 }
 
 const CustomHeader: React.FC<CustomHeaderProps> = ({
   Home,
-  onMenuPress,
   label,
+  rightIcon,
+  rightPress,
 }) => {
   const { t } = useTranslation();
   const [showUser, setShowUser] = useState(false);
@@ -42,14 +51,14 @@ const CustomHeader: React.FC<CustomHeaderProps> = ({
     <View style={[styles.header, { paddingTop: inset.top }]}>
       <View style={[styles.headerItem, { width: '75%' }]}>
         <TouchableOpacity
-          onPress={() => (Home ? navigate(Screen_Name.Profile) : onMenuPress())}
+          onPress={() => {
+            if (rightPress) rightPress();
+          }}
           style={{ marginRight: spacing.medium }}
         >
           <Image
-            source={
-              Home ? { uri: userData?.employee?.employeeAvatar } : icons.menu
-            }
-            style={Home ? AppStyles.avartar : AppStyles.icon}
+            source={rightIcon}
+            style={[AppStyles.icon]}
             resizeMode="contain"
           />
         </TouchableOpacity>

@@ -13,6 +13,7 @@ import { form_itemHRM, form_itemStack } from '../../utils/form';
 import { useTranslation } from 'react-i18next';
 import { navigate } from '../../navigation/RootNavigator';
 import { Screen_Name } from '../../navigation/ScreenName';
+import images from '../../assets/images';
 
 const Home = () => {
   const { t } = useTranslation();
@@ -22,11 +23,7 @@ const Home = () => {
 
   return (
     <View style={styles.container}>
-      <CustomHeader
-        label={userData?.employee?.fullName}
-        Home={true}
-        onMenuPress={() => {}}
-      />
+      <CustomHeader label={userData?.employee?.fullName} Home={true} />
       <View style={styles.bodyItem}>
         <Text style={AppStyles.label}>HRM</Text>
         <View style={styles.grid}>

@@ -425,7 +425,8 @@ const Profile = () => {
           <CustomHeader
             label={userData?.employee?.fullName}
             Home={false}
-            onMenuPress={() => {
+            rightIcon={icons.menu}
+            rightPress={() => {
               navigation.openDrawer();
             }}
           />

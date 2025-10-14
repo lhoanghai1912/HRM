@@ -1,7 +1,7 @@
 import ForgotPassword from '../screens/AuthStack/ForgotPassword';
 import AddForm from '../screens/HomeStack/AddForm';
 import ChangePassword from '../screens/HomeStack/ChangePassword';
-import Details_Shift from '../screens/HomeStack/Check_InOut/Shift';
+import Details_Shift from '../screens/HomeStack/Shift';
 import Menu from '../screens/HomeStack/Menu';
 import QuickPin from '../screens/HomeStack/QuickPin';
 // import { AttendanceDrawer } from './DrawerNavigator';
@@ -31,6 +31,7 @@ export const Screen_Name = {
   Attendance: 'Attendance',
 
   //Shift
+  Shift: 'Shift',
   Details_Shift: 'Details_Shift',
   Employee_Drawer: 'Employee_Drawer',
   AttendanceDrawer: 'AttendanceDrawer',

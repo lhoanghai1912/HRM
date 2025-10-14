@@ -42,7 +42,7 @@ import internet from './internet.png';
 import share from './share.png';
 import job from './job.png';
 import company from './company.png';
-import checked from './checked.png';
+import checkedBox from './checkedBox.png';
 import clock from './clock.png';
 import mark from './mark.png';
 import down from './down.png';
@@ -56,8 +56,14 @@ import dollar_focus from './dollar_focus.png';
 import term from './term.png';
 import privacy from './privacy.png';
 import up from './up.png';
+import uncheckedBox from './uncheckedBox.png';
+import checkedRadio from './checkedRadio.png';
+import uncheckedRadio from './uncheckedRadio.png';
 
 export default {
+  checkedRadio,
+  uncheckedRadio,
+  uncheckedBox,
   term,
   up,
   privacy,
@@ -72,7 +78,7 @@ export default {
   dollar,
   mark,
   clock,
-  checked,
+  checkedBox,
   job,
   company,
   arrow,

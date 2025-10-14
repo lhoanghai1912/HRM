@@ -58,11 +58,11 @@ export const form_user = (
 
 export const form_itemStack = (t = i18next.t.bind(i18next)) => [
   {
-    id: 'employee',
+    id: 'Shift',
     title: t('label.stack_employee'),
     icon: icons.list,
     bg: '#EAF1FF',
-    screen: Screen_Name.Details_Shift,
+    screen: Screen_Name.Shift,
   },
   {
     id: 'attendance',
