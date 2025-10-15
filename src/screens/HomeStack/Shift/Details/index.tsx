@@ -18,6 +18,9 @@ import ModalPickDate from '../../../../components/modal/ModalPickDate';
 import { getDetailShift } from '../../../../services/Shift';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
+import { navigate } from '../../../../navigation/RootNavigator';
+import { Screen_Name } from '../../../../navigation/ScreenName';
+import { formatDate } from '../../../../utils/helper';
 
 const weekDays = [
   { label: 'Thứ 2', value: '2' },
@@ -35,6 +38,12 @@ const workType = [
   { label: 'Hybrid', value: 'Hybrid' },
 ];
 
+const targetType = [
+  { label: 'All', value: 'All' },
+  { label: 'Phòng ban', value: 'OrgStruct' },
+  { label: 'Nhân viên', value: 'Employees' },
+];
+
 const Details_Shift = ({ navigation, route }) => {
   const { id } = route.params;
   console.log('Shift Details id:', id);
@@ -47,7 +56,8 @@ const Details_Shift = ({ navigation, route }) => {
   const checkedDays = (detailShift.repeatWeek || '2,3,4')
     .split(',')
     .map(s => s.trim());
-
+  const onSite = '2,3,4';
+  const remote = '5,6';
   useEffect(() => {
     fetchShiftDetails();
   }, [id]);
@@ -63,7 +73,7 @@ const Details_Shift = ({ navigation, route }) => {
       setLoading(false);
     }
   };
-
+  const handleLoadMore = () => {};
   // const handleDateChange = (event, selectedDate) => {
   //   const currentDate = selectedDate || date;
   //   setShowTimePicker(false);
@@ -289,43 +299,224 @@ const Details_Shift = ({ navigation, route }) => {
               </View>
             ))}
           </View>
-          {/* {detailShift.workType === 'Hybrid' && ( */}
-          {/* {workType.map(type => ( */}
-          <View style={{}}>
-            <Text style={[AppStyles.text, { marginTop: spacing.small }]}>
-              {`Office: ${
-                detailShift.onSite
-                  ? detailShift.onSite
-                      .split(',')
-                      .map(s => s.trim())
-                      .map(
-                        val => weekDays.find(day => day.value === val)?.label,
-                      )
-                      .filter(Boolean)
-                      .join(', ')
-                  : ''
-              }`}
-            </Text>
-            <Text style={[AppStyles.text, { marginTop: spacing.small }]}>
-              {`Remote: ${
-                detailShift.remote
-                  ? detailShift.remote
-                      .split(',')
-                      .map(s => s.trim())
-                      .map(
-                        val => weekDays.find(day => day.value === val)?.label,
-                      )
-                      .filter(Boolean)
-                      .join(', ')
-                  : ''
-              }`}
-            </Text>
-          </View>
-          {/* ))} */}
-          {/* )} */}
-          {<View></View>}
+          {detailShift.workType === 'Hybrid' && (
+            // {/* {workType.map(type => ( */}
+            <View style={{}}>
+              <Text style={[AppStyles.text, { marginTop: spacing.small }]}>
+                {`Office: ${
+                  detailShift.onSite
+                    ? detailShift.onSite
+                        .split(',')
+                        .map(s => s.trim())
+                        .map(
+                          val => weekDays.find(day => day.value === val)?.label,
+                        )
+                        .filter(Boolean)
+                        .join(', ')
+                    : ''
+                }`}
+              </Text>
+              <Text style={[AppStyles.text, { marginTop: spacing.small }]}>
+                {`Remote: ${
+                  detailShift.remote
+                    ? detailShift.remote
+                        .split(',')
+                        .map(s => s.trim())
+                        .map(
+                          val => weekDays.find(day => day.value === val)?.label,
+                        )
+                        .filter(Boolean)
+                        .join(', ')
+                    : ''
+                }`}
+              </Text>
+            </View>
+            /* ))} */
+          )}
         </View>
-        <View style={styles.form}></View>
+        <Text style={AppStyles.label}>Đối tượng áp dụng</Text>
+
+        <View style={styles.form}>
+          <View
+            style={{
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
+          >
+            {targetType.map(type => (
+              <View
+                key={type.value}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginRight: spacing.medium,
+                  marginBottom: spacing.small,
+                }}
+              >
+                <Image
+                  source={
+                    detailShift.appliesTo === type.value
+                      ? icons.checkedRadio
+                      : icons.uncheckedRadio
+                  }
+                  style={AppStyles.icon}
+                  resizeMode="contain"
+                />
+                <Text style={AppStyles.text}>{type.label}</Text>
+              </View>
+            ))}
+          </View>
+          {detailShift.appliesTo === 'Employees' && (
+            // {/* {workType.map(type => ( */}
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              <View style={styles.table}>
+                {/* Table Header */}
+                <View style={styles.tableRowHeader}>
+                  <View style={[styles.checkboxCell, { minWidth: ms(50) }]}>
+                    <View style={styles.checkbox} />
+                  </View>
+                  <Text style={{ borderLeftWidth: 0.5 }} />
+                  <Text
+                    style={[styles.headerCell, { minWidth: ms(50), flex: 2 }]}
+                    // numberOfLines={1}
+                  >
+                    Mã nhân viên
+                  </Text>
+                  <Text style={{ borderLeftWidth: 0.5 }} />
+
+                  <Text
+                    style={[styles.headerCell, { minWidth: ms(50), flex: 1 }]}
+                    // numberOfLines={1}
+                  >
+                    Họ và tên
+                  </Text>
+                  <Text style={{ borderLeftWidth: 0.5 }} />
+                  <Text
+                    style={[styles.headerCell, { minWidth: ms(50), flex: 1 }]}
+                    // numberOfLines={1}
+                  >
+                    Đơn vị công tác
+                  </Text>
+                  <Text style={{ borderLeftWidth: 0.5 }} />
+                  <Text
+                    style={[styles.headerCell, { minWidth: ms(50), flex: 1 }]}
+                    // numberOfLines={1}
+                  >
+                    Vị trí công việc
+                  </Text>
+                </View>
+
+                {/* Table Body */}
+                <ScrollView style={styles.bodyScroll}>
+                  {detailShift.shiftLines.slice(0, 20).map(item => (
+                    <TouchableOpacity
+                      key={item.id}
+                      style={styles.tableRow}
+                      // onPress={() => {
+                      //   navigate(Screen_Name.Details_Shift, { id: item?.id });
+                      // }}
+                    >
+                      <View style={[styles.checkboxCell, { width: ms(50) }]}>
+                        <View style={styles.checkbox} />
+                      </View>
+                      <Text style={{ borderLeftWidth: 0.5 }} />
+                      <Text
+                        style={[styles.cell, { width: ms(50) }]}
+                        numberOfLines={1}
+                        ellipsizeMode="tail"
+                      >
+                        {item.name}
+                      </Text>
+                      <Text style={{ borderLeftWidth: 0.5 }} />
+                      <Text
+                        style={[styles.cell, { width: ms(50) }]}
+                        numberOfLines={1}
+                        ellipsizeMode="tail"
+                      >
+                        {item.shiftLines && item.shiftLines.length > 0
+                          ? item.shiftLines
+                              .map(line => line.shift?.shiftName)
+                              .filter(Boolean)
+                              .join('; ')
+                          : '-'}{' '}
+                      </Text>
+                      <Text style={{ borderLeftWidth: 0.5 }} />
+                      <Text
+                        style={[styles.cell, { width: ms(50) }]}
+                        numberOfLines={1}
+                        ellipsizeMode="tail"
+                      >
+                        {`${formatDate(item.fromDate)} - ${formatDate(
+                          item.toDate,
+                        )}`}
+                      </Text>
+                      <Text style={{ borderLeftWidth: 0.5 }} />
+                      <Text
+                        style={[styles.cell, { width: ms(50) }]}
+                        numberOfLines={1}
+                        ellipsizeMode="tail"
+                      >
+                        {item.shiftDetailOrgStructs &&
+                        item.shiftDetailOrgStructs.length > 0
+                          ? item.shiftDetailOrgStructs
+                              .map(org => org.orgStruct?.orgStructName)
+                              .filter(Boolean)
+                              .join('; ')
+                          : '-'}{' '}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                  {20 < detailShift.shiftLines.length && (
+                    <TouchableOpacity
+                      style={styles.loadMoreBtn}
+                      onPress={() => handleLoadMore()}
+                    >
+                      <Text style={styles.loadMoreText}>Tải thêm...</Text>
+                    </TouchableOpacity>
+                  )}
+                </ScrollView>
+              </View>
+            </ScrollView>
+            /* ))} */
+          )}
+          {detailShift.appliesTo === 'OrgStruct' && (
+            // {/* {workType.map(type => ( */}
+            <View style={{}}>
+              <Text style={[AppStyles.text, { marginTop: spacing.small }]}>
+                {`Office: ${
+                  detailShift.onSite
+                    ? detailShift.onSite
+                        .split(',')
+                        .map(s => s.trim())
+                        .map(
+                          val => weekDays.find(day => day.value === val)?.label,
+                        )
+                        .filter(Boolean)
+                        .join(', ')
+                    : ''
+                }`}
+              </Text>
+              <Text style={[AppStyles.text, { marginTop: spacing.small }]}>
+                {`Remote: ${
+                  detailShift.remote
+                    ? detailShift.remote
+                        .split(',')
+                        .map(s => s.trim())
+                        .map(
+                          val => weekDays.find(day => day.value === val)?.label,
+                        )
+                        .filter(Boolean)
+                        .join(', ')
+                    : ''
+                }`}
+              </Text>
+            </View>
+            /* ))} */
+          )}
+        </View>
       </ScrollView>
       {/* <Text>Details about the shift will be displayed here.</Text> */}
       {/* <ModalPickDate
@@ -357,7 +548,66 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     padding: spacing.medium,
   },
-  form: { padding: spacing.small },
+  form: { padding: spacing.small, paddingBottom: spacing.medium },
+  table: { flex: 1 },
+  tableRowHeader: {
+    flexDirection: 'row',
+    backgroundColor: '#f3f4f6',
+    paddingHorizontal: 8,
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#d1d5db',
+    alignItems: 'center',
+  },
+  tableRow: {
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    paddingHorizontal: 8,
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e5e7eb',
+    alignItems: 'center',
+  },
+  checkboxCell: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  checkbox: {
+    width: 20,
+    height: 20,
+    borderWidth: 1,
+    borderColor: '#9ca3af',
+    borderRadius: 4,
+    backgroundColor: '#fff',
+  },
+  cell: {
+    color: '#222',
+    paddingHorizontal: spacing.small,
+    textAlign: 'center',
+    paddingVertical: 4,
+    minWidth: ms(100),
+  },
+  loadMoreText: {
+    color: '#f97316',
+    fontWeight: 'bold',
+  },
+  headerCell: {
+    fontWeight: 'bold',
+    color: '#374151',
+    textAlign: 'center',
+    paddingVertical: 4,
+    paddingHorizontal: spacing.small,
+    minWidth: ms(100),
+  },
+  bodyScroll: { maxHeight: ms(500) },
+  loadMoreBtn: {
+    paddingVertical: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#e5e7eb',
+    marginVertical: 8,
+    borderRadius: 6,
+  },
 });
 
 export default Details_Shift;

@@ -3,6 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import CustomHeader from '../../navigation/CustomHeader';
 import { useNavigation } from '@react-navigation/native';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
+import icons from '../../assets/icons';
 
 const Setting = () => {
   const navigation = useNavigation<DrawerNavigationProp<any>>();
@@ -12,7 +13,8 @@ const Setting = () => {
       <CustomHeader
         label="Setting"
         Home={false}
-        onMenuPress={() => {
+        rightIcon={icons.menu}
+        rightPress={() => {
           navigation.openDrawer();
         }}
       />

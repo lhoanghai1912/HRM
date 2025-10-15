@@ -6,6 +6,14 @@ import { link } from './constants';
 import { navigate } from '../navigation/RootNavigator';
 import { logout } from '../store/reducers/userSlice';
 
+export type GetAllParams = {
+  Page?: string; // Trang hiện tại
+  PageSize?: string; // Số item mỗi trang
+  OrderBy?: string; // Sắp xếp theo
+  Filter?: string;
+  Search?: string;
+};
+
 export const form_user = (
   t = i18next.t.bind(i18next),
   setModalLanguage?: (visible: boolean) => void,
