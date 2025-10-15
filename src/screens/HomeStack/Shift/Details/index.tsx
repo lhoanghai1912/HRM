@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -11,7 +11,11 @@ import CustomHeader from '../../../../navigation/CustomHeader';
 import icons from '../../../../assets/icons';
 import { ms, spacing } from '../../../../utils/spacing';
 import { colors } from '../../../../utils/color';
-import { ScrollView } from 'react-native-gesture-handler';
+import {
+  FlatList,
+  RefreshControl,
+  ScrollView,
+} from 'react-native-gesture-handler';
 import AppStyles from '../../../../components/AppStyle';
 import AppInput from '../../../../components/AppInput';
 import ModalPickDate from '../../../../components/modal/ModalPickDate';
@@ -44,14 +48,34 @@ const targetType = [
   { label: 'Nhân viên', value: 'Employees' },
 ];
 
+const COLUMN_MIN_WIDTHS = {
+  checkBox: ms(40),
+  id: ms(120),
+  fullName: ms(200),
+  struct: ms(150),
+  position: ms(150),
+};
+
 const Details_Shift = ({ navigation, route }) => {
+  const [loading, setLoading] = useState(false);
+  const [noMoreData, setNoMoreData] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [shiftData, setShiftData] = useState<any>([]);
+  const pageRef = useRef(1);
+  const loadingRef = useRef(false);
+  const onEndReachedCalledDuringMomentum = useRef(false);
+  const [page, setPage] = useState(1);
+  const [orderBy, setOderBy] = useState<string | undefined>('createdAt desc');
+  const [filter, setFilter] = useState<string | undefined>();
+  const [search, setSearch] = useState<string>(''); // tránh undefined gây re-render không cần
+  const [isLoading, setIsLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const [allShift, setAllShift] = useState<any>([]);
+  const flatListRef = useRef<FlatList>(null);
+
   const { id } = route.params;
   console.log('Shift Details id:', id);
   const { t } = useTranslation();
-  const [showTimePicker, setShowTimePicker] = useState(false);
-  const [date, setDate] = useState<Date>();
-  const [pickerType, setPickerType] = useState<'start' | 'end' | null>(null);
-  const [loading, setLoading] = useState(false);
   const [detailShift, setDetailShift] = useState<any>([]);
   const checkedDays = (detailShift.repeatWeek || '2,3,4')
     .split(',')
@@ -92,6 +116,76 @@ const Details_Shift = ({ navigation, route }) => {
   //   }
   //   setPickerType(null);
   // };
+
+  const renderFooter = () => {
+    if (loadingMore) {
+      return (
+        <View
+          style={{
+            backgroundColor: colors.background,
+            borderTopWidth: 1,
+            borderTopColor: '#ddd',
+            alignItems: 'center',
+            justifyContent: 'center',
+            paddingVertical: spacing.small,
+          }}
+        >
+          <Text>{t(`message.loadingMore`)}</Text>
+          <ActivityIndicator size="small" color={colors.red} />
+        </View>
+      );
+    }
+  };
+
+  const renderTable = ({ item }: { item: any }) => {
+    return (
+      <TouchableOpacity
+        key={item.id}
+        style={styles.tableRow}
+        // onPress={() => {
+        //   navigate(Screen_Name.Details_Shift, { id: item?.id });
+        // }}
+      >
+        <View
+          style={[styles.checkboxCell, { width: COLUMN_MIN_WIDTHS.checkBox }]}
+        >
+          <View style={styles.checkbox} />
+        </View>
+        <Text style={{ borderLeftWidth: 0.5 }} />
+        <Text
+          style={[styles.cell, { width: COLUMN_MIN_WIDTHS.id, flex: 1 }]}
+          numberOfLines={1}
+          ellipsizeMode="tail"
+        >
+          {item.employee.employeeCode}
+        </Text>
+        <Text style={{ borderLeftWidth: 0.5 }} />
+        <Text
+          style={[styles.cell, { width: COLUMN_MIN_WIDTHS.fullName, flex: 1 }]}
+          numberOfLines={1}
+          ellipsizeMode="tail"
+        >
+          {item.employee.fullName || ' - '}
+        </Text>
+        <Text style={{ borderLeftWidth: 0.5 }} />
+        <Text
+          style={[styles.cell, { width: COLUMN_MIN_WIDTHS.struct }]}
+          numberOfLines={1}
+          ellipsizeMode="tail"
+        >
+          {item?.employee?.employeeJobInfo?.orgStruct?.orgStructName || ' - '}
+        </Text>
+        <Text style={{ borderLeftWidth: 0.5 }} />
+        <Text
+          style={[styles.cell, { width: COLUMN_MIN_WIDTHS.position }]}
+          numberOfLines={1}
+          ellipsizeMode="tail"
+        >
+          {item?.employee?.employeeJobInfo?.jobPosition || ' - '}
+        </Text>
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -375,12 +469,20 @@ const Details_Shift = ({ navigation, route }) => {
               <View style={styles.table}>
                 {/* Table Header */}
                 <View style={styles.tableRowHeader}>
-                  <View style={[styles.checkboxCell, { minWidth: ms(50) }]}>
+                  <View
+                    style={[
+                      styles.checkboxCell,
+                      { width: COLUMN_MIN_WIDTHS.checkBox },
+                    ]}
+                  >
                     <View style={styles.checkbox} />
                   </View>
                   <Text style={{ borderLeftWidth: 0.5 }} />
                   <Text
-                    style={[styles.headerCell, { minWidth: ms(50), flex: 2 }]}
+                    style={[
+                      styles.headerCell,
+                      { width: COLUMN_MIN_WIDTHS.id, flex: 2 },
+                    ]}
                     // numberOfLines={1}
                   >
                     Mã nhân viên
@@ -388,21 +490,30 @@ const Details_Shift = ({ navigation, route }) => {
                   <Text style={{ borderLeftWidth: 0.5 }} />
 
                   <Text
-                    style={[styles.headerCell, { minWidth: ms(50), flex: 1 }]}
+                    style={[
+                      styles.headerCell,
+                      { width: COLUMN_MIN_WIDTHS.fullName, flex: 1 },
+                    ]}
                     // numberOfLines={1}
                   >
                     Họ và tên
                   </Text>
                   <Text style={{ borderLeftWidth: 0.5 }} />
                   <Text
-                    style={[styles.headerCell, { minWidth: ms(50), flex: 1 }]}
+                    style={[
+                      styles.headerCell,
+                      { width: COLUMN_MIN_WIDTHS.struct, flex: 1 },
+                    ]}
                     // numberOfLines={1}
                   >
                     Đơn vị công tác
                   </Text>
                   <Text style={{ borderLeftWidth: 0.5 }} />
                   <Text
-                    style={[styles.headerCell, { minWidth: ms(50), flex: 1 }]}
+                    style={[
+                      styles.headerCell,
+                      { width: COLUMN_MIN_WIDTHS.position, flex: 1 },
+                    ]}
                     // numberOfLines={1}
                   >
                     Vị trí công việc
@@ -410,109 +521,104 @@ const Details_Shift = ({ navigation, route }) => {
                 </View>
 
                 {/* Table Body */}
-                <ScrollView style={styles.bodyScroll}>
-                  {detailShift.shiftLines.slice(0, 20).map(item => (
-                    <TouchableOpacity
-                      key={item.id}
-                      style={styles.tableRow}
-                      // onPress={() => {
-                      //   navigate(Screen_Name.Details_Shift, { id: item?.id });
-                      // }}
-                    >
-                      <View style={[styles.checkboxCell, { width: ms(50) }]}>
-                        <View style={styles.checkbox} />
-                      </View>
-                      <Text style={{ borderLeftWidth: 0.5 }} />
+                <FlatList
+                  contentContainerStyle={{}}
+                  data={detailShift?.shiftDetailEmployees}
+                  keyExtractor={item => item.id}
+                  style={styles.bodyScroll}
+                  renderItem={renderTable}
+                  ref={flatListRef}
+                  ListEmptyComponent={
+                    !isLoading &&
+                    detailShift?.shiftDetailEmployees?.length === 0 ? (
                       <Text
-                        style={[styles.cell, { width: ms(50) }]}
-                        numberOfLines={1}
-                        ellipsizeMode="tail"
+                        style={[
+                          AppStyles.text,
+                          {
+                            flex: 1,
+                            textAlign: 'center',
+                            justifyContent: 'center',
+                            paddingVertical: spacing.small,
+                          },
+                        ]}
                       >
-                        {item.name}
+                        {t(`message.empty`)}
                       </Text>
-                      <Text style={{ borderLeftWidth: 0.5 }} />
-                      <Text
-                        style={[styles.cell, { width: ms(50) }]}
-                        numberOfLines={1}
-                        ellipsizeMode="tail"
-                      >
-                        {item.shiftLines && item.shiftLines.length > 0
-                          ? item.shiftLines
-                              .map(line => line.shift?.shiftName)
-                              .filter(Boolean)
-                              .join('; ')
-                          : '-'}{' '}
-                      </Text>
-                      <Text style={{ borderLeftWidth: 0.5 }} />
-                      <Text
-                        style={[styles.cell, { width: ms(50) }]}
-                        numberOfLines={1}
-                        ellipsizeMode="tail"
-                      >
-                        {`${formatDate(item.fromDate)} - ${formatDate(
-                          item.toDate,
-                        )}`}
-                      </Text>
-                      <Text style={{ borderLeftWidth: 0.5 }} />
-                      <Text
-                        style={[styles.cell, { width: ms(50) }]}
-                        numberOfLines={1}
-                        ellipsizeMode="tail"
-                      >
-                        {item.shiftDetailOrgStructs &&
-                        item.shiftDetailOrgStructs.length > 0
-                          ? item.shiftDetailOrgStructs
-                              .map(org => org.orgStruct?.orgStructName)
-                              .filter(Boolean)
-                              .join('; ')
-                          : '-'}{' '}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
-                  {20 < detailShift.shiftLines.length && (
-                    <TouchableOpacity
-                      style={styles.loadMoreBtn}
-                      onPress={() => handleLoadMore()}
-                    >
-                      <Text style={styles.loadMoreText}>Tải thêm...</Text>
-                    </TouchableOpacity>
-                  )}
-                </ScrollView>
+                    ) : null
+                  }
+                  ListFooterComponent={renderFooter}
+                  refreshControl={
+                    <RefreshControl
+                      refreshing={refreshing}
+                      // onRefresh={onRefresh}
+                    />
+                  }
+                  onEndReached={() => {
+                    if (!onEndReachedCalledDuringMomentum.current) {
+                      console.log('abc');
+
+                      handleLoadMore();
+                      onEndReachedCalledDuringMomentum.current = true;
+                    }
+                  }}
+                  onMomentumScrollBegin={() => {
+                    onEndReachedCalledDuringMomentum.current = false;
+                  }}
+                  onEndReachedThreshold={0.2}
+                  showsVerticalScrollIndicator={false}
+                />
               </View>
             </ScrollView>
             /* ))} */
           )}
           {detailShift.appliesTo === 'OrgStruct' && (
             // {/* {workType.map(type => ( */}
-            <View style={{}}>
-              <Text style={[AppStyles.text, { marginTop: spacing.small }]}>
-                {`Office: ${
-                  detailShift.onSite
-                    ? detailShift.onSite
-                        .split(',')
-                        .map(s => s.trim())
-                        .map(
-                          val => weekDays.find(day => day.value === val)?.label,
-                        )
-                        .filter(Boolean)
-                        .join(', ')
-                    : ''
-                }`}
+            <View
+              style={{
+                marginVertical: spacing.small,
+                paddingBottom: spacing.small,
+                marginBottom: spacing.medium,
+                borderWidth: 1,
+                borderColor: colors.black,
+                borderRadius: 10,
+              }}
+            >
+              <Text
+                style={[
+                  AppStyles.text,
+                  {
+                    paddingHorizontal: spacing.medium,
+                    backgroundColor: colors.background,
+                    borderTopLeftRadius: 10,
+                    borderTopRightRadius: 10,
+                    borderColor: colors.black,
+                    borderWidth: 0.1,
+                  },
+                ]}
+              >
+                {t('Tên đơn vị')}
               </Text>
-              <Text style={[AppStyles.text, { marginTop: spacing.small }]}>
-                {`Remote: ${
-                  detailShift.remote
-                    ? detailShift.remote
-                        .split(',')
-                        .map(s => s.trim())
-                        .map(
-                          val => weekDays.find(day => day.value === val)?.label,
-                        )
-                        .filter(Boolean)
-                        .join(', ')
-                    : ''
-                }`}
-              </Text>
+              <View style={styles.structType}>
+                {detailShift.shiftDetailOrgStructs.map((item, index) => (
+                  <>
+                    <View
+                      style={[
+                        AppStyles.line,
+                        { marginVertical: 0, marginBottom: spacing.small },
+                      ]}
+                    />
+                    <Text
+                      key={index}
+                      style={[
+                        AppStyles.text,
+                        { paddingHorizontal: spacing.medium },
+                      ]}
+                    >
+                      {item.orgStruct.orgStructName}
+                    </Text>
+                  </>
+                ))}
+              </View>
             </View>
             /* ))} */
           )}
@@ -549,7 +655,13 @@ const styles = StyleSheet.create({
     padding: spacing.medium,
   },
   form: { padding: spacing.small, paddingBottom: spacing.medium },
-  table: { flex: 1 },
+  table: {
+    flex: 1,
+    backgroundColor: colors.background,
+    marginBottom: spacing.medium,
+    padding: spacing.small,
+    paddingTop: 0,
+  },
   tableRowHeader: {
     flexDirection: 'row',
     backgroundColor: '#f3f4f6',
@@ -599,7 +711,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.small,
     minWidth: ms(100),
   },
-  bodyScroll: { maxHeight: ms(500) },
+  bodyScroll: { flex: 1 },
   loadMoreBtn: {
     paddingVertical: 12,
     alignItems: 'center',
@@ -607,6 +719,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#e5e7eb',
     marginVertical: 8,
     borderRadius: 6,
+  },
+  structType: {
+    backgroundColor: colors.white,
   },
 });
 

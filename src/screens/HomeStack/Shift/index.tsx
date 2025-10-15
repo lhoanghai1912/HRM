@@ -38,7 +38,6 @@ const COLUMN_MIN_WIDTHS = {
 
 const Shift = () => {
   const navigation = useNavigation<DrawerNavigationProp<any>>();
-  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [loading, setLoading] = useState(false);
   const [noMoreData, setNoMoreData] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
