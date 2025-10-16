@@ -1,7 +1,6 @@
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { Screen_Name } from './ScreenName';
 import Profile from '../screens/HomeStack/Profile';
-import Setting from '../screens/HomeStack/Setting';
 import { colors } from '../utils/color';
 import Attendance from '../screens/HomeStack/Check_InOut';
 import { Image } from 'react-native';
@@ -10,6 +9,15 @@ import { ms } from '../utils/spacing';
 import Shift from '../screens/HomeStack/Shift';
 import Details_Shift from '../screens/HomeStack/Shift/Details';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Application from '../screens/HomeStack/Application';
+import Leave from '../screens/HomeStack/Application/Leave';
+import Attendance_Update from '../screens/HomeStack/Application/Attendance_Update';
+import Late_Early from '../screens/HomeStack/Application/Late_Early';
+import Overtime from '../screens/HomeStack/Application/OverTime';
+import Remote from '../screens/HomeStack/Application/Remote';
+import Business_Trip from '../screens/HomeStack/Application/Trip';
+import Shift_Update from '../screens/HomeStack/Application/Shift_Update';
+import Detail_Late_Early from '../screens/HomeStack/Application/Late_Early/Detail';
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
@@ -60,8 +68,10 @@ const EmployeeDrawer = () => (
       },
       drawerIcon: ({ focused }) => {
         const iconMap = {
-          [Screen_Name.Shift]: focused ? icons.home_focus : icons.home,
-          [Screen_Name.Setting]: focused ? icons.list_focus : icons.list,
+          [Screen_Name.Shift]: focused ? icons.shift_focus : icons.shift,
+          [Screen_Name.Application]: focused
+            ? icons.document_focus
+            : icons.document,
         };
         return (
           <Image
@@ -74,17 +84,44 @@ const EmployeeDrawer = () => (
     })}
   >
     <Drawer.Screen name={Screen_Name.Shift} component={ShiftStack} />
-    <Drawer.Screen name={Screen_Name.Setting} component={Setting} />
+    <Drawer.Screen
+      name={Screen_Name.Application}
+      component={ApplicationStack}
+    />
   </Drawer.Navigator>
 );
 
 export { EmployeeDrawer };
 
-const ShiftStack = () => (
+export const ShiftStack = () => (
   <Stack.Navigator id={undefined} screenOptions={{ headerShown: false }}>
     <Stack.Screen name={Screen_Name.Shift} component={Shift} />
     <Stack.Screen name={Screen_Name.Details_Shift} component={Details_Shift} />
   </Stack.Navigator>
 );
 
-export default ShiftStack;
+export const ApplicationStack = () => (
+  <Stack.Navigator
+    id={undefined}
+    screenOptions={{ headerShown: false }}
+    initialRouteName={Screen_Name.Application}
+  >
+    <Stack.Screen name={Screen_Name.Application} component={Application} />
+    <Stack.Screen name={Screen_Name.Leave} component={Leave} />
+    <Stack.Screen name={Screen_Name.Late_Early} component={Late_Early} />
+    <Stack.Screen name={Screen_Name.Overtime} component={Overtime} />
+    <Stack.Screen name={Screen_Name.Remote} component={Remote} />
+    <Stack.Screen name={Screen_Name.Business_Trip} component={Business_Trip} />
+    <Stack.Screen name={Screen_Name.Shift_Update} component={Shift_Update} />
+
+    <Stack.Screen
+      name={Screen_Name.Attendance_Update}
+      component={Attendance_Update}
+    />
+    <Stack.Screen
+      name={Screen_Name.Detail_Late_Early}
+      component={Detail_Late_Early}
+    />
+    {/* Add other application-related screens here */}
+  </Stack.Navigator>
+);

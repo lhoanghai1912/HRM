@@ -186,6 +186,58 @@ export const form_quickPinItems = (t = i18next.t.bind(i18next)) => [
   },
 ];
 
+export const form_application = (t = i18next.t.bind(i18next)) => [
+  {
+    id: 'leave',
+    title: t('label.hrm_application_leave'),
+    icon: icons.list,
+    bg: '#EAF1FF',
+    screen: Screen_Name.Leave,
+  },
+  {
+    id: 'lateEarly',
+    title: t('label.hrm_application_late_early'),
+    icon: icons.list,
+    bg: '#EBFFF5',
+    screen: Screen_Name.Late_Early,
+  },
+  {
+    id: 'overTime',
+    title: t('label.hrm_application_over_time'),
+    icon: icons.list,
+    bg: '#FFEFE5',
+    screen: Screen_Name.Overtime,
+  },
+  {
+    id: 'remote',
+    title: t('label.hrm_application_remote'),
+    icon: icons.list,
+    bg: '#EAF1FF',
+    screen: Screen_Name.Remote,
+  },
+  {
+    id: 'attendanceChange',
+    title: t('label.hrm_application_update_attendance'),
+    icon: icons.list,
+    bg: '#EBFFF5',
+    screen: Screen_Name.Attendance_Update,
+  },
+  {
+    id: 'shiftChange',
+    title: t('label.hrm_application_update_shift'),
+    icon: icons.list,
+    bg: '#FFAFE5',
+    screen: Screen_Name.Shift_Update,
+  },
+  {
+    id: 'trip',
+    title: t('label.hrm_application_bussiness_trip'),
+    icon: icons.list,
+    bg: '#FBEFE5',
+    screen: Screen_Name.Business_Trip,
+  },
+];
+
 // form fields
 export const form_employee = (t = i18next.t.bind(i18next)) => [
   {
@@ -416,4 +468,105 @@ export const picker_levelName = (t = i18next.t.bind(i18next)) => [
   { label: t('label.level_good'), value: 'good' },
   { label: t('label.level_very_good'), value: 'very_good' },
   { label: t('label.level_excellent'), value: 'excellent' },
+];
+
+export const form_detail_late_early = (t = i18next.t.bind(i18next)) => [
+  {
+    key: 'employeeCode',
+    label: t('label.employee_code'),
+    type: 'text',
+    edit: Boolean,
+    value: '',
+  },
+  { key: 'fullName', label: t('label.fullname'), type: 'text', value: '' },
+  {
+    key: 'employeeId',
+    label: t('label.employee_id'),
+    type: 'number',
+    edit: Boolean,
+    value: '',
+  },
+  {
+    key: 'docDate',
+    label: t('label.application_date'),
+    type: 'datetime',
+    edit: Boolean,
+    value: '',
+  },
+  { key: 'fromDate', label: t('label.from_date'), type: 'date', value: '' },
+  { key: 'toDate', label: t('label.to_date'), type: 'date', value: '' },
+  {
+    key: 'appliesDays',
+    label: t('label.applies_days'),
+    type: 'text',
+    edit: Boolean,
+    value: '',
+  },
+  {
+    key: 'groupReason',
+    label: t('label.reason_group'),
+    type: 'text',
+    edit: Boolean,
+    value: '',
+  },
+  { key: 'reason', label: t('label.reason_detail'), type: 'text', value: '' },
+  {
+    key: 'lateStartShift',
+    label: t('label.late_start_shift'),
+    type: 'number',
+    edit: Boolean,
+    value: '',
+  },
+  {
+    key: 'soonMidShift',
+    label: t('label.early_mid_shift'),
+    type: 'number',
+    edit: Boolean,
+    value: '',
+  },
+  {
+    key: 'lateMidShift',
+    label: t('label.late_mid_shift'),
+    type: 'number',
+    edit: Boolean,
+    value: '',
+  },
+  {
+    key: 'soonEndShift',
+    label: t('label.early_end_shift'),
+    type: 'number',
+    edit: Boolean,
+    value: '',
+  },
+  { key: 'time', label: t('label.time'), type: 'text', value: '' },
+  {
+    key: 'createdAt',
+    label: t('label.created_at'),
+    type: 'datetime',
+    edit: Boolean,
+    value: '',
+  },
+  { key: 'createdBy', label: t('label.created_by'), type: 'text', value: '' },
+  {
+    key: 'lastModified',
+    label: t('label.last_modified'),
+    type: 'datetime',
+    edit: Boolean,
+    value: '',
+  },
+  {
+    key: 'lastModifiedBy',
+    label: t('label.last_modified_by'),
+    type: 'text',
+    edit: Boolean,
+    value: '',
+  },
+  // Các trường lồng
+  {
+    key: 'employeeAvatar',
+    label: t('label.employee_avatar'),
+    type: 'image',
+    edit: Boolean,
+    value: '',
+  },
 ];

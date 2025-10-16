@@ -12,7 +12,7 @@ const Attendance = () => {
       <CustomHeader
         label="Attendance"
         Home={false}
-        onMenuPress={() => {
+        rightPress={() => {
           navigation.openDrawer();
         }}
       />

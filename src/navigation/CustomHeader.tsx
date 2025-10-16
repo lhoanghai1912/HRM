@@ -62,7 +62,7 @@ const CustomHeader: React.FC<CustomHeaderProps> = ({
             resizeMode="contain"
           />
         </TouchableOpacity>
-        <Text style={[AppStyles.label, { textAlign: 'center' }]}>{label}</Text>
+        <Text style={[AppStyles.label, { textAlign: 'left' }]}>{label}</Text>
       </View>
       <View style={[styles.headerItem, { width: '5%' }]}></View>
       <View

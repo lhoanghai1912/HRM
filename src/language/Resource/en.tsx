@@ -172,6 +172,14 @@ export default {
     hrm_quickPins_tasks: 'Tasks',
     hrm_quickPins_process: 'Process',
 
+    hrm_application_leave: 'Leave application',
+    hrm_application_late_early: 'Late arrival/ Early departure application',
+    hrm_application_over_time: 'Overtime application',
+    hrm_application_remote: 'Remote work application',
+    hrm_application_bussiness_trip: 'Business trip application',
+    hrm_application_update_shift: 'Shift change application',
+    hrm_application_update_attendance: 'Attendance change application',
+
     stack_employee: 'Employee',
     stack_attendance: 'Attendance',
     stack_payroll: 'Payroll',

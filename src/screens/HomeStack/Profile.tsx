@@ -398,7 +398,7 @@ const Profile = () => {
               <Image
                 source={
                   employee?.employeeAvatar
-                    ? { uri: employee.employeeAvatar }
+                    ? { uri: employee?.employeeAvatar }
                     : images.avt_default
                 }
                 style={{
@@ -410,12 +410,8 @@ const Profile = () => {
                 }}
               />
               <View>
-                <Text style={AppStyles.label}>
-                  {userData.employee.fullName}
-                </Text>
-                <Text style={AppStyles.text}>
-                  {userData.employee.employeeCode}
-                </Text>
+                <Text style={AppStyles.label}>{employee?.fullName}</Text>
+                <Text style={AppStyles.text}>{employee?.employeeCode}</Text>
               </View>
             </View>
           </View>
@@ -458,7 +454,7 @@ const Profile = () => {
                   <Image
                     source={
                       employee?.employeeAvatar
-                        ? { uri: employee.employeeAvatar }
+                        ? { uri: employee?.employeeAvatar }
                         : images.avt_default
                     }
                     style={styles.avatar}
@@ -471,7 +467,7 @@ const Profile = () => {
                       marginLeft: spacing.medium,
                     }}
                   >
-                    {userData.employee.fullName}
+                    {employee?.fullName}
                   </Text>
                   <Text
                     style={{
@@ -479,7 +475,7 @@ const Profile = () => {
                       marginLeft: spacing.medium,
                     }}
                   >
-                    {userData.employee.employeeCode}
+                    {employee?.employeeCode}
                   </Text>
                 </View>
               </View>

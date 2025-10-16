@@ -59,8 +59,12 @@ import up from './up.png';
 import uncheckedBox from './uncheckedBox.png';
 import checkedRadio from './checkedRadio.png';
 import uncheckedRadio from './uncheckedRadio.png';
+import shift from './shift.png';
+import shift_focus from './shift_focus.png';
 
 export default {
+  shift,
+  shift_focus,
   checkedRadio,
   uncheckedRadio,
   uncheckedBox,

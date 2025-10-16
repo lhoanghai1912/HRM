@@ -60,7 +60,6 @@ const Details_Shift = ({ navigation, route }) => {
   const [loading, setLoading] = useState(false);
   const [noMoreData, setNoMoreData] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
-  const [shiftData, setShiftData] = useState<any>([]);
   const pageRef = useRef(1);
   const loadingRef = useRef(false);
   const onEndReachedCalledDuringMomentum = useRef(false);
@@ -70,8 +69,10 @@ const Details_Shift = ({ navigation, route }) => {
   const [search, setSearch] = useState<string>(''); // tránh undefined gây re-render không cần
   const [isLoading, setIsLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  const [allShift, setAllShift] = useState<any>([]);
   const flatListRef = useRef<FlatList>(null);
+
+  const [shiftData, setShiftData] = useState<any>([]);
+  const [allShift, setAllShift] = useState<any>([]);
 
   const { id } = route.params;
   console.log('Shift Details id:', id);
