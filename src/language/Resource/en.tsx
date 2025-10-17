@@ -187,5 +187,23 @@ export default {
 
     profile: 'Profile',
     basic_profile: 'Basic profile',
+
+    form_detail_late_early_created_by: 'Applicant',
+    form_detail_late_early_org: 'Org Struct',
+    form_detail_late_early_application_date: 'Application date',
+    form_detail_late_early_from_date: 'From date',
+    form_detail_late_early_to_date: 'To date',
+    form_detail_late_early_applies_days: 'Applies days',
+    form_detail_late_early_applies_shifts: 'Applies shifts',
+    form_detail_late_early_reason_group: 'Reason group',
+    form_detail_late_early_reason_detail: 'Reaon',
+    form_detail_late_early_late_start_shift: 'Start shift late',
+    form_detail_late_early_early_mid_shift: 'Early mid shift',
+    form_detail_late_early_late_mid_shift: 'Late mid shift',
+    form_detail_late_early_early_end_shift: 'Early end shift',
+    // form_detail_late_early_last_modified: '',
+    form_detail_late_early_last_modified_by: 'Người duyệt',
+    form_detail_late_early_last_relative_employee: 'Người liên quan',
+    form_detail_late_early_status: 'Status',
   },
 };
