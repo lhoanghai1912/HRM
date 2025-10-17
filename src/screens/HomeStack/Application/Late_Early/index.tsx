@@ -35,7 +35,8 @@ const COLUMN_MIN_WIDTHS = {
 const Late_Early = ({ navigation }) => {
   const userData = useSelector((state: any) => state.user.userData);
   const flatListRef = useRef<FlatList>(null);
-  const [filter, setFilter] = useState(`employeeId=${userData?.employee?.id}`);
+  // const [filter, setFilter] = useState(`employeeId=${userData?.employee?.id}`);
+  const [filter, setFilter] = useState(``);
   const [orderBy, setOrderBy] = useState('createdAt desc');
 
   // DÙNG useMemo để params ổn định

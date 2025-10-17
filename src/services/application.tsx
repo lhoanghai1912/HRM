@@ -21,3 +21,33 @@ export const getDetail_Early_LateApplications = async (id: string) => {
     throw error;
   }
 };
+
+export const createEarly_LateApplication = async (formData: FormData) => {
+  try {
+    const response = await apiClient.post('TimeAdjustmentRequest', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// Cập nhật bản ghi
+export const updateEarly_LateApplication = async (
+  id: string,
+  formData: FormData,
+) => {
+  try {
+    const response = await apiClient.put(
+      `TimeAdjustmentRequest/${id}`,
+      formData,
+      {
+        headers: { 'Content-Type': '*/*' },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
