@@ -6,11 +6,13 @@ import {
   ScrollView,
   TouchableOpacity,
   TextInput,
+  FlatList,
+  Modal,
 } from 'react-native';
 import CustomHeader from '../../../../../navigation/CustomHeader';
 import icons from '../../../../../assets/icons';
 import { useTranslation } from 'react-i18next';
-import { spacing } from '../../../../../utils/spacing';
+import { ms, spacing } from '../../../../../utils/spacing';
 import {
   createEarly_LateApplication,
   getDetail_Early_LateApplications,
@@ -18,6 +20,16 @@ import {
 } from '../../../../../services/application';
 import { colors } from '../../../../../utils/color';
 import { pick } from '@react-native-documents/picker';
+import ModalPickDate from '../../../../../components/modal/ModalPickDate';
+import moment from 'moment';
+import { employee_GetAll } from '../../../../../services/hr';
+import {
+  getAllDetailShifts,
+  GetAllShifts,
+} from '../../../../../services/Shift';
+import { usePaginatedList } from '../../../../../components/Paginated';
+import { lo } from '../../../../../language/Resource';
+import ModalSelectList from '../../../../../components/modal/ModalSelectList';
 
 const Detail_Late_Early = ({ navigation, route }) => {
   const { t } = useTranslation();
@@ -26,7 +38,13 @@ const Detail_Late_Early = ({ navigation, route }) => {
     initialMode === 'create' ? 'create' : 'view',
   );
   const [loading, setLoading] = useState(false);
-
+  const [showTimePicker, setShowTimePicker] = useState(false);
+  const [date, setDate] = useState<Date>(moment().toDate());
+  const [selectedField, setSelectedField] = useState<string | null>(null);
+  const [showShiftModal, setShowShiftModal] = useState(false);
+  const [showEmployeeModal, setShowEmployeeModal] = useState(false);
+  const [selectedShiftIds, setSelectedShiftIds] = useState([]);
+  const [selectedEmployeeIds, setSelectedEmployeeIds] = useState([]);
   // State cố định các trường
   const [formData, setFormData] = useState({
     createdBy: '',
@@ -43,17 +61,27 @@ const Detail_Late_Early = ({ navigation, route }) => {
     lateMidShift: '',
     soonEndShift: '',
     status: '',
-    relativeEmployee: '',
     note: '',
+    time: '',
     timeAdjustmentShiftRequestLines: [],
     timeAdjustmentRelEmpRequestLines: [],
     timeAdjustmentFileRequestLines: [],
   });
   const [attachedFile, setAttachedFile] = useState<any[]>([]);
 
+  const employeePaginated = usePaginatedList(employee_GetAll, 20, {});
+  const shiftPaginated = usePaginatedList(GetAllShifts, 20, {});
+
+  // Thay đổi: lưu tạm selected items trong modal, cập nhật khi xác nhận
+  const [tempSelectedShiftIds, setTempSelectedShiftIds] = useState([]);
+  const [tempSelectedEmployeeIds, setTempSelectedEmployeeIds] = useState([]);
+
   useEffect(() => {
     if (mode === 'view' && id) {
       fetchData();
+      employeePaginated.fetchData(1, true);
+
+      shiftPaginated.fetchData(1, true);
     }
     if (mode === 'create') {
       setFormData({
@@ -71,15 +99,38 @@ const Detail_Late_Early = ({ navigation, route }) => {
         lateMidShift: '',
         soonEndShift: '',
         status: '',
-        relativeEmployee: '',
         note: '',
+        time: '',
         timeAdjustmentShiftRequestLines: [],
         timeAdjustmentRelEmpRequestLines: [],
         timeAdjustmentFileRequestLines: [],
       });
       setAttachedFile([]);
+      employeePaginated.fetchData(1, true);
+      shiftPaginated.fetchData(1, true);
     }
   }, [mode, id]);
+
+  // Khi mở modal, đồng bộ selected ids từ formData (chỉ khi mở modal lần đầu)
+  useEffect(() => {
+    if (showShiftModal) {
+      const ids = formData.timeAdjustmentShiftRequestLines.map(
+        item => item.shiftId,
+      );
+      setSelectedShiftIds(ids);
+      setTempSelectedShiftIds(ids);
+    }
+  }, [showShiftModal]); // chỉ phụ thuộc showShiftModal
+
+  useEffect(() => {
+    if (showEmployeeModal) {
+      const ids = formData.timeAdjustmentRelEmpRequestLines.map(
+        item => item.employeeId,
+      );
+      setSelectedEmployeeIds(ids);
+      setTempSelectedEmployeeIds(ids);
+    }
+  }, [showEmployeeModal]);
 
   const fetchData = async () => {
     try {
@@ -90,9 +141,9 @@ const Detail_Late_Early = ({ navigation, route }) => {
       setFormData({
         createdBy: res.createdBy ?? '',
         struct: res.struct ?? '',
-        docDate: res.docDate ?? '',
-        fromDate: res.fromDate ?? '',
-        toDate: res.toDate ?? '',
+        docDate: moment(res.docDate).format('DD/MM/YYYY') ?? '',
+        fromDate: moment(res.fromDate).format('DD/MM/YYYY') ?? '',
+        toDate: moment(res.toDate).format('DD/MM/YYYY') ?? '',
         appliesDays: res.appliesDays ?? '',
         appliesShifts: res.appliesShifts ?? '',
         groupReason: res.groupReason ?? '',
@@ -102,8 +153,8 @@ const Detail_Late_Early = ({ navigation, route }) => {
         lateMidShift: res.lateMidShift?.toString() ?? '',
         soonEndShift: res.soonEndShift?.toString() ?? '',
         status: res.status ?? '',
-        relativeEmployee: res.relativeEmployee ?? '',
         note: res.note ?? '',
+        time: res.time ?? '',
         timeAdjustmentShiftRequestLines:
           res.timeAdjustmentShiftRequestLines ?? [],
         timeAdjustmentRelEmpRequestLines:
@@ -155,7 +206,47 @@ const Detail_Late_Early = ({ navigation, route }) => {
 
   const handleSave = async () => {
     const form = new FormData();
-    form.append('Model', JSON.stringify(formData));
+
+    // Chỉ lấy mảng id cho shift và employee
+    const shiftLines = Array.isArray(formData.timeAdjustmentShiftRequestLines)
+      ? formData.timeAdjustmentShiftRequestLines
+          .map(item => item.shiftId)
+          .filter(Boolean)
+      : [];
+
+    const relEmpLines = Array.isArray(formData.timeAdjustmentRelEmpRequestLines)
+      ? formData.timeAdjustmentRelEmpRequestLines
+          .map(item => item.employeeId)
+          .filter(Boolean)
+      : [];
+
+    // Chuyển ngày sang ISO string
+    const toISO = v => {
+      if (!v) return '';
+      // Nếu đã là ISO thì giữ nguyên, nếu là 'DD/MM/YYYY' thì convert
+      if (typeof v === 'string' && v.includes('T')) return v;
+      return moment(v, 'DD/MM/YYYY').toISOString();
+    };
+
+    const payload = {
+      docDate: toISO(formData.docDate),
+      time: formData.time,
+      fromDate: toISO(formData.fromDate),
+      toDate: toISO(formData.toDate),
+      appliesDays: formData.appliesDays,
+      groupReason: formData.groupReason,
+      reason: formData.reason,
+      lateStartShift: Number(formData.lateStartShift) || 0,
+      soonMidShift: Number(formData.soonMidShift) || 0,
+      lateMidShift: Number(formData.lateMidShift) || 0,
+      soonEndShift: Number(formData.soonEndShift) || 0,
+      timeAdjustmentShiftRequestLines: shiftLines,
+      timeAdjustmentRelEmpRequestLines: relEmpLines,
+      timeAdjustmentFileRequestLines: [],
+      // ...add other fields if needed...
+    };
+
+    form.append('Model', JSON.stringify(payload));
     if (attachedFile.length > 0) {
       attachedFile.forEach(file => {
         form.append('Files', {
@@ -185,6 +276,88 @@ const Detail_Late_Early = ({ navigation, route }) => {
     } catch (error) {
       console.error('Save error:', error);
     }
+  };
+
+  const handleDateChange = (event, selectedDate) => {
+    if (event?.type === 'dismissed') {
+      console.log('Date picker dismissed');
+      return;
+    }
+
+    if (!selectedDate) {
+      console.error('Invalid selectedDate:', selectedDate);
+      return;
+    }
+
+    console.log('Selected date:', selectedDate);
+
+    setShowTimePicker(false);
+    setDate(selectedDate);
+
+    if (selectedField) {
+      console.log('Updating field:', selectedField);
+      setFormData(prev => ({
+        ...prev,
+        [selectedField]: moment(selectedDate).format('DD/MM/YYYY'),
+      }));
+    } else {
+      console.error('No field selected for date update');
+    }
+  };
+
+  // Khi xác nhận chọn shift
+  const handleShiftSelected = items => {
+    // Map lại từ shiftPaginated.data để lấy đủ thông tin
+    const selected = shiftPaginated.data.filter(item =>
+      tempSelectedShiftIds.includes(item.shiftId),
+    );
+    setFormData(prev => ({
+      ...prev,
+      timeAdjustmentShiftRequestLines: selected,
+    }));
+    setSelectedShiftIds(tempSelectedShiftIds);
+    setShowShiftModal(false);
+  };
+
+  // Khi xác nhận chọn employee
+  const handleEmployeeSelected = items => {
+    const selected = employeePaginated.data.filter(item =>
+      tempSelectedEmployeeIds.includes(item.employeeId),
+    );
+    setFormData(prev => ({
+      ...prev,
+      timeAdjustmentRelEmpRequestLines: selected,
+    }));
+    setSelectedEmployeeIds(tempSelectedEmployeeIds);
+    setShowEmployeeModal(false);
+  };
+
+  const renderSelectItem = ({
+    item,
+    selectedIds,
+    displayKey,
+    onSelect,
+    idKey,
+  }) => {
+    const id = item[idKey];
+    const selected = selectedIds.includes(id);
+    return (
+      <TouchableOpacity
+        style={[
+          styles.renderItem,
+          {
+            backgroundColor: selected ? colors.primary : colors.white,
+            padding: spacing.small,
+          },
+        ]}
+        onPress={() => onSelect(id)}
+      >
+        <Text style={{ flex: 1 }}>{item[displayKey]}</Text>
+        {selected && (
+          <Text style={{ color: 'green', fontWeight: 'bold' }}>✓</Text>
+        )}
+      </TouchableOpacity>
+    );
   };
 
   return (
@@ -240,33 +413,93 @@ const Detail_Late_Early = ({ navigation, route }) => {
             </View>
             <View style={styles.fieldContainer}>
               <Text style={styles.label}>Application date</Text>
-              <TextInput
-                style={styles.input}
-                value={formData.docDate}
-                onChangeText={val => handleChange('docDate', val)}
-                placeholder="Application date"
-                editable={mode !== 'view'}
-              />
+              <TouchableOpacity
+                disabled={mode === 'view'}
+                onPress={() => {
+                  setSelectedField('docDate');
+                  setDate(
+                    formData.docDate
+                      ? moment(formData.docDate, 'DD/MM/YYYY').toDate()
+                      : new Date(),
+                  );
+                  setShowTimePicker(true);
+                }}
+              >
+                <TextInput
+                  style={styles.input}
+                  value={
+                    formData.docDate
+                      ? moment(formData.docDate, 'DD/MM/YYYY').isValid()
+                        ? moment(formData.docDate, 'DD/MM/YYYY').format(
+                            'DD/MM/YYYY',
+                          )
+                        : ''
+                      : ''
+                  }
+                  placeholder="Application date"
+                  editable={false}
+                />
+              </TouchableOpacity>
             </View>
             <View style={styles.fieldContainer}>
               <Text style={styles.label}>From date</Text>
-              <TextInput
-                style={styles.input}
-                value={formData.fromDate}
-                onChangeText={val => handleChange('fromDate', val)}
-                placeholder="From date"
-                editable={mode !== 'view'}
-              />
+              <TouchableOpacity
+                disabled={mode === 'view'}
+                onPress={() => {
+                  setSelectedField('fromDate');
+                  setDate(
+                    formData.fromDate
+                      ? moment(formData.fromDate, 'DD/MM/YYYY').toDate()
+                      : new Date(),
+                  );
+                  setShowTimePicker(true);
+                }}
+              >
+                <TextInput
+                  style={styles.input}
+                  value={
+                    formData.fromDate
+                      ? moment(formData.fromDate, 'DD/MM/YYYY').isValid()
+                        ? moment(formData.fromDate, 'DD/MM/YYYY').format(
+                            'DD/MM/YYYY',
+                          )
+                        : ''
+                      : ''
+                  }
+                  placeholder="From date"
+                  editable={false}
+                />
+              </TouchableOpacity>
             </View>
             <View style={styles.fieldContainer}>
               <Text style={styles.label}>To date</Text>
-              <TextInput
-                style={styles.input}
-                value={formData.toDate}
-                onChangeText={val => handleChange('toDate', val)}
-                placeholder="To date"
-                editable={mode !== 'view'}
-              />
+              <TouchableOpacity
+                disabled={mode === 'view'}
+                onPress={() => {
+                  setSelectedField('toDate');
+                  setDate(
+                    formData.toDate
+                      ? moment(formData.toDate, 'DD/MM/YYYY').toDate()
+                      : new Date(),
+                  );
+                  setShowTimePicker(true);
+                }}
+              >
+                <TextInput
+                  style={styles.input}
+                  value={
+                    formData.toDate
+                      ? moment(formData.toDate, 'DD/MM/YYYY').isValid()
+                        ? moment(formData.toDate, 'DD/MM/YYYY').format(
+                            'DD/MM/YYYY',
+                          )
+                        : ''
+                      : ''
+                  }
+                  placeholder="To date"
+                  editable={false}
+                />
+              </TouchableOpacity>
             </View>
             <View style={styles.fieldContainer}>
               <Text style={styles.label}>Applies days</Text>
@@ -280,22 +513,29 @@ const Detail_Late_Early = ({ navigation, route }) => {
             </View>
             <View style={styles.fieldContainer}>
               <Text style={styles.label}>Applies shifts</Text>
-              <TextInput
-                style={styles.input}
-                value={
-                  Array.isArray(formData.timeAdjustmentShiftRequestLines)
-                    ? formData.timeAdjustmentShiftRequestLines
-                        .map(item => item.shift?.shiftName)
-                        .filter(Boolean)
-                        .join(', ')
-                    : ''
-                }
-                onChangeText={val =>
-                  handleChange('timeAdjustmentShiftRequestLines', val)
-                }
-                placeholder="Applies shifts"
-                editable={mode !== 'view'}
-              />
+              <TouchableOpacity
+                disabled={mode === 'view'}
+                onPress={() => setShowShiftModal(true)}
+              >
+                <TextInput
+                  style={styles.input}
+                  value={
+                    Array.isArray(formData.timeAdjustmentShiftRequestLines)
+                      ? formData.timeAdjustmentShiftRequestLines
+                          .map(
+                            item =>
+                              item.shiftName ||
+                              item.name ||
+                              item.shift?.shiftName,
+                          )
+                          .filter(Boolean)
+                          .join(', ')
+                      : ''
+                  }
+                  placeholder="Applies shifts"
+                  editable={false}
+                />
+              </TouchableOpacity>
             </View>
             <View style={styles.fieldContainer}>
               <Text style={styles.label}>Reason group</Text>
@@ -376,24 +616,33 @@ const Detail_Late_Early = ({ navigation, route }) => {
             </View>
             <View style={styles.fieldContainer}>
               <Text style={styles.label}>Người liên quan</Text>
-              <TextInput
-                style={[styles.input, { flexShrink: 1 }]}
-                value={
-                  Array.isArray(formData.timeAdjustmentRelEmpRequestLines)
-                    ? formData.timeAdjustmentRelEmpRequestLines
-                        .map(item => item.employee?.fullName)
-                        .filter(Boolean)
-                        .join(', ')
-                    : ''
-                }
-                onChangeText={val => handleChange('relativeEmployee', val)}
-                placeholder="Người liên quan"
-                editable={mode !== 'view'}
-                multiline={false}
-                scrollEnabled={true}
-                numberOfLines={1}
-                textAlignVertical="center"
-              />
+              <TouchableOpacity
+                disabled={mode === 'view'}
+                onPress={() => setShowEmployeeModal(true)}
+              >
+                <TextInput
+                  style={[styles.input, { flexShrink: 1 }]}
+                  value={
+                    Array.isArray(formData.timeAdjustmentRelEmpRequestLines)
+                      ? formData.timeAdjustmentRelEmpRequestLines
+                          .map(
+                            item =>
+                              item.fullName ||
+                              item.name ||
+                              item.employee?.fullName,
+                          )
+                          .filter(Boolean)
+                          .join(', ')
+                      : ''
+                  }
+                  placeholder="Người liên quan"
+                  editable={false}
+                  multiline={false}
+                  scrollEnabled={true}
+                  numberOfLines={1}
+                  textAlignVertical="center"
+                />
+              </TouchableOpacity>
             </View>
             <View style={styles.fieldContainer}>
               <Text style={styles.label}>Status</Text>
@@ -458,6 +707,74 @@ const Detail_Late_Early = ({ navigation, route }) => {
           </View>
         </View>
       </ScrollView>
+      {/* Modal chọn ca làm việc */}
+      <ModalSelectList
+        visible={showShiftModal}
+        title="Chọn ca làm việc"
+        data={shiftPaginated.data}
+        keyExtractor={item => item.shiftId}
+        refreshing={shiftPaginated.refreshing}
+        onRefresh={shiftPaginated.handleRefresh}
+        onEndReached={shiftPaginated.handleLoadMore}
+        onSearch={search =>
+          shiftPaginated.fetchData(1, true, { Search: search })
+        }
+        onClose={() => setShowShiftModal(false)}
+        selectedIds={tempSelectedShiftIds}
+        onSelected={handleShiftSelected}
+        renderItem={({ item }) =>
+          renderSelectItem({
+            item,
+            selectedIds: tempSelectedShiftIds,
+            displayKey: 'shiftName',
+            onSelect: shiftId => {
+              setTempSelectedShiftIds(prev =>
+                prev.includes(shiftId)
+                  ? prev.filter(i => i !== shiftId)
+                  : [...prev, shiftId],
+              );
+            },
+            idKey: 'shiftId',
+          })
+        }
+      />
+      {/* Modal chọn nhân viên liên quan */}
+      <ModalSelectList
+        visible={showEmployeeModal}
+        title="Chọn nhân viên liên quan"
+        data={employeePaginated.data}
+        keyExtractor={item => item.employeeId}
+        refreshing={employeePaginated.refreshing}
+        onRefresh={employeePaginated.handleRefresh}
+        onEndReached={employeePaginated.handleLoadMore}
+        onSearch={search =>
+          employeePaginated.fetchData(1, true, { Search: search })
+        }
+        onClose={() => setShowEmployeeModal(false)}
+        selectedIds={tempSelectedEmployeeIds}
+        onSelected={handleEmployeeSelected}
+        renderItem={({ item }) =>
+          renderSelectItem({
+            item,
+            selectedIds: tempSelectedEmployeeIds,
+            displayKey: 'fullName',
+            onSelect: employeeId => {
+              setTempSelectedEmployeeIds(prev =>
+                prev.includes(employeeId)
+                  ? prev.filter(i => i !== employeeId)
+                  : [...prev, employeeId],
+              );
+            },
+            idKey: 'employeeId',
+          })
+        }
+      />
+      <ModalPickDate
+        visible={showTimePicker}
+        value={date}
+        onChange={handleDateChange}
+        onClose={() => setShowTimePicker(false)}
+      />
     </View>
   );
 };
@@ -521,6 +838,15 @@ const styles = StyleSheet.create({
     padding: 12,
     backgroundColor: '#fafafa',
     marginBottom: spacing.small,
+  },
+  renderItem: {
+    flex: 1,
+    borderWidth: 0.5,
+    marginBottom: spacing.small,
+    padding: spacing.small,
+    borderRadius: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });
 

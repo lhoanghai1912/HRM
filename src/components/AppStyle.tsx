@@ -91,7 +91,7 @@ const AppStyles = StyleSheet.create({
   },
 
   buttonGroup: {
-    width: '100%',
+    // width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: spacing.medium,

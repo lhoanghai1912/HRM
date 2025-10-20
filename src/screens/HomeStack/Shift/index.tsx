@@ -16,7 +16,7 @@ import { ms, spacing } from '../../../utils/spacing';
 import { navigate } from '../../../navigation/RootNavigator';
 import { Screen_Name } from '../../../navigation/ScreenName';
 import icons from '../../../assets/icons';
-import { getAllShifts } from '../../../services/Shift';
+import { getAllDetailShifts } from '../../../services/Shift';
 import { formatDate } from '../../../utils/helper';
 import { GetAllParams } from '../../../utils/form';
 import { RefreshControl } from 'react-native-gesture-handler';
@@ -81,7 +81,7 @@ const Shift = () => {
         };
 
         console.log('Fetch params:', params);
-        const data = await getAllShifts(params);
+        const data = await getAllDetailShifts(params);
         console.log('Fetched data:', data);
         setAllShift(data);
         console.log('allshift', allShift);

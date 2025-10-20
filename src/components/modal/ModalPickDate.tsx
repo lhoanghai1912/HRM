@@ -9,15 +9,17 @@ const ModalPickDate = ({
   onClose,
   color = '#2563eb',
 }) => {
+  // Ensure value is a valid Date object
+  const dateValue =
+    value instanceof Date && !isNaN(value.getTime()) ? value : new Date();
   return (
     <Modal visible={visible} transparent animationType="slide">
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
           {/* <Text style={[styles.title, { color }]}>{title}</Text> */}
           <DateTimePicker
-            value={value || new Date()}
-            mode="date"
-            display="calendar"
+            value={dateValue}
+            display="default"
             onChange={onChange}
           />
           <TouchableOpacity onPress={onClose} style={styles.closeBtn}>
