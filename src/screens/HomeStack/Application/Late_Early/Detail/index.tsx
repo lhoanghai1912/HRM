@@ -307,26 +307,53 @@ const Detail_Late_Early = ({ navigation, route }) => {
 
   // Khi xác nhận chọn shift
   const handleShiftSelected = items => {
-    // Map lại từ shiftPaginated.data để lấy đủ thông tin
-    const selected = shiftPaginated.data.filter(item =>
-      tempSelectedShiftIds.includes(item.shiftId),
-    );
-    setFormData(prev => ({
-      ...prev,
-      timeAdjustmentShiftRequestLines: selected,
-    }));
-    setSelectedShiftIds(tempSelectedShiftIds);
-    setShowShiftModal(false);
+    console.log('selected shifts: ', items);
+
+    // Đảm bảo giữ lại tất cả các ca đã chọn trước đó + các ca vừa chọn ở trang hiện tại
+    // Loại bỏ trùng lặp theo shiftId
+    setSelectedShiftIds(items.map(item => item.id));
+    console.log('selectedShiftIds: ', selectedShiftIds);
+
+    // ];
+    // const uniqueShifts = [];
+    // const seen = new Set();
+    // for (const item of allShifts) {
+    //   if (!seen.has(item.shiftId)) {
+    //     uniqueShifts.push(item);
+    //     seen.add(item.shiftId);
+    //   }
+    // }
+    // setFormData(prev => ({
+    //   ...prev,
+    //   timeAdjustmentShiftRequestLines: uniqueShifts,
+    // }));
+    // setSelectedShiftIds(tempSelectedShiftIds);
+    // setShowShiftModal(false);
   };
 
   // Khi xác nhận chọn employee
   const handleEmployeeSelected = items => {
-    const selected = employeePaginated.data.filter(item =>
-      tempSelectedEmployeeIds.includes(item.employeeId),
-    );
+    console.log('selected ', items);
+
+    const allEmployees = [
+      ...formData.timeAdjustmentRelEmpRequestLines.filter(
+        item => !tempSelectedEmployeeIds.includes(item.employeeId),
+      ),
+      ...employeePaginated.data.filter(item =>
+        tempSelectedEmployeeIds.includes(item.employeeId),
+      ),
+    ];
+    const uniqueEmployees = [];
+    const seen = new Set();
+    for (const item of allEmployees) {
+      if (!seen.has(item.employeeId)) {
+        uniqueEmployees.push(item);
+        seen.add(item.employeeId);
+      }
+    }
     setFormData(prev => ({
       ...prev,
-      timeAdjustmentRelEmpRequestLines: selected,
+      timeAdjustmentRelEmpRequestLines: uniqueEmployees,
     }));
     setSelectedEmployeeIds(tempSelectedEmployeeIds);
     setShowEmployeeModal(false);
@@ -734,7 +761,7 @@ const Detail_Late_Early = ({ navigation, route }) => {
                   : [...prev, shiftId],
               );
             },
-            idKey: 'shiftId',
+            idKey: 'id',
           })
         }
       />
@@ -765,7 +792,7 @@ const Detail_Late_Early = ({ navigation, route }) => {
                   : [...prev, employeeId],
               );
             },
-            idKey: 'employeeId',
+            idKey: 'id',
           })
         }
       />

@@ -56,4 +56,6 @@ export const Screen_Name = {
   Loading: 'Loading',
   BottomTab_Navigator: 'BottomTab_Navigator',
   Drawer_Navigator: 'Drawer_Navigator',
+
+  Test: 'Test',
 };

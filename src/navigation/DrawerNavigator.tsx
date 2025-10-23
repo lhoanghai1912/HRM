@@ -22,7 +22,7 @@ import Detail_Late_Early from '../screens/HomeStack/Application/Late_Early/Detai
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
 
-const AttendanceDrawer = () => (
+export const AttendanceDrawer = () => (
   <Drawer.Navigator
     id={undefined}
     screenOptions={({ route }) => ({
@@ -53,9 +53,7 @@ const AttendanceDrawer = () => (
   </Drawer.Navigator>
 );
 
-export { AttendanceDrawer };
-
-const EmployeeDrawer = () => (
+export const EmployeeDrawer = () => (
   <Drawer.Navigator
     id={undefined}
     screenOptions={({ route }) => ({
@@ -90,8 +88,6 @@ const EmployeeDrawer = () => (
     />
   </Drawer.Navigator>
 );
-
-export { EmployeeDrawer };
 
 export const ShiftStack = () => (
   <Stack.Navigator id={undefined} screenOptions={{ headerShown: false }}>

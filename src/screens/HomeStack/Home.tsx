@@ -45,6 +45,9 @@ const Home = () => {
             </TouchableOpacity>
           ))}
         </View>
+        <TouchableOpacity onPress={() => navigate(Screen_Name.Test)}>
+          <Text> Test type</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );

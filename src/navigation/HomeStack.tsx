@@ -11,6 +11,7 @@ import Attendance from '../screens/HomeStack/Check_InOut';
 import { AttendanceDrawer, EmployeeDrawer } from './DrawerNavigator';
 import Details_Shift from '../screens/HomeStack/Shift/Details';
 import Shift from '../screens/HomeStack/Shift';
+import Test from '../screens/HomeStack/Test';
 
 const Stack = createNativeStackNavigator();
 
@@ -33,6 +34,7 @@ const HomeStack = () => (
       name={Screen_Name.Employee_Drawer}
       component={EmployeeDrawer}
     />
+    <Stack.Screen name={Screen_Name.Test} component={Test} />
   </Stack.Navigator>
 );
 

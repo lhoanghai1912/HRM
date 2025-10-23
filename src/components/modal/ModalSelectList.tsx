@@ -43,13 +43,11 @@ const ModalSelectList = ({
 
   // Hàm xử lý khi xác nhận chọn
   const handleConfirm = () => {
+    // selectedIds là mảng id đã chọn (ví dụ: [4, 7])
+    // data là toàn bộ danh sách item (có thể nhiều trang)
+    // Lấy đúng các item có id nằm trong selectedIds
     if (onSelected) {
-      // Lấy các item đã chọn từ tất cả data (không chỉ trang hiện tại)
-      // selectedIds là mảng id, data có thể là toàn bộ danh sách hoặc chỉ trang hiện tại
-      // Để đúng nhất, nên truyền toàn bộ danh sách data vào ModalSelectList từ cha
-      const selectedItems = data.filter(item =>
-        selectedIds.includes(item[keyExtractor(item)]),
-      );
+      const selectedItems = data.filter(item => selectedIds.includes(item.id));
       onSelected(selectedItems);
     }
     onClose();
