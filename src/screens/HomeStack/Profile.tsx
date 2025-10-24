@@ -46,16 +46,16 @@ const Profile = () => {
   }, [userData.employeeId]);
 
   const fetchEmployee = async () => {
-    try {
-      const res = await employee_Get(userData.employeeId);
-      console.log('Fetched employee data:', res);
-      if (!editingSection) {
-        setEmployee(res.employee);
-        setOriginalEmployee(res.employee);
-      }
-    } catch (error) {
-      console.error('Error fetching employee data:', error);
-    }
+    // try {
+    //   const res = await employee_Get(userData.employeeId);
+    //   console.log('Fetched employee data:', res);
+    //   if (!editingSection) {
+    //     setEmployee(res.employee);
+    //     setOriginalEmployee(res.employee);
+    //   }
+    // } catch (error) {
+    //   console.error('Error fetching employee data:', error);
+    // }
   };
 
   const getEmployeeObjectKey = (sectionKey: string) => {

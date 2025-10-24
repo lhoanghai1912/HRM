@@ -75,6 +75,7 @@ const AppInput: React.FC<AppInputProps> = ({
             {
               fontSize: fonts.normal,
               flex: 1,
+              marginRight: spacing.small,
             },
           ]}
           placeholderTextColor="#999999"

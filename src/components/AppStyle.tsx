@@ -75,7 +75,7 @@ const AppStyles = StyleSheet.create({
     flexDirection: 'row',
     position: 'absolute',
     resizeMode: 'contain',
-    right: spacing.small,
+    right: 0,
     top: '20%',
     justifyContent: 'space-between',
   },

@@ -36,29 +36,27 @@ const OrnStruct = ({ navigation }: any) => {
   }, []);
   const fetchOrgStruct = async () => {
     setLoadingOrgStruct(true);
-    try {
-      const res: OrgPayload[] = await orgStruct_get();
-      console.log('resStruct', res);
+    // try {
+    //   const res: OrgPayload[] = await orgStruct_get();
+    //   console.log('resStruct', res);
 
-      setOrgStructData(mapOrgToTree(res));
-    } catch (e: any) {
-    } finally {
-      setLoadingOrgStruct(false);
-    }
+    //   setOrgStructData(mapOrgToTree(res));
+    // } catch (e: any) {
+    // } finally {
+    //   setLoadingOrgStruct(false);
+    // }
   };
   const fetchOrlLevel = async () => {
-    setLoadingOrlLevel(true);
-    try {
-      console.log('asbcawd');
-
-      const res = await OrlLevel_get();
-
-      setOrlLevelData(res.result);
-      console.log('resLevel', orlLevelData);
-    } catch (e: any) {
-    } finally {
-      setLoadingOrlLevel(false);
-    }
+    // setLoadingOrlLevel(true);
+    // try {
+    //   console.log('asbcawd');
+    //   const res = await OrlLevel_get();
+    //   setOrlLevelData(res.result);
+    //   console.log('resLevel', orlLevelData);
+    // } catch (e: any) {
+    // } finally {
+    //   setLoadingOrlLevel(false);
+    // }
   };
   const renderOrlLevel = ({ item, index }: any) => {
     const status = item.isActive ? 'Đang hoạt động' : 'Ngưng hoạt động';

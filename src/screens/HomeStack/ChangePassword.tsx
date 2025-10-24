@@ -30,17 +30,17 @@ const ChangePassword = ({ navigation }) => {
   const { t } = useTranslation();
 
   const handleConfirm = async () => {
-    try {
-      setLoading(true);
-      const res = await password_Change(currentPassword, password);
-      console.log(res);
-      Toast.show({ type: 'success', text2: t('message.update_success') });
-      navigate(Screen_Name.BottomTab_Navigator, { screen: Screen_Name.Home });
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
+    // try {
+    //   setLoading(true);
+    //   const res = await password_Change(currentPassword, password);
+    //   console.log(res);
+    //   Toast.show({ type: 'success', text2: t('message.update_success') });
+    //   navigate(Screen_Name.BottomTab_Navigator, { screen: Screen_Name.Home });
+    // } catch (error) {
+    //   console.log(error);
+    // } finally {
+    //   setLoading(false);
+    // }
   };
 
   return (

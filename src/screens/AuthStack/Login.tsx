@@ -47,25 +47,24 @@ const LoginScreen = () => {
   const [modalLanguage, setModalLanguage] = useState(false);
   const { userData } = useSelector((state: any) => state.user);
   const handleLogin = async () => {
-    try {
-      setLoading(true);
-      const res = await login(username, password);
-      console.log('login res', res);
-      dispatch(setToken({ token: res.accessToken }));
-      const user = await getMe();
-      console.log('user getme', user);
-
-      dispatch(setUserData({ userData: user }));
-
-      Toast.show({
-        type: 'success',
-        text1: `${t('message.welcome')} `,
-        text2: `${t('message.welcome_back')} ${res.profile.fullName}`,
-      });
-    } catch (error) {
-    } finally {
-      setLoading(false);
-    }
+    // try {
+    //   setLoading(true);
+    //   const res = await login(username, password);
+    //   console.log('login res', res);
+    //   dispatch(setToken({ token: res.accessToken }));
+    //   const user = await getMe();
+    //   console.log('user getme', user);
+    //   dispatch(setUserData({ userData: user }));
+    //   Toast.show({
+    //     type: 'success',
+    //     text1: `${t('message.welcome')} `,
+    //     text2: `${t('message.welcome_back')} ${res.profile.fullName}`,
+    //   });
+    // } catch (error) {
+    // } finally {
+    //   setLoading(false);
+    // }
+    dispatch(setToken({ token: 'dummy_token' }));
   };
   console.log('userdata', userData);
 
