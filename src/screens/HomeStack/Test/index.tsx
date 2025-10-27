@@ -6,6 +6,7 @@ import {
   Touchable,
   TouchableOpacity,
   Image,
+  ActivityIndicator,
 } from 'react-native';
 import CustomHeader from '../../../navigation/CustomHeader';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -13,8 +14,7 @@ import { spacing } from '../../../utils/spacing';
 import { mapFieldType, renderField } from '../../../utils/formField';
 import DatePicker from 'react-native-date-picker';
 import MonthPicker from 'react-native-month-year-picker';
-import { setLoading } from '../../../store/reducers/loadingSlice';
-import { dataTest, getData } from '../../../services/data';
+import { dataTest, getData, getEmployee } from '../../../services/data';
 import AppStyles from '../../../components/AppStyle';
 import { Picker } from '@react-native-picker/picker';
 import icons from '../../../assets/icons';
@@ -31,31 +31,57 @@ const Test = () => {
   const [pickerData, setPickerData] = useState<any[]>([]);
   const [openPicker, setOpenPicker] = useState(false);
   const [datePickerField, setDatePickerField] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [expandedSections, setExpandedSections] = useState<{
     [key: number]: boolean;
   }>({});
 
-  useEffect(() => {
-    fetchData();
-  }, []); // Chỉ gọi API khi mount
+  // console.log('test render', testData);
 
   useEffect(() => {
-    if (field) {
-      console.log('field data:', field);
-    }
-  }, [field]); // Log mỗi khi field thay đổi
+    fetchData();
+    fetchAllData();
+  }, []); // Chỉ gọi API khi mount
 
   const fetchData = async () => {
     try {
       setLoading(true);
       const data = await getData('profile');
-      setField(data); // set data vào field
+      setField(data);
+
+      // Khởi tạo expandedSections cho tất cả parentId
+      if (data && data.pageData) {
+        const parents = data.pageData.filter(item => item.parentId === null);
+        const expandedInit = {};
+        parents.forEach(parent => {
+          expandedInit[parent.id] = false; // hoặc false nếu muốn mặc định thu gọn
+        });
+        setExpandedSections(expandedInit);
+      }
+
+      console.log('Fetched data:', data);
     } catch (error) {
       console.log('Error fetching data:', error);
     } finally {
       setLoading(false);
     }
   };
+
+  const fetchAllData = async () => {
+    setLoading(true);
+    try {
+      const layout = testData; // hoặc await getData('profile');
+      const employeeData = await getEmployee(6);
+      const formData = mapEmployeeToFormData(layout, employeeData);
+      setField(layout);
+      setFormData(formData);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleChange = (fieldName, value) => {
     setFormData(prev => ({ ...prev, [fieldName]: value }));
   };
@@ -92,93 +118,123 @@ const Test = () => {
     }));
   };
 
-  // Hàm lấy config của field đang chọn
-  const getPickerConfig = () => {
-    for (const parent of testData.data) {
-      if (parent.groupFieldConfigs) {
-        const cfg = parent.groupFieldConfigs.find(
-          c => c.fieldName === pickerField,
-        );
-        if (cfg) return cfg;
-      }
-    }
-    return null;
+  const mapEmployeeToFormData = (layout, employeeData) => {
+    const formData = {};
+    layout?.pageData?.forEach(parent => {
+      parent.groupFieldConfigs?.forEach(cfg => {
+        if (employeeData.hasOwnProperty(cfg.fieldName)) {
+          formData[cfg.fieldName] = employeeData[cfg.fieldName];
+        } else if (cfg.defaultValue) {
+          try {
+            const def =
+              typeof cfg.defaultValue === 'string'
+                ? JSON.parse(cfg.defaultValue)
+                : cfg.defaultValue;
+            formData[cfg.fieldName] = def.id ?? def;
+          } catch (e) {
+            formData[cfg.fieldName] = cfg.defaultValue;
+          }
+        } else {
+          formData[cfg.fieldName] = '';
+        }
+      });
+    });
+    return formData;
   };
 
-  const pickerConfig = getPickerConfig();
-  const pickerType = pickerConfig
-    ? mapFieldType(pickerConfig.typeControl)
-    : null;
+  const getDefaultId = cfg => {
+    if (!cfg.defaultValue) return undefined;
+    try {
+      const def =
+        typeof cfg.defaultValue === 'string'
+          ? JSON.parse(cfg.defaultValue)
+          : cfg.defaultValue;
+
+      // Chọn 1
+      if (mapFieldType(cfg.typeControl) === 'selectOne') {
+        return def.id;
+      }
+      // Chọn nhiều
+      if (mapFieldType(cfg.typeControl) === 'selectMulti') {
+        const arr = Array.isArray(def) ? def : [def];
+        return arr.map(item => item.id);
+      }
+    } catch (e) {
+      return undefined;
+    }
+  };
 
   const renderFields = () => {
-    if (!testData || !testData.data) return null;
-    const parents = testData.data.filter(item => item.parentId === null);
-    return parents.map(parent => {
-      const children = testData.data.filter(
-        child => child.parentId === parent.id,
-      );
-      const expanded = expandedSections[parent.id] ?? true;
-      return (
-        <View
-          key={parent.id}
-          style={{
-            marginBottom: 24,
-            borderWidth: 1,
-            borderColor: '#ccc',
-            borderRadius: 8,
-          }}
-        >
-          <TouchableOpacity
-            style={styles.section}
-            onPress={() => toggleSection(parent.id)}
+    try {
+      if (!field || !field.pageData) return null;
+      const parents = field.pageData.filter(item => item.parentId === null);
+      return parents.map(parent => {
+        const children = field.pageData.filter(
+          child => child.parentId === parent.id,
+        );
+        const expanded = expandedSections[parent.id] ?? true;
+        return (
+          <View
+            key={parent.id}
+            style={{
+              marginBottom: 24,
+              borderWidth: 1,
+              borderColor: '#ccc',
+              borderRadius: 8,
+            }}
           >
-            <Text style={{ fontWeight: 'bold', fontSize: 16, margin: 8 }}>
-              {parent.name}
-            </Text>
-            <Image
-              style={AppStyles.icon}
-              source={expanded ? icons.down : icons.up}
-            />
-          </TouchableOpacity>
-          {expanded &&
-            children.map(child => (
-              <View
-                key={child.id}
-                style={{ marginHorizontal: 16, marginBottom: 8 }}
-              >
-                <Text style={{ fontSize: 14, fontWeight: 'bold' }}>
-                  {child.name}
-                </Text>
-                {child.groupFieldConfigs?.map(cfg => (
-                  <View
-                    key={cfg.id}
-                    style={{ marginHorizontal: 16, marginBottom: 4 }}
-                  >
-                    <Text style={AppStyles.label}>{cfg.label}</Text>
-                    <Text>{`${cfg.typeControl}- ${mapFieldType(
-                      cfg.typeControl,
-                    )}`}</Text>
-                    {renderField(
-                      cfg,
-                      formData[cfg.fieldName],
-                      handleChange,
-                      'edit',
-                      {
-                        onPickDate: fieldName => handlePickDate(fieldName),
-                        onPickMonth: fieldName => handlePickMonth(fieldName),
-                        onPickSelectOne: fieldName =>
-                          handlePickSelect(fieldName, cfg.pickerData),
-                        onPickSelectMulti: fieldName =>
-                          handlePickSelect(fieldName, cfg.pickerData),
-                      },
-                    )}
-                  </View>
-                ))}
-              </View>
-            ))}
-        </View>
-      );
-    });
+            <TouchableOpacity
+              style={styles.section}
+              onPress={() => toggleSection(parent.id)}
+            >
+              <Text style={{ fontWeight: 'bold', fontSize: 16, margin: 8 }}>
+                {parent.name}
+              </Text>
+              <Image
+                style={[AppStyles.icon]}
+                source={expanded ? icons.down : icons.up}
+              />
+            </TouchableOpacity>
+            {expanded &&
+              children.map(child => (
+                <View
+                  key={child.id}
+                  style={{ marginHorizontal: 16, marginBottom: 8 }}
+                >
+                  <Text style={{ fontSize: 14, fontWeight: 'bold' }}>
+                    {child.name}
+                  </Text>
+                  {child.groupFieldConfigs?.map(cfg => (
+                    <View
+                      key={cfg.id}
+                      style={{ marginHorizontal: 16, marginBottom: 4 }}
+                    >
+                      <Text style={AppStyles.label}>{cfg.label}</Text>
+                      <Text>{`${cfg.typeControl}- ${mapFieldType(
+                        cfg.typeControl,
+                      )}`}</Text>
+                      {renderField(
+                        cfg,
+                        formData[cfg.fieldName],
+                        handleChange,
+                        'edit',
+                        {
+                          onPickDate: fieldName => handlePickDate(fieldName),
+                          onPickMonth: fieldName => handlePickMonth(fieldName),
+                          // onPickSelectOne: fieldName =>
+                          //   handlePickSelect(fieldName, cfg.pickerData),
+                          // onPickSelectMulti: fieldName =>
+                          //   handlePickSelect(fieldName, cfg.pickerData),
+                        },
+                      )}
+                    </View>
+                  ))}
+                </View>
+              ))}
+          </View>
+        );
+      });
+    } catch (error) {}
   };
 
   return (
@@ -246,7 +302,7 @@ const Test = () => {
               }}
             >
               {/* Chọn 1 */}
-              {pickerType === 'selectOne' && (
+              {/* {pickerType === 'selectOne' && (
                 <Picker
                   selectedValue={formData[pickerField]}
                   onValueChange={value => {
@@ -262,10 +318,10 @@ const Test = () => {
                     />
                   ))}
                 </Picker>
-              )}
+              )} */}
 
               {/* Chọn nhiều */}
-              {pickerType === 'selectMulti' && (
+              {/* {pickerType === 'selectMulti' && (
                 <View>
                   {pickerData.map(item => {
                     const value = item.value ?? item.id;
@@ -328,10 +384,23 @@ const Test = () => {
                     <Text style={{ color: '#fff' }}>Xong</Text>
                   </TouchableOpacity>
                 </View>
-              )}
+              )} */}
             </View>
           </TouchableOpacity>
         </Modal>
+      )}
+      {loading && (
+        <View
+          style={{
+            ...StyleSheet.absoluteFillObject,
+            backgroundColor: 'rgba(0,0,0,0.3)',
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 10,
+          }}
+        >
+          <ActivityIndicator size="large" color="#E53935" />
+        </View>
       )}
     </View>
   );
@@ -351,6 +420,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    paddingHorizontal: spacing.small,
   },
 });
 

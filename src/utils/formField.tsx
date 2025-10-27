@@ -17,49 +17,40 @@ export const mapFieldType = TypeControl => {
   // Ưu tiên typeControl nếu có, nếu không thì dùng dataType
   const type = TypeControl;
   switch (type) {
-    case 1:
+    case 'TextOne':
       return 'singleLine'; // Một dòng
-    case 2:
+    case 'TextMany':
       return 'multiLine'; // Nhiều dòng
-    case 3:
+    case 'SelectOne':
       return 'selectOne'; // Chọn một
-    case 4:
+    case 'SelectMany':
       return 'selectMulti'; // Chọn nhiều
-    case 5:
+    case 'Day':
       return 'date'; // Ngày
-    case 6:
+    case 'Month':
       return 'month'; // Tháng
-    case 7:
+    case 'Integer':
       return 'int'; // Số nguyên
-    case 8:
+    case 'Decimal':
       return 'decimal'; // Số thập phân
-    case 9:
+    case 'Currency':
       return 'currency'; // Tiền tệ
-    case 10:
+    case 'Percent':
       return 'percent'; // Phần trăm
-    case 11:
+    case 'Checkbox':
       return 'checkbox'; // Tích chọn
-    case 12:
-      return 'link'; // Đường dẫn
-    case 13:
-      return 'employee'; // Nhân viên
-    case 14:
-      return 'org'; // Tổ chức
-    case 15:
-      return 'file'; // Tải tệp
-    case 16:
+    case 'Image':
       return 'image'; // Hình ảnh
-    case 17:
-      return 'formula'; // Công thức
-    case 18:
-      return 'table'; // Bảng
-    case 19:
-      return 'line'; // Mục
+    case 'Link':
+      return 'link'; // Đường dẫn
+    case 'FileUpload':
+      return 'file'; // File
+    case 'Formula':
+      return 'formula';
     default:
       return 'singleLine';
   }
 };
-
 // Hàm render từng trường theo kiểu đã ánh xạ
 export const renderField = (
   data,
@@ -143,7 +134,7 @@ export const renderField = (
                   style={{
                     width: 20,
                     height: 20,
-                    borderRadius: 4,
+                    borderRadius: 20,
                     borderWidth: 1,
                     borderColor: '#888',
                     backgroundColor: checked ? '#007AFF' : '#fff',
