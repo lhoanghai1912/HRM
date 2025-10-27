@@ -181,6 +181,7 @@ export default {
     hrm_application_update_attendance: 'Attendance change application',
 
     stack_employee: 'Employee',
+    stack_shift: 'Shift',
     stack_attendance: 'Attendance',
     stack_payroll: 'Payroll',
     stack_recruitment: 'Recruitment',

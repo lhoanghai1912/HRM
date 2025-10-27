@@ -67,7 +67,7 @@ export const form_user = (
 export const form_itemStack = (t = i18next.t.bind(i18next)) => [
   {
     id: 'Shift',
-    title: t('label.stack_employee'),
+    title: t('label.stack_shift'),
     icon: icons.list,
     bg: '#EAF1FF',
     screen: Screen_Name.Shift,
@@ -86,11 +86,11 @@ export const form_itemStack = (t = i18next.t.bind(i18next)) => [
     icon: icons.list,
     bg: '#FFF0F0',
     // screen: Screen_Name.Payroll, // Đặt tên màn hình đúng với navigation
-    screen: Screen_Name.AddEmployee,
+    screen: Screen_Name.Employee,
   },
   {
     id: 'recruitment',
-    title: t('label.stack_recruitment'), // Tuyển dụng
+    title: t('label.stack_employee'), // Tuyển dụng
     icon: icons.list,
     bg: '#FFEFE5',
     // screen: Screen_Name.Recruitment, // Đặt tên màn hình đúng với navigation

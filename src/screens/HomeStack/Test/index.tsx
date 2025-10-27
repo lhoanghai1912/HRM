@@ -14,11 +14,17 @@ import { spacing } from '../../../utils/spacing';
 import { mapFieldType, renderField } from '../../../utils/formField';
 import DatePicker from 'react-native-date-picker';
 import MonthPicker from 'react-native-month-year-picker';
-import { dataTest, getData, getEmployee } from '../../../services/data';
+import {
+  dataTest,
+  getData,
+  getEmployee,
+  getPickerData,
+} from '../../../services/data';
 import AppStyles from '../../../components/AppStyle';
 import { Picker } from '@react-native-picker/picker';
 import icons from '../../../assets/icons';
 import { Modal } from 'react-native';
+import ModalPicker from '../../../components/modal/ModalPicker';
 
 const Test = () => {
   const [field, setField] = useState<any>();
@@ -28,13 +34,20 @@ const Test = () => {
   const [openMonth, setOpenMonth] = useState(false);
   const [open, setOpen] = useState(false);
   const [pickerField, setPickerField] = useState<string | null>(null);
-  const [pickerData, setPickerData] = useState<any[]>([]);
+  const [pickerData, setPickerData] = useState<any>({});
   const [openPicker, setOpenPicker] = useState(false);
   const [datePickerField, setDatePickerField] = useState(null);
   const [loading, setLoading] = useState(false);
   const [expandedSections, setExpandedSections] = useState<{
     [key: number]: boolean;
   }>({});
+  const [pickerType, setPickerType] = useState<'selectOne' | 'selectMulti'>(
+    'selectOne',
+  );
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(false);
+  const [pickerConfig, setPickerConfig] = useState(null);
+  const [pickerPage, setPickerPage] = useState(1);
 
   // console.log('test render', testData);
 
@@ -103,12 +116,41 @@ const Test = () => {
     return 'date';
   };
 
-  const handlePickSelect = (fieldName, pickerData) => {
-    console.log('Picker selected:', fieldName, pickerData);
-
+  const handlePickSelect = async (fieldName, cfg) => {
     setPickerField(fieldName);
-    setPickerData(pickerData);
-    setOpenPicker(true); // phải có dòng này để mở picker
+    setPickerConfig(cfg);
+    setPickerPage(1);
+
+    setLoading(true);
+    let data = [];
+    if (cfg.tableNameSource === 'PickList') {
+      data = await getPickerData(
+        cfg.tableNameSource,
+        { page: 1, pageSize: 10, filter: '', orderBy: '', search: '' },
+        cfg,
+      );
+      setHasMore(data.length === 10);
+    }
+    console.log('Picker data:', data);
+
+    setPickerData(data);
+    setOpenPicker(true);
+    setLoading(false);
+  };
+
+  const handleLoadMore = async () => {
+    if (!pickerConfig) return;
+    const nextPage = pickerPage + 1;
+    setLoadingMore(true);
+    const moreData = await getPickerData(
+      pickerConfig.tableNameSource,
+      { page: nextPage, pageSize: 10, filter: '', orderBy: '', search: '' },
+      pickerConfig,
+    );
+    setPickerData(prev => [...prev, ...moreData]);
+    setHasMore(moreData.length === 10);
+    setPickerPage(nextPage);
+    setLoadingMore(false);
   };
 
   const toggleSection = (id: number) => {
@@ -221,10 +263,10 @@ const Test = () => {
                         {
                           onPickDate: fieldName => handlePickDate(fieldName),
                           onPickMonth: fieldName => handlePickMonth(fieldName),
-                          // onPickSelectOne: fieldName =>
-                          //   handlePickSelect(fieldName, cfg.pickerData),
-                          // onPickSelectMulti: fieldName =>
-                          //   handlePickSelect(fieldName, cfg.pickerData),
+                          onPickSelectOne: (fieldName, pickerData) =>
+                            handlePickSelect(fieldName, cfg),
+                          onPickSelectMulti: (fieldName, pickerData) =>
+                            handlePickSelect(fieldName, cfg),
                         },
                       )}
                     </View>
@@ -277,117 +319,17 @@ const Test = () => {
         />
       )}
       {openPicker && (
-        <Modal
-          transparent
-          animationType="fade"
+        <ModalPicker
           visible={openPicker}
-          onRequestClose={() => setOpenPicker(false)}
-        >
-          <TouchableOpacity
-            style={{
-              flex: 1,
-              backgroundColor: 'rgba(0,0,0,0.2)',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-            activeOpacity={1}
-            onPress={() => setOpenPicker(false)}
-          >
-            <View
-              style={{
-                backgroundColor: 'white',
-                borderRadius: 8,
-                padding: 16,
-                minWidth: 250,
-              }}
-            >
-              {/* Chọn 1 */}
-              {/* {pickerType === 'selectOne' && (
-                <Picker
-                  selectedValue={formData[pickerField]}
-                  onValueChange={value => {
-                    handleChange(pickerField, value);
-                    setOpenPicker(false);
-                  }}
-                >
-                  {pickerData.map(item => (
-                    <Picker.Item
-                      key={item.value}
-                      label={item.label}
-                      value={item.value}
-                    />
-                  ))}
-                </Picker>
-              )} */}
-
-              {/* Chọn nhiều */}
-              {/* {pickerType === 'selectMulti' && (
-                <View>
-                  {pickerData.map(item => {
-                    const value = item.value ?? item.id;
-                    const checked =
-                      Array.isArray(formData[pickerField]) &&
-                      formData[pickerField].includes(value);
-                    return (
-                      <TouchableOpacity
-                        key={value}
-                        style={{
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                          marginVertical: 8,
-                        }}
-                        onPress={() => {
-                          let newValue = Array.isArray(formData[pickerField])
-                            ? [...formData[pickerField]]
-                            : [];
-                          if (checked) {
-                            newValue = newValue.filter(v => v !== value);
-                          } else {
-                            newValue.push(value);
-                          }
-                          handleChange(pickerField, newValue);
-                        }}
-                      >
-                        <View
-                          style={{
-                            width: 20,
-                            height: 20,
-                            borderRadius: 4,
-                            borderWidth: 1,
-                            borderColor: '#888',
-                            backgroundColor: checked ? '#007AFF' : '#fff',
-                            marginRight: 8,
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                          }}
-                        >
-                          {checked && (
-                            <Text style={{ color: '#fff', fontWeight: 'bold' }}>
-                              ✓
-                            </Text>
-                          )}
-                        </View>
-                        <Text>{item.label ?? item.name}</Text>
-                      </TouchableOpacity>
-                    );
-                  })}
-                  <TouchableOpacity
-                    style={{
-                      marginTop: 16,
-                      alignSelf: 'flex-end',
-                      padding: 8,
-                      backgroundColor: '#007AFF',
-                      borderRadius: 4,
-                    }}
-                    onPress={() => setOpenPicker(false)}
-                  >
-                    <Text style={{ color: '#fff' }}>Xong</Text>
-                  </TouchableOpacity>
-                </View>
-              )} */}
-            </View>
-          </TouchableOpacity>
-        </Modal>
+          data={pickerData}
+          selectedValue={formData[pickerField]}
+          onSelect={value => handleChange(pickerField, value)}
+          onClose={() => setOpenPicker(false)}
+          multi={pickerType === 'selectMulti'}
+          onLoadMore={handleLoadMore}
+          loadingMore={loadingMore}
+          hasMore={hasMore}
+        />
       )}
       {loading && (
         <View

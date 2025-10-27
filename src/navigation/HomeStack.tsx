@@ -8,7 +8,11 @@ import OrnStruct from '../screens/HomeStack/OrgStruct';
 import ChangePassword from '../screens/HomeStack/ChangePassword';
 import Notifications from '../screens/HomeStack/Noti';
 import Attendance from '../screens/HomeStack/Check_InOut';
-import { AttendanceDrawer, EmployeeDrawer } from './DrawerNavigator';
+import {
+  AttendanceDrawer,
+  CheckDrawer,
+  EmployeeDrawer,
+} from './DrawerNavigator';
 import Details_Shift from '../screens/HomeStack/Shift/Details';
 import Shift from '../screens/HomeStack/Shift';
 import Test from '../screens/HomeStack/Test';
@@ -34,6 +38,7 @@ const HomeStack = () => (
       name={Screen_Name.Employee_Drawer}
       component={EmployeeDrawer}
     />
+    <Stack.Screen name={Screen_Name.Check_Drawer} component={CheckDrawer} />
     <Stack.Screen name={Screen_Name.Test} component={Test} />
   </Stack.Navigator>
 );

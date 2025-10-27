@@ -8,8 +8,8 @@ import { colors } from './color';
 type RenderFieldExtraProps = {
   onPickDate?: (fieldName: string) => void;
   onPickMonth?: (fieldName: string) => void;
-  onPickSelectOne?: (fieldName: string) => void;
-  onPickSelectMulti?: (fieldName: string) => void;
+  onPickSelectOne?: (fieldName: string, pickerData: any) => void;
+  onPickSelectMulti?: (fieldName: string, pickerData: any) => void;
 };
 
 // Ánh xạ DataType hoặc TypeControl từ API sang loại trường đã định nghĩa
@@ -87,71 +87,53 @@ export const renderField = (
       );
     case 'selectOne':
       return (
-        <View style={{ borderWidth: 1, borderRadius: 10, padding: 0 }}>
-          <Picker
-            enabled={mode !== 'view'}
-            selectedValue={value}
-            onValueChange={val => onChange(data.fieldName, val)}
-            style={{}}
-          >
-            {(data.pickerData || []).map(item => (
-              <Picker.Item
-                key={item.value}
-                label={item.label}
-                value={item.value}
-              />
-            ))}
-          </Picker>
-        </View>
+        <TouchableOpacity
+          disabled={mode === 'view'}
+          style={{
+            borderWidth: 1,
+            borderRadius: 10,
+            padding: 8,
+            marginBottom: 8,
+          }}
+          onPress={() => {
+            if (extraProps.onPickSelectOne)
+              extraProps.onPickSelectOne(data.fieldName, data.pickerData);
+          }}
+        >
+          <Text>
+            {(() => {
+              const found = (data.pickerData || []).find(
+                item => item.value === value || item.id === value,
+              );
+              return found ? found.label ?? found.name : 'Chọn...';
+            })()}
+          </Text>
+        </TouchableOpacity>
       );
     case 'selectMulti':
-      // Picker mặc định không hỗ trợ multi, nên dùng FlatList với Checkbox
       return (
-        <View style={{ borderWidth: 1, marginBottom: 8, padding: 8 }}>
-          {(data.pickerData || []).map(item => {
-            const itemValue = item.value ?? item.id;
-            const checked = Array.isArray(value) && value.includes(itemValue);
-            return (
-              <TouchableOpacity
-                key={itemValue}
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  marginVertical: 4,
-                }}
-                onPress={() => {
-                  let newValue = Array.isArray(value) ? [...value] : [];
-                  if (checked) {
-                    newValue = newValue.filter(v => v !== itemValue);
-                  } else {
-                    newValue.push(itemValue);
-                  }
-                  onChange(data.fieldName, newValue);
-                }}
-                disabled={mode === 'view'}
-              >
-                <View
-                  style={{
-                    width: 20,
-                    height: 20,
-                    borderRadius: 20,
-                    borderWidth: 1,
-                    borderColor: '#888',
-                    backgroundColor: checked ? '#007AFF' : '#fff',
-                    marginRight: 8,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}
-                >
-                  {checked && (
-                    <Text style={{ color: '#fff', fontWeight: 'bold' }}>✓</Text>
-                  )}
-                </View>
-                <Text>{item.label ?? item.name}</Text>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
+        <TouchableOpacity
+          disabled={mode === 'view'}
+          style={{
+            borderWidth: 1,
+            borderRadius: 10,
+            padding: 8,
+            marginBottom: 8,
+          }}
+          onPress={() => {
+            if (extraProps.onPickSelectMulti)
+              extraProps.onPickSelectMulti(data.fieldName, data.pickerData);
+          }}
+        >
+          <Text>
+            {Array.isArray(value) && value.length > 0
+              ? (data.pickerData || [])
+                  .filter(item => value.includes(item.value ?? item.id))
+                  .map(item => item.label ?? item.name)
+                  .join(', ')
+              : 'Chọn...'}
+          </Text>
+        </TouchableOpacity>
       );
     case 'date':
       return (

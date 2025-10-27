@@ -514,10 +514,27 @@ export const getData = async (layout: string) => {
 
 export const getEmployee = async (id: number) => {
   try {
-    const response = await apiClient.get(`/Employee/${id}`);
+    const response = await apiClient.get(`Employee/${id}`);
     return response.data;
   } catch (error) {
     console.error('Error fetching employee:', error);
+    throw error;
+  }
+};
+
+export const getPickerData = async (
+  tableName: string,
+  paramQuery = { page: 1, pageSize: 10, filter: '', orderBy: '', search: '' },
+  groupFieldConfig?: any,
+) => {
+  try {
+    const response = await apiClient.post('pick-list', {
+      paramQuery,
+      groupFieldConfig,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching picker data:', error);
     throw error;
   }
 };

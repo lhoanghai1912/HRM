@@ -34,11 +34,15 @@ export const Screen_Name = {
   // Attendance
   Attendance: 'Attendance',
 
+  //Employee
+  Employee: 'Employee',
+
   //Shift
   Shift: 'Shift',
   Details_Shift: 'Details_Shift',
   Employee_Drawer: 'Employee_Drawer',
   AttendanceDrawer: 'AttendanceDrawer',
+  Check_Drawer: 'Check_Drawer',
 
   //Application
   Application: 'Application',

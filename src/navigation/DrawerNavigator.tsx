@@ -53,7 +53,7 @@ export const AttendanceDrawer = () => (
   </Drawer.Navigator>
 );
 
-export const EmployeeDrawer = () => (
+export const CheckDrawer = () => (
   <Drawer.Navigator
     id={undefined}
     screenOptions={({ route }) => ({
@@ -86,6 +86,39 @@ export const EmployeeDrawer = () => (
       name={Screen_Name.Application}
       component={ApplicationStack}
     />
+  </Drawer.Navigator>
+);
+
+export const EmployeeDrawer = () => (
+  <Drawer.Navigator
+    id={undefined}
+    screenOptions={({ route }) => ({
+      headerShown: false,
+      drawerStyle: { width: '60%' },
+      drawerActiveTintColor: colors.blue,
+      drawerActiveBackgroundColor: colors.blue,
+      drawerLabelStyle: {
+        color: 'black',
+      },
+      drawerIcon: ({ focused }) => {
+        const iconMap = {
+          [Screen_Name.Shift]: focused ? icons.shift_focus : icons.shift,
+          [Screen_Name.Details_Shift]: focused
+            ? icons.username_focus
+            : icons.username,
+        };
+        return (
+          <Image
+            source={iconMap[route.name]}
+            style={{ width: ms(24), height: ms(24) }}
+            resizeMode="contain"
+          />
+        );
+      },
+    })}
+  >
+    <Drawer.Screen name={Screen_Name.Shift} component={Shift} />
+    <Drawer.Screen name={Screen_Name.Details_Shift} component={Details_Shift} />
   </Drawer.Navigator>
 );
 
