@@ -21,7 +21,6 @@ import {
   getPickerData,
 } from '../../../services/data';
 import AppStyles from '../../../components/AppStyle';
-import { Picker } from '@react-native-picker/picker';
 import icons from '../../../assets/icons';
 import { Modal } from 'react-native';
 import ModalPicker from '../../../components/modal/ModalPicker';

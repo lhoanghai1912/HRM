@@ -8,11 +8,12 @@ import {
   ScrollView,
   ActivityIndicator,
 } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
+import { colors } from '../../utils/color';
+import { spacing } from '../../utils/spacing';
 
 const ModalPicker = ({
   visible,
-  data = {},
+  data = { pageData: [] },
   selectedValue,
   onSelect,
   onClose,
@@ -112,15 +113,44 @@ const ModalPicker = ({
               </TouchableOpacity>
             </ScrollView>
           ) : (
-            <Picker selectedValue={selectedValue} onValueChange={handleSelect}>
-              {data?.pageData?.map((item, idx) => (
-                <Picker.Item
-                  key={item.value ?? item.id ?? idx}
-                  label={item.pickListValue ?? item.name ?? ''}
-                  value={item.value ?? item.id}
-                />
-              ))}
-            </Picker>
+            <>
+              <Text>Chọn Tình trạng hôn nhân</Text>
+              <ScrollView onScroll={handleScroll} scrollEventThrottle={100}>
+                {data?.pageData?.map((item, idx) => {
+                  const value = item.value ?? item.id;
+                  const label =
+                    item.label ?? item.name ?? item.pickListValue ?? '';
+                  const isSelected = selectedValue === value;
+                  return (
+                    <TouchableOpacity
+                      key={value ?? idx}
+                      style={[styles.row, isSelected && styles.selectedRow]}
+                      onPress={() => handleSelect(value)}
+                    >
+                      <Text
+                        style={[
+                          styles.rowText,
+                          isSelected && styles.selectedText,
+                        ]}
+                      >
+                        {label}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+                {loadingMore && (
+                  <ActivityIndicator style={{ marginVertical: 8 }} />
+                )}
+                {hasMore && !loadingMore && (
+                  <TouchableOpacity
+                    style={styles.loadMoreBtn}
+                    onPress={onLoadMore}
+                  >
+                    <Text style={{ color: '#007AFF' }}>Tải thêm</Text>
+                  </TouchableOpacity>
+                )}
+              </ScrollView>
+            </>
           )}
         </View>
       </TouchableOpacity>
@@ -155,7 +185,31 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 8,
+    borderRadius: 4,
+    marginBottom: spacing.medium,
+  },
+  selectedRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: spacing.medium,
+    borderWidth: 0.5,
+    borderColor: colors.Gray,
+    borderRadius: 15,
+    backgroundColor: colors.primary,
+  },
+  rowText: {
+    borderWidth: 0.5,
+    borderColor: colors.Gray,
+    borderRadius: 15,
+    fontSize: 16,
+    paddingVertical: spacing.small,
+    color: '#333',
+    flex: 1,
+    textAlign: 'center',
+  },
+  selectedText: {
+    color: colors.white,
+    fontWeight: '500',
   },
   checkbox: {
     width: 20,
@@ -175,6 +229,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
   },
+
   doneBtn: {
     marginTop: 16,
     alignSelf: 'flex-end',
