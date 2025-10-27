@@ -79,7 +79,11 @@ const ModalPicker = ({
               <Text style={styles.loadingText}>Đang tải dữ liệu...</Text>
             </View>
           ) : multi ? (
-            <ScrollView onScroll={handleScroll} scrollEventThrottle={100}>
+            <ScrollView
+              onScroll={handleScroll}
+              scrollEventThrottle={100}
+              style={{ maxHeight: '60%' }}
+            >
               {data?.pageData?.map((item, idx) => {
                 const value = item.value ?? item.id;
                 const label = item.label ?? item.name ?? '';
@@ -98,7 +102,7 @@ const ModalPicker = ({
                 );
               })}
               {loadingMore && (
-                <ActivityIndicator style={{ marginVertical: 8 }} />
+                <ActivityIndicator style={{ marginVertical: spacing.small }} />
               )}
               {hasMore && !loadingMore && (
                 <TouchableOpacity
@@ -113,9 +117,18 @@ const ModalPicker = ({
               </TouchableOpacity>
             </ScrollView>
           ) : (
-            <>
-              <Text>Chọn Tình trạng hôn nhân</Text>
-              <ScrollView onScroll={handleScroll} scrollEventThrottle={100}>
+            <View style={{ maxHeight: '60%' }}>
+              <Text style={{}}>Chọn 1</Text>
+
+              <ScrollView
+                onScroll={handleScroll}
+                scrollEventThrottle={100}
+                // style={{ maxHeight: '60%' }}
+                contentContainerStyle={{
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
                 {data?.pageData?.map((item, idx) => {
                   const value = item.value ?? item.id;
                   const label =
@@ -139,7 +152,9 @@ const ModalPicker = ({
                   );
                 })}
                 {loadingMore && (
-                  <ActivityIndicator style={{ marginVertical: 8 }} />
+                  <ActivityIndicator
+                    style={{ marginVertical: spacing.small }}
+                  />
                 )}
                 {hasMore && !loadingMore && (
                   <TouchableOpacity
@@ -150,7 +165,7 @@ const ModalPicker = ({
                   </TouchableOpacity>
                 )}
               </ScrollView>
-            </>
+            </View>
           )}
         </View>
       </TouchableOpacity>
@@ -166,11 +181,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   container: {
-    backgroundColor: 'white',
-    borderRadius: 8,
-    padding: 16,
-    minWidth: 250,
-    maxHeight: '70%',
+    backgroundColor: colors.white,
+    borderRadius: spacing.small,
+    padding: spacing.medium,
+    minWidth: '70%',
+    maxHeight: '60%',
+    justifyContent: 'center',
   },
   loadingContainer: {
     alignItems: 'center',
@@ -180,7 +196,7 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 10,
     color: '#666',
-    fontSize: 16,
+    fontSize: spacing.medium,
   },
   row: {
     flexDirection: 'row',
@@ -201,7 +217,7 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderColor: colors.Gray,
     borderRadius: 15,
-    fontSize: 16,
+    fontSize: spacing.medium,
     paddingVertical: spacing.small,
     color: '#333',
     flex: 1,
@@ -218,7 +234,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#888',
     backgroundColor: '#fff',
-    marginRight: 8,
+    marginRight: spacing.small,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -231,16 +247,16 @@ const styles = StyleSheet.create({
   },
 
   doneBtn: {
-    marginTop: 16,
+    marginTop: spacing.medium,
     alignSelf: 'flex-end',
-    padding: 8,
+    padding: spacing.small,
     backgroundColor: '#007AFF',
     borderRadius: 4,
   },
   loadMoreBtn: {
-    marginVertical: 8,
+    marginVertical: spacing.small,
     alignSelf: 'center',
-    padding: 8,
+    padding: spacing.small,
     borderRadius: 4,
     borderWidth: 1,
     borderColor: '#007AFF',
