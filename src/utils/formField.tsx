@@ -4,6 +4,7 @@ import AppInput from '../components/AppInput';
 import { Picker } from '@react-native-picker/picker';
 import { View } from 'react-native';
 import { colors } from './color';
+import ModalPicker from '../components/modal/ModalPicker';
 
 type RenderFieldExtraProps = {
   onPickDate?: (fieldName: string) => void;
@@ -87,28 +88,30 @@ export const renderField = (
       );
     case 'selectOne':
       return (
-        <TouchableOpacity
-          disabled={mode === 'view'}
-          style={{
-            borderWidth: 1,
-            borderRadius: 10,
-            padding: 8,
-            marginBottom: 8,
-          }}
-          onPress={() => {
-            if (extraProps.onPickSelectOne)
-              extraProps.onPickSelectOne(data.fieldName, data.pickerData);
-          }}
-        >
-          <Text>
-            {(() => {
-              const found = (data.pickerData || []).find(
-                item => item.value === value || item.id === value,
-              );
-              return found ? found.label ?? found.name : 'Chọn...';
-            })()}
-          </Text>
-        </TouchableOpacity>
+        <>
+          <TouchableOpacity
+            disabled={mode === 'view'}
+            style={{
+              borderWidth: 1,
+              borderRadius: 10,
+              padding: 8,
+              marginBottom: 8,
+            }}
+            onPress={() => {
+              if (extraProps.onPickSelectOne)
+                extraProps.onPickSelectOne(data.fieldName, data.pickerData);
+            }}
+          >
+            <Text>
+              {(() => {
+                const found = (data.pickerData || []).find(
+                  item => item.value === value || item.id === value,
+                );
+                return found ? found.label ?? found.name : 'Chọn...';
+              })()}
+            </Text>
+          </TouchableOpacity>
+        </>
       );
     case 'selectMulti':
       return (

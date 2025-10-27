@@ -12,7 +12,7 @@ import { Picker } from '@react-native-picker/picker';
 
 const ModalPicker = ({
   visible,
-  data = { pageData: [] },
+  data = {},
   selectedValue,
   onSelect,
   onClose,
@@ -71,7 +71,13 @@ const ModalPicker = ({
         onPress={onClose}
       >
         <View style={styles.container}>
-          {multi ? (
+          {/* Show loading when no data available yet */}
+          {!data?.pageData || data.pageData.length === 0 ? (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="large" color="#007AFF" />
+              <Text style={styles.loadingText}>Đang tải dữ liệu...</Text>
+            </View>
+          ) : multi ? (
             <ScrollView onScroll={handleScroll} scrollEventThrottle={100}>
               {data?.pageData?.map((item, idx) => {
                 const value = item.value ?? item.id;
@@ -107,7 +113,7 @@ const ModalPicker = ({
             </ScrollView>
           ) : (
             <Picker selectedValue={selectedValue} onValueChange={handleSelect}>
-              {data?.pageData.map((item, idx) => (
+              {data?.pageData?.map((item, idx) => (
                 <Picker.Item
                   key={item.value ?? item.id ?? idx}
                   label={item.pickListValue ?? item.name ?? ''}
@@ -135,6 +141,16 @@ const styles = StyleSheet.create({
     padding: 16,
     minWidth: 250,
     maxHeight: '70%',
+  },
+  loadingContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
+  },
+  loadingText: {
+    marginTop: 10,
+    color: '#666',
+    fontSize: 16,
   },
   row: {
     flexDirection: 'row',

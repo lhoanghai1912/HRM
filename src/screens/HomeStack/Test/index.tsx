@@ -34,7 +34,7 @@ const Test = () => {
   const [openMonth, setOpenMonth] = useState(false);
   const [open, setOpen] = useState(false);
   const [pickerField, setPickerField] = useState<string | null>(null);
-  const [pickerData, setPickerData] = useState<any>({});
+  const [pickerData, setPickerData] = useState<any>({ pageData: [] });
   const [openPicker, setOpenPicker] = useState(false);
   const [datePickerField, setDatePickerField] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -121,21 +121,27 @@ const Test = () => {
     setPickerConfig(cfg);
     setPickerPage(1);
 
-    setLoading(true);
-    let data = [];
-    if (cfg.tableNameSource === 'PickList') {
-      data = await getPickerData(
-        cfg.tableNameSource,
-        { page: 1, pageSize: 10, filter: '', orderBy: '', search: '' },
-        cfg,
-      );
-      setHasMore(data.length === 10);
-    }
-    console.log('Picker data:', data);
-
-    setPickerData(data);
+    // Mở modal ngay lập tức với dữ liệu rỗng
+    setPickerData({ pageData: [] }); // Reset dữ liệu cũ với đúng structure
     setOpenPicker(true);
-    setLoading(false);
+
+    // Load dữ liệu trong background
+    try {
+      let data = [];
+      if (cfg.tableNameSource === 'PickList') {
+        data = await getPickerData(
+          cfg.tableNameSource,
+          { page: 1, pageSize: 10, filter: '', orderBy: '', search: '' },
+          cfg,
+        );
+        setHasMore(data.length === 10);
+      }
+      console.log('Picker data:', data);
+      setPickerData(data); // Wrap data trong pageData
+    } catch (error) {
+      console.error('Error loading picker data:', error);
+      setPickerData({ pageData: [] });
+    }
   };
 
   const handleLoadMore = async () => {
@@ -147,7 +153,9 @@ const Test = () => {
       { page: nextPage, pageSize: 10, filter: '', orderBy: '', search: '' },
       pickerConfig,
     );
-    setPickerData(prev => [...prev, ...moreData]);
+    setPickerData(prev => ({
+      pageData: [...(prev.pageData || []), ...moreData],
+    }));
     setHasMore(moreData.length === 10);
     setPickerPage(nextPage);
     setLoadingMore(false);
