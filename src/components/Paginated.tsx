@@ -66,13 +66,26 @@ export function usePaginatedList(fetchApi, PAGE_SIZE = 15, params = {}) {
   }, [JSON.stringify(params)]);
 
   const handleLoadMore = useCallback(() => {
-    if (loadingRef.current || loadingMore || noMoreData || loading) return;
+    console.log('handleLoadMore called:', {
+      loadingRef: loadingRef.current,
+      loadingMore,
+      noMoreData,
+      loading,
+      currentDataLength: data.length,
+    });
+
+    if (loadingRef.current || loadingMore || noMoreData || loading) {
+      console.log('Load more blocked by conditions');
+      return;
+    }
+
     setPage(prev => {
       const next = prev + 1;
+      console.log('Loading page:', next);
       fetchData(next, false);
       return next;
     });
-  }, [loadingMore, noMoreData, loading, fetchData]);
+  }, [loadingMore, noMoreData, loading, fetchData, data.length]);
 
   const handleRefresh = useCallback(() => {
     setRefreshing(true);

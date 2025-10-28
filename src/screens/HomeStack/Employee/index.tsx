@@ -33,6 +33,7 @@ const COLUMN_MIN_WIDTHS = {
 
 const Employee = ({ navigation }) => {
   const flatListRef = useRef<FlatList>(null);
+  const scrollY = useRef(0);
 
   // Sử dụng hook phân trang
   const {
@@ -259,16 +260,27 @@ const Employee = ({ navigation }) => {
                 if (
                   !onEndReachedCalledDuringMomentum.current &&
                   !loadingMore &&
-                  !noMoreData
+                  !noMoreData &&
+                  !loading &&
+                  employee.length > 0 // Đảm bảo có dữ liệu trước khi load more
                 ) {
+                  console.log('Load more triggered');
                   handleLoadMore();
                   onEndReachedCalledDuringMomentum.current = true;
                 }
               }}
+              onScroll={({ nativeEvent }) => {
+                const currentScrollY = nativeEvent.contentOffset.y;
+                // Reset flag khi scroll xuống (chỉ cho phép load more khi scroll xuống)
+                if (currentScrollY > scrollY.current) {
+                  onEndReachedCalledDuringMomentum.current = false;
+                }
+                scrollY.current = currentScrollY;
+              }}
               onMomentumScrollBegin={() => {
                 onEndReachedCalledDuringMomentum.current = false;
               }}
-              onEndReachedThreshold={0.2}
+              onEndReachedThreshold={0.01} // Chỉ load khi rất gần cuối (1% cuối)
               showsVerticalScrollIndicator={false}
             />
           </View>
