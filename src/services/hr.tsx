@@ -51,6 +51,8 @@ export const employee_GetAll = async (params: GetAllParams) => {
     const queryString = new URLSearchParams(filteredParams as any).toString();
 
     const res = await apiClient.get(`Employee?${queryString}`);
+    console.log('employee_GetAll res:', res.data);
+
     return res.data;
   } catch (error) {
     console.log('Error fetching employee_GetAll:', error);

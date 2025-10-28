@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { colors } from '../../utils/color';
 import { spacing } from '../../utils/spacing';
+import AppStyles from '../AppStyle';
 
 const ModalPicker = ({
   visible,
@@ -21,6 +22,7 @@ const ModalPicker = ({
   onLoadMore, // callback để load thêm dữ liệu
   loadingMore, // boolean: đang load thêm
   hasMore = false, // boolean: còn dữ liệu để load tiếp
+  fieldLabel = '',
 }) => {
   const [multiValue, setMultiValue] = useState(
     Array.isArray(selectedValue) ? selectedValue : [],
@@ -38,12 +40,21 @@ const ModalPicker = ({
       setMultiValue(newValue);
     } else {
       onSelect(value);
+      const item = data.pageData.find(i => (i.value ?? i.id) === value);
+      const label = item?.label ?? item?.name ?? item?.pickListValue ?? '';
+      onSelect({ value, label }); // truyền cả value và label ra ngoài
       onClose();
     }
   };
 
   const handleDone = () => {
-    onSelect(multiValue);
+    const selectedItems = data.pageData
+      .filter(i => multiValue.includes(i.value ?? i.id))
+      .map(i => ({
+        value: i.value ?? i.id,
+        label: i.label ?? i.name ?? i.pickListValue ?? '',
+      }));
+    onSelect(selectedItems);
     onClose();
   };
 
@@ -75,14 +86,20 @@ const ModalPicker = ({
           {/* Show loading when no data available yet */}
           {!data?.pageData || data.pageData.length === 0 ? (
             <View style={styles.loadingContainer}>
-              <ActivityIndicator size="large" color="#007AFF" />
-              <Text style={styles.loadingText}>Đang tải dữ liệu...</Text>
+              {loadingMore ? (
+                <>
+                  <ActivityIndicator size="large" color="#007AFF" />
+                  <Text style={styles.loadingText}>Đang tải dữ liệu...</Text>
+                </>
+              ) : (
+                <Text style={styles.loadingText}>Không có dữ liệu</Text>
+              )}
             </View>
           ) : multi ? (
             <ScrollView
               onScroll={handleScroll}
               scrollEventThrottle={100}
-              style={{ maxHeight: '60%' }}
+              style={{ maxHeight: '80%' }}
             >
               {data?.pageData?.map((item, idx) => {
                 const value = item.value ?? item.id;
@@ -117,13 +134,19 @@ const ModalPicker = ({
               </TouchableOpacity>
             </ScrollView>
           ) : (
-            <View style={{ maxHeight: '60%' }}>
-              <Text style={{}}>Chọn 1</Text>
+            <View style={{ flex: 1 }}>
+              <Text
+                style={[
+                  AppStyles.label,
+                  { textAlign: 'center', marginBottom: spacing.medium },
+                ]}
+              >
+                Chọn {fieldLabel}
+              </Text>
 
               <ScrollView
                 onScroll={handleScroll}
                 scrollEventThrottle={100}
-                // style={{ maxHeight: '60%' }}
                 contentContainerStyle={{
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -185,7 +208,7 @@ const styles = StyleSheet.create({
     borderRadius: spacing.small,
     padding: spacing.medium,
     minWidth: '70%',
-    maxHeight: '60%',
+    maxHeight: '50%',
     justifyContent: 'center',
   },
   loadingContainer: {

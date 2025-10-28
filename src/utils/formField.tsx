@@ -1,16 +1,18 @@
 import React from 'react';
-import { TextInput, TouchableOpacity, Text } from 'react-native';
+import { View, TouchableOpacity, Text, Image } from 'react-native';
 import AppInput from '../components/AppInput';
-import { Picker } from '@react-native-picker/picker';
-import { View } from 'react-native';
-import { colors } from './color';
-import ModalPicker from '../components/modal/ModalPicker';
+import icons from '../assets/icons';
+import AppStyles from '../components/AppStyle';
 
 type RenderFieldExtraProps = {
   onPickDate?: (fieldName: string) => void;
   onPickMonth?: (fieldName: string) => void;
   onPickSelectOne?: (fieldName: string, pickerData: any) => void;
   onPickSelectMulti?: (fieldName: string, pickerData: any) => void;
+  pickerData?: any[]; // thêm dòng này
+  formData?: Record<string, any>; // thêm dòng này
+  onPickFile?: (fieldName: string) => void;
+  onPickImage?: (fieldName: string) => void;
 };
 
 // Ánh xạ DataType hoặc TypeControl từ API sang loại trường đã định nghĩa
@@ -99,12 +101,27 @@ export const renderField = (
             }}
             onPress={() => {
               if (extraProps.onPickSelectOne)
-                extraProps.onPickSelectOne(data.fieldName, data.pickerData);
+                extraProps.onPickSelectOne(
+                  data.fieldName,
+                  extraProps.pickerData,
+                );
             }}
           >
             <Text>
               {(() => {
-                const found = (data.pickerData || []).find(
+                // Ưu tiên lấy label từ formData nếu có
+                if (
+                  extraProps.formData &&
+                  extraProps.formData[data.fieldName + 'Label']
+                ) {
+                  return extraProps.formData[data.fieldName + 'Label'];
+                }
+                // value là object { value, label }
+                if (value && typeof value === 'object' && value.label) {
+                  return value.label;
+                }
+                // fallback: tìm trong extraProps.pickerData
+                const found = (extraProps.pickerData || []).find(
                   item => item.value === value || item.id === value,
                 );
                 return found ? found.label ?? found.name : 'Chọn...';
@@ -125,16 +142,38 @@ export const renderField = (
           }}
           onPress={() => {
             if (extraProps.onPickSelectMulti)
-              extraProps.onPickSelectMulti(data.fieldName, data.pickerData);
+              extraProps.onPickSelectMulti(
+                data.fieldName,
+                extraProps.pickerData,
+              );
           }}
         >
           <Text>
-            {Array.isArray(value) && value.length > 0
-              ? (data.pickerData || [])
-                  .filter(item => value.includes(item.value ?? item.id))
-                  .map(item => item.label ?? item.name)
-                  .join(', ')
-              : 'Chọn...'}
+            {(() => {
+              // Ưu tiên lấy label từ formData nếu có
+              if (
+                extraProps.formData &&
+                extraProps.formData[data.fieldName + 'Label']
+              ) {
+                // Nếu là mảng, join lại
+                const labels = extraProps.formData[data.fieldName + 'Label'];
+                return Array.isArray(labels) ? labels.join(', ') : labels;
+              }
+              // Nếu value là mảng object { value, label }
+              if (Array.isArray(value) && value.length > 0) {
+                return value
+                  .map(item =>
+                    typeof item === 'object' && item.label
+                      ? item.label
+                      : (extraProps.pickerData || []).find(
+                          i => i.value === item || i.id === item,
+                        )?.label ?? '',
+                  )
+                  .filter(Boolean)
+                  .join(', ');
+              }
+              return 'Chọn...';
+            })()}
           </Text>
         </TouchableOpacity>
       );
@@ -190,15 +229,62 @@ export const renderField = (
       );
     case 'file':
       return (
-        <TouchableOpacity
-          disabled={mode === 'view'}
-          style={{ borderWidth: 1, marginBottom: 8, padding: 8 }}
-          onPress={() => {
-            /* show file picker */
-          }}
-        >
-          <Text>{value ? value.name : data.fieldName}</Text>
-        </TouchableOpacity>
+        <View style={{ borderWidth: 1, marginBottom: 8, padding: 8 }}>
+          <TouchableOpacity
+            disabled={mode === 'view'}
+            onPress={() => {
+              if (extraProps.onPickFile) extraProps.onPickFile(data.fieldName);
+            }}
+          >
+            <Text style={{ fontWeight: 'bold' }}></Text>
+          </TouchableOpacity>
+          {/* Hiển thị danh sách file đã chọn */}
+          {Array.isArray(value) && value.length > 0 ? (
+            value.map((file, idx) => (
+              <View
+                key={file.uri || file.name || idx}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginBottom: 4,
+                  // justifyContent: 'space-between',
+                }}
+              >
+                <Text style={{ flex: 1 }}>{file.name || file}</Text>
+                {mode !== 'view' && (
+                  <TouchableOpacity
+                    onPress={() => {
+                      // Xóa file khỏi danh sách
+                      const newFiles = value.filter((_, i) => i !== idx);
+                      onChange(data.fieldName, newFiles);
+                    }}
+                    style={{ padding: 4 }}
+                  >
+                    <Image source={icons.clear} style={AppStyles.icon}></Image>
+                  </TouchableOpacity>
+                )}
+              </View>
+            ))
+          ) : value && value.name ? (
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
+              <Text style={{ flex: 1 }}>{value.name}</Text>
+              {mode !== 'view' && (
+                <TouchableOpacity
+                  onPress={() => onChange(data.fieldName, null)}
+                  style={{ padding: 4 }}
+                >
+                  <Image source={icons.clear} style={AppStyles.icon}></Image>
+                </TouchableOpacity>
+              )}
+            </View>
+          ) : null}
+        </View>
       );
     case 'image':
       return (
@@ -206,10 +292,16 @@ export const renderField = (
           disabled={mode === 'view'}
           style={{ borderWidth: 1, marginBottom: 8, padding: 8 }}
           onPress={() => {
-            /* show image picker */
+            if (extraProps.onPickImage) extraProps.onPickImage(data.fieldName);
           }}
         >
-          <Text>{value ? 'Đã chọn ảnh' : data.fieldName}</Text>
+          <Text>
+            {value && value.uri
+              ? 'Đã chọn ảnh'
+              : value && typeof value === 'string'
+              ? 'Đã chọn ảnh'
+              : 'Chọn ảnh'}
+          </Text>
         </TouchableOpacity>
       );
     // Các kiểu khác có thể bổ sung thêm

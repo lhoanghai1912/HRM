@@ -9,6 +9,7 @@ export function usePaginatedList(fetchApi, PAGE_SIZE = 15, params = {}) {
   const [noMoreData, setNoMoreData] = useState(false);
 
   const loadingRef = useRef(false);
+  console.log('data in usePaginatedList:', data);
 
   const fetchData = useCallback(
     async (currentPage: number, isRefresh = false, extraParams = {}) => {
@@ -25,10 +26,11 @@ export function usePaginatedList(fetchApi, PAGE_SIZE = 15, params = {}) {
         const res = await fetchApi({
           Page: currentPage,
           PageSize: PAGE_SIZE,
-          ...params, // ← THÊM LẠI params
+          ...params,
           ...extraParams,
         });
-        const result = res.result || [];
+        const result = res?.pageData || []; // Sửa ở đây: chỉ lấy mảng pageData
+        console.log('Fetched data:', res);
 
         if (isRefresh || currentPage === 1) {
           setData(result);

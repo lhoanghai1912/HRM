@@ -94,7 +94,7 @@ export const form_itemStack = (t = i18next.t.bind(i18next)) => [
     icon: icons.list,
     bg: '#FFEFE5',
     // screen: Screen_Name.Recruitment, // Đặt tên màn hình đúng với navigation
-    screen: Screen_Name.AddEmployee,
+    screen: Screen_Name.Employee_Drawer,
   },
 ];
 

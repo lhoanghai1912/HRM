@@ -36,6 +36,7 @@ export const Screen_Name = {
 
   //Employee
   Employee: 'Employee',
+  Details_Employee: 'Details_Employee',
 
   //Shift
   Shift: 'Shift',

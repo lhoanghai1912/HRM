@@ -22,8 +22,9 @@ import {
 } from '../../../services/data';
 import AppStyles from '../../../components/AppStyle';
 import icons from '../../../assets/icons';
-import { Modal } from 'react-native';
 import ModalPicker from '../../../components/modal/ModalPicker';
+import * as ImagePicker from 'react-native-image-picker';
+import { pick } from '@react-native-documents/picker';
 
 const Test = () => {
   const [field, setField] = useState<any>();
@@ -82,7 +83,7 @@ const Test = () => {
   const fetchAllData = async () => {
     setLoading(true);
     try {
-      const layout = testData; // hoặc await getData('profile');
+      const layout = await getData('profile');
       const employeeData = await getEmployee(6);
       const formData = mapEmployeeToFormData(layout, employeeData);
       setField(layout);
@@ -106,6 +107,36 @@ const Test = () => {
   const handlePickMonth = fieldName => {
     setDatePickerField(fieldName);
     setOpenMonth(true);
+  };
+
+  const handlePickFile = async fieldName => {
+    try {
+      const res = await pick({
+        allowMultiSelection: true,
+        type: ['*/*'],
+      });
+      if (res && res.length > 0) {
+        setFormData(prev => ({
+          ...prev,
+          [fieldName]: res.map(file => ({
+            uri: file.uri,
+            name: file.name,
+          })),
+        }));
+      }
+    } catch (err) {
+      // Xử lý khi cancel hoặc lỗi
+    }
+  };
+
+  const handlePickImage = async fieldName => {
+    const result = await ImagePicker.launchImageLibrary({ mediaType: 'photo' });
+    if (result.assets && result.assets.length > 0) {
+      setFormData(prev => ({
+        ...prev,
+        [fieldName]: { uri: result.assets[0].uri },
+      }));
+    }
   };
 
   const getDatePickerMode = () => {
@@ -268,12 +299,15 @@ const Test = () => {
                         handleChange,
                         'edit',
                         {
+                          formData, // truyền thêm formData vào extraProps
                           onPickDate: fieldName => handlePickDate(fieldName),
                           onPickMonth: fieldName => handlePickMonth(fieldName),
                           onPickSelectOne: (fieldName, pickerData) =>
                             handlePickSelect(fieldName, cfg),
                           onPickSelectMulti: (fieldName, pickerData) =>
                             handlePickSelect(fieldName, cfg),
+                          onPickFile: fieldName => handlePickFile(fieldName),
+                          onPickImage: fieldName => handlePickImage(fieldName),
                         },
                       )}
                     </View>
@@ -330,12 +364,29 @@ const Test = () => {
           visible={openPicker}
           data={pickerData}
           selectedValue={formData[pickerField]}
-          onSelect={value => handleChange(pickerField, value)}
+          onSelect={selected => {
+            if (Array.isArray(selected)) {
+              // Multi select: selected là mảng object { value, label }
+              setFormData(prev => ({
+                ...prev,
+                [pickerField]: selected.map(i => i.value),
+                [`${pickerField}Label`]: selected.map(i => i.label),
+              }));
+            } else {
+              // Single select: selected là object { value, label }
+              setFormData(prev => ({
+                ...prev,
+                [pickerField]: selected.value,
+                [`${pickerField}Label`]: selected.label,
+              }));
+            }
+          }}
           onClose={() => setOpenPicker(false)}
           multi={pickerType === 'selectMulti'}
           onLoadMore={handleLoadMore}
           loadingMore={loadingMore}
           hasMore={hasMore}
+          fieldLabel={pickerConfig?.label || ''}
         />
       )}
       {loading && (
