@@ -19,6 +19,7 @@ import Business_Trip from '../screens/HomeStack/Application/Trip';
 import Shift_Update from '../screens/HomeStack/Application/Shift_Update';
 import Detail_Late_Early from '../screens/HomeStack/Application/Late_Early/Detail';
 import Employee from '../screens/HomeStack/Employee';
+import DetailEmployee from '../screens/HomeStack/Employee/DetailEmployee';
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
@@ -119,7 +120,10 @@ export const EmployeeDrawer = () => (
     })}
   >
     <Drawer.Screen name={Screen_Name.Employee} component={Employee} />
-    <Drawer.Screen name={Screen_Name.Details_Shift} component={Details_Shift} />
+    <Drawer.Screen
+      name={Screen_Name.Details_Employee}
+      component={DetailEmployee}
+    />
   </Drawer.Navigator>
 );
 

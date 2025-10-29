@@ -289,15 +289,17 @@ const Employee = ({ navigation }) => {
 
       {/* Footer */}
 
-      {loading && (
+      {(loading || refreshing) && (
         <View
           style={{
-            paddingVertical: 24,
-            alignItems: 'center',
+            ...StyleSheet.absoluteFillObject,
+            backgroundColor: 'rgba(0,0,0,0.3)',
             justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 10,
           }}
         >
-          <ActivityIndicator />
+          <ActivityIndicator size="large" color="#E53935" />
         </View>
       )}
     </View>
