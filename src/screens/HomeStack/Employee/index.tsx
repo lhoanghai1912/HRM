@@ -8,7 +8,7 @@ import {
   ActivityIndicator,
   TouchableOpacity,
 } from 'react-native';
-import CustomHeader from '../../../navigation/CustomHeader';
+import CustomHeader from '../../../components/CustomHeader';
 import icons from '../../../assets/icons';
 import { usePaginatedList } from '../../../components/Paginated';
 import { employee_GetAll } from '../../../services/hr';
@@ -19,6 +19,9 @@ import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import AppStyles from '../../../components/AppStyle';
 import { navigate } from '../../../navigation/RootNavigator';
 import { Screen_Name } from '../../../navigation/ScreenName';
+import { useNavigation } from '@react-navigation/native';
+import { DrawerNavigationProp } from '@react-navigation/drawer';
+import NavBar from '../../../components/Navbar';
 
 const PAGE_SIZE = 15;
 const COLUMN_MIN_WIDTHS = {
@@ -31,7 +34,9 @@ const COLUMN_MIN_WIDTHS = {
   location: ms(120),
 };
 
-const Employee = ({ navigation }) => {
+const Employee = ({}) => {
+  const navigation = useNavigation<DrawerNavigationProp<any>>();
+
   const flatListRef = useRef<FlatList>(null);
   const scrollY = useRef(0);
 
@@ -127,12 +132,20 @@ const Employee = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <CustomHeader
+      {/* <CustomHeader
         label="Employee Application"
         Home={false}
-        rightIcon={icons.back}
-        rightPress={() => navigation.goBack()}
+        // leftIcon={icons.menu}
+        // leftPress={() => navigation.goBack()}
+      /> */}
+      <CustomHeader
+        label="Employee Application"
+        leftIcon={icons.menu}
+        leftPress={() => navigation.openDrawer()}
+        // rightIcon={icons.document}
+        // rightPress={() => {}}
       />
+      {/* <NavBar title="Employee Application" /> */}
       {/* Toolbar */}
       <View style={styles.toolbar}>
         <TextInput placeholder="Tìm kiếm" style={styles.searchInput} />

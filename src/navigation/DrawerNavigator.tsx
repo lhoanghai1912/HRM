@@ -104,7 +104,9 @@ export const EmployeeDrawer = () => (
       },
       drawerIcon: ({ focused }) => {
         const iconMap = {
-          [Screen_Name.Shift]: focused ? icons.shift_focus : icons.shift,
+          [Screen_Name.Employee]: focused
+            ? icons.username_focus
+            : icons.username,
           [Screen_Name.Details_Shift]: focused
             ? icons.username_focus
             : icons.username,
@@ -119,12 +121,24 @@ export const EmployeeDrawer = () => (
       },
     })}
   >
-    <Drawer.Screen name={Screen_Name.Employee} component={Employee} />
-    <Drawer.Screen
+    <Drawer.Screen name={Screen_Name.Employee} component={EmployeeStack} />
+  </Drawer.Navigator>
+);
+
+export const EmployeeStack = () => (
+  <Stack.Navigator
+    id={undefined}
+    screenOptions={{
+      headerShown: false,
+    }}
+    initialRouteName={Screen_Name.Employee}
+  >
+    <Stack.Screen name={Screen_Name.Employee} component={Employee} />
+    <Stack.Screen
       name={Screen_Name.Details_Employee}
       component={DetailEmployee}
     />
-  </Drawer.Navigator>
+  </Stack.Navigator>
 );
 
 export const ShiftStack = () => (

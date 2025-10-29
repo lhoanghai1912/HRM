@@ -9,22 +9,25 @@ import {
 import { colors } from '../utils/color';
 import { spacing } from '../utils/spacing';
 import icons from '../assets/icons';
-import AppStyles from '../components/AppStyle';
+import AppStyles from './AppStyle';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
-import { navigate } from './RootNavigator';
-import { Screen_Name } from './ScreenName';
+import { navigate } from '../navigation/RootNavigator';
+import { Screen_Name } from '../navigation/ScreenName';
 import { form_user } from '../utils/form';
 import { act, use, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import LanguageModal from '../components/modal/ModalLanguage';
+import LanguageModal from './modal/ModalLanguage';
 import i18n from '../language';
 import { languages } from '../utils/language';
 import User from '../screens/HomeStack/User';
+import { useNavigation } from '@react-navigation/native';
 
 interface CustomHeaderProps {
   Home?: boolean;
   label?: string;
+  leftIcon?: ImageRequireSource;
+  leftPress?: () => void;
   rightIcon?: ImageRequireSource;
   rightPress?: () => void;
 }
@@ -32,6 +35,8 @@ interface CustomHeaderProps {
 const CustomHeader: React.FC<CustomHeaderProps> = ({
   Home,
   label,
+  leftIcon,
+  leftPress,
   rightIcon,
   rightPress,
 }) => {
@@ -50,34 +55,41 @@ const CustomHeader: React.FC<CustomHeaderProps> = ({
   return (
     <View style={[styles.header, { paddingTop: inset.top }]}>
       <View style={[styles.headerItem, { width: '75%' }]}>
-        <TouchableOpacity
-          onPress={() => {
-            if (rightPress) rightPress();
-          }}
-          style={{ marginRight: spacing.medium }}
-        >
-          <Image
-            source={rightIcon}
-            style={[AppStyles.icon]}
-            resizeMode="contain"
-          />
-        </TouchableOpacity>
+        {leftIcon && (
+          <TouchableOpacity
+            onPress={() => {
+              leftPress();
+            }}
+            style={{ marginRight: spacing.medium }}
+          >
+            <Image
+              source={leftIcon ? leftIcon : icons.back}
+              style={[AppStyles.icon]}
+              resizeMode="contain"
+            />
+          </TouchableOpacity>
+        )}
         <Text style={[AppStyles.label, { textAlign: 'left' }]}>{label}</Text>
       </View>
       <View style={[styles.headerItem, { width: '5%' }]}></View>
       <View
         style={[
           styles.headerItem,
-          { width: '20%', justifyContent: 'space-between' },
+          {
+            width: '20%',
+            justifyContent: rightIcon ? 'space-between' : 'flex-end',
+          },
         ]}
       >
-        <TouchableOpacity onPress={() => navigate(Screen_Name.Notification)}>
-          <Image
-            source={icons.noti}
-            style={AppStyles.icon}
-            resizeMode="contain"
-          />
-        </TouchableOpacity>
+        {rightIcon && (
+          <TouchableOpacity onPress={() => rightPress()}>
+            <Image
+              source={rightIcon}
+              style={[AppStyles.icon]}
+              resizeMode="contain"
+            />
+          </TouchableOpacity>
+        )}
         <TouchableOpacity onPress={() => setShowUser(true)}>
           <Image
             source={icons.username}

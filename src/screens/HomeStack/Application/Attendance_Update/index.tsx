@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import CustomHeader from '../../../../navigation/CustomHeader';
+import CustomHeader from '../../../../components/CustomHeader';
 import icons from '../../../../assets/icons';
 
 const Attendance_Update = ({ navigation }) => {
@@ -9,8 +9,8 @@ const Attendance_Update = ({ navigation }) => {
       <CustomHeader
         label="Application"
         Home={false}
-        rightIcon={icons.back}
-        rightPress={() => {
+        leftIcon={icons.back}
+        leftPress={() => {
           navigation.goBack();
         }}
       />

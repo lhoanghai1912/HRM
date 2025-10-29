@@ -5,7 +5,7 @@ import { colors } from '../../utils/color';
 import { ms, spacing } from '../../utils/spacing';
 import { fonts } from '../../utils/fontSize';
 import AppStyles from '../../components/AppStyle';
-import CustomHeader from '../../navigation/CustomHeader';
+import CustomHeader from '../../components/CustomHeader';
 
 const AddForm = () => {
   const { t } = useTranslation();

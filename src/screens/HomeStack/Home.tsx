@@ -8,7 +8,7 @@ import { colors, darken } from '../../utils/color';
 import icons from '../../assets/icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import AppStyles from '../../components/AppStyle';
-import CustomHeader from '../../navigation/CustomHeader';
+import CustomHeader from '../../components/CustomHeader';
 import { form_itemHRM, form_itemStack } from '../../utils/form';
 import { useTranslation } from 'react-i18next';
 import { navigate } from '../../navigation/RootNavigator';

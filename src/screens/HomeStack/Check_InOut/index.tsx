@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import CustomHeader from '../../../navigation/CustomHeader';
+import CustomHeader from '../../../components/CustomHeader';
 import { useNavigation } from '@react-navigation/native';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 

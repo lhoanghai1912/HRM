@@ -7,7 +7,7 @@ import {
   RefreshControl,
   ActivityIndicator,
 } from 'react-native';
-import CustomHeader from '../../../../navigation/CustomHeader';
+import CustomHeader from '../../../../components/CustomHeader';
 import icons from '../../../../assets/icons';
 // import getLeaveApplications from api file
 
@@ -57,8 +57,8 @@ const Leave = ({ navigation }) => {
       <CustomHeader
         label="Leave Application"
         Home={false}
-        rightIcon={icons.back}
-        rightPress={() => navigation.goBack()}
+        leftIcon={icons.back}
+        leftPress={() => navigation.goBack()}
       />
       {/* <FlatList
         ref={flatListRef}

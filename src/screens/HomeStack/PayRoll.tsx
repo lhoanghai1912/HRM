@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { colors } from '../../utils/color';
 import { ms, spacing } from '../../utils/spacing';
 import { fonts } from '../../utils/fontSize';
-import CustomHeader from '../../navigation/CustomHeader';
+import CustomHeader from '../../components/CustomHeader';
 import AppStyles from '../../components/AppStyle';
 
 const PayRoll = () => {

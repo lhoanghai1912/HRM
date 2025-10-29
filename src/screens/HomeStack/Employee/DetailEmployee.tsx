@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -7,7 +7,7 @@ import {
   Image,
   ActivityIndicator,
 } from 'react-native';
-import CustomHeader from '../../../navigation/CustomHeader';
+import CustomHeader from '../../../components/CustomHeader';
 import { ScrollView } from 'react-native-gesture-handler';
 import { spacing } from '../../../utils/spacing';
 import { mapFieldType, renderField } from '../../../utils/formField';
@@ -18,16 +18,20 @@ import {
   getData,
   getEmployee,
   getPickerData,
+  updateEmployee,
+  uploadFile,
 } from '../../../services/data';
 import AppStyles from '../../../components/AppStyle';
 import icons from '../../../assets/icons';
 import ModalPicker from '../../../components/modal/ModalPicker';
 import * as ImagePicker from 'react-native-image-picker';
 import { pick } from '@react-native-documents/picker';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { DrawerNavigationProp } from '@react-navigation/drawer';
 
-const DetailEmployee = ({ navigation, route }) => {
+const DetailEmployee = ({ route }) => {
   const [field, setField] = useState<any>();
-  console.log('route', route);
+  const navigation = useNavigation<DrawerNavigationProp<any>>();
 
   const employeeId = route?.params?.id || 6;
   const [formData, setFormData] = useState({});
@@ -50,13 +54,23 @@ const DetailEmployee = ({ navigation, route }) => {
   const [hasMore, setHasMore] = useState(false);
   const [pickerConfig, setPickerConfig] = useState(null);
   const [pickerPage, setPickerPage] = useState(1);
+  const [changedFields, setChangedFields] = useState<
+    { fieldName: string; fieldValue: any }[]
+  >([]);
+  const [pickedFiles, setPickedFiles] = useState<
+    { fieldName: string; file: {} }[]
+  >([]);
 
   // console.log('test render', testData);
+  console.log('changedFields', changedFields);
 
-  useEffect(() => {
-    fetchData();
-    fetchAllData();
-  }, [employeeId]); // Chỉ gọi API khi mount
+  useFocusEffect(
+    useCallback(() => {
+      fetchData();
+      fetchAllData();
+      console.log('Employee ID:', employeeId);
+    }, [employeeId]),
+  ); // Chỉ gọi API khi mount
 
   const fetchData = async () => {
     try {
@@ -97,10 +111,6 @@ const DetailEmployee = ({ navigation, route }) => {
     }
   };
 
-  const handleChange = (fieldName, value) => {
-    setFormData(prev => ({ ...prev, [fieldName]: value }));
-  };
-
   const handlePickDate = fieldName => {
     setDatePickerField(fieldName);
     setOpen(true); // Thêm dòng này để mở DatePicker
@@ -118,19 +128,36 @@ const DetailEmployee = ({ navigation, route }) => {
         type: ['*/*'],
       });
       if (res && res.length > 0) {
+        const file = {
+          uri: res[0].uri,
+          name: res[0].name,
+          type: res[0].type,
+          size: res[0].size,
+        };
+
+        // Cập nhật formData để hiển thị
         setFormData(prev => ({
           ...prev,
-          [fieldName]: {
-            uri: res[0].uri,
-            name: res[0].name,
-          },
+          [fieldName]: file,
         }));
+
+        // Lưu vào pickedFiles
+        setPickedFiles(prev => {
+          const idx = prev.findIndex(f => f.fieldName === fieldName);
+          if (idx !== -1) {
+            const updated = [...prev];
+            updated[idx] = { fieldName, file };
+            return updated;
+          }
+          return [...prev, { fieldName, file }];
+        });
+
+        console.log('Picked file:', res);
       }
     } catch (err) {
-      console.error('Error picking file:', err); // Improved error handling
+      console.error('Error picking file:', err);
     }
   };
-
   const handlePickImage = async fieldName => {
     const result = await ImagePicker.launchImageLibrary({ mediaType: 'photo' });
     if (result.assets && result.assets.length > 0) {
@@ -140,12 +167,45 @@ const DetailEmployee = ({ navigation, route }) => {
       }));
     }
   };
+  console.log('Picked files array:', pickedFiles);
 
-  const getDatePickerMode = () => {
-    if (!datePickerField) return 'date';
-    if (!field) return 'date';
-    if (field.DataType === 6) return 'month';
-    return 'date';
+  const handleChange = (fieldName, value) => {
+    setFormData(prev => ({ ...prev, [fieldName]: value }));
+
+    setChangedFields(prev => {
+      // Nếu field đã có trong mảng thì cập nhật, nếu chưa thì thêm mới
+      const idx = prev.findIndex(f => f.fieldName === fieldName);
+      if (idx !== -1) {
+        const updated = [...prev];
+        updated[idx] = { fieldName, fieldValue: value };
+        return updated;
+      }
+      return [...prev, { fieldName, fieldValue: value }];
+    });
+  };
+
+  const handleSave = async () => {
+    try {
+      setLoading(true);
+      if (changedFields.length > 0) {
+        console.log('Updating employee fields:', changedFields);
+        await updateEmployee(employeeId, changedFields);
+      }
+
+      // 2. Upload các file đã chọn
+      if (pickedFiles.length > 0) {
+        console.log('Uploading files:', pickedFiles);
+        await uploadFile({
+          id: employeeId,
+          type: 'Employee',
+          files: pickedFiles,
+        });
+      }
+    } catch (error) {
+      console.error('Error saving data:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handlePickSelect = async (fieldName, cfg) => {
@@ -222,28 +282,6 @@ const DetailEmployee = ({ navigation, route }) => {
       });
     });
     return formData;
-  };
-
-  const getDefaultId = cfg => {
-    if (!cfg.defaultValue) return undefined;
-    try {
-      const def =
-        typeof cfg.defaultValue === 'string'
-          ? JSON.parse(cfg.defaultValue)
-          : cfg.defaultValue;
-
-      // Chọn 1
-      if (mapFieldType(cfg.typeControl) === 'selectOne') {
-        return def.id;
-      }
-      // Chọn nhiều
-      if (mapFieldType(cfg.typeControl) === 'selectMulti') {
-        const arr = Array.isArray(def) ? def : [def];
-        return arr.map(item => item.id);
-      }
-    } catch (e) {
-      return undefined;
-    }
   };
 
   const renderFields = () => {
@@ -324,7 +362,13 @@ const DetailEmployee = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
-      <CustomHeader label="DetailEmployee Screen" />
+      <CustomHeader
+        label="DetailEmployee Screen"
+        leftIcon={icons.menu}
+        leftPress={() => navigation.openDrawer()}
+        rightIcon={icons.document_focus}
+        rightPress={() => handleSave()}
+      />
       <ScrollView style={styles.scrollView}>{renderFields()}</ScrollView>
 
       {/* Date Picker cho kiểu ngày */}

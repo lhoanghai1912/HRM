@@ -24,7 +24,7 @@ import { employee_Update, employeeAvatar_Update } from '../../services/user';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { useNavigation } from '@react-navigation/native';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
-import CustomHeader from '../../navigation/CustomHeader';
+import CustomHeader from '../../components/CustomHeader';
 
 const Profile = () => {
   const navigation = useNavigation<DrawerNavigationProp<any>>();
@@ -421,8 +421,8 @@ const Profile = () => {
           <CustomHeader
             label={userData?.employee?.fullName}
             Home={false}
-            rightIcon={icons.menu}
-            rightPress={() => {
+            leftIcon={icons.menu}
+            leftPress={() => {
               navigation.openDrawer();
             }}
           />

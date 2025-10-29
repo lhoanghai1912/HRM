@@ -538,3 +538,61 @@ export const getPickerData = async (
     throw error;
   }
 };
+
+export const updateEmployee = async (
+  id: number,
+  fields: { fieldName: string; fieldValue: any }[],
+) => {
+  try {
+    const response = await apiClient.put(`Employee/${id}`, fields, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error updating employee:', error);
+    throw error;
+  }
+};
+
+export const uploadFile = async ({
+  id,
+  type,
+  files,
+}: {
+  id: number;
+  type: string;
+  files: { fieldName: string; file: any }[];
+}) => {
+  try {
+    const formData = new FormData();
+
+    // Tạo Models array với index tương ứng
+    const models = files.map((item, index) => ({
+      fieldName: item.fieldName,
+      index: index,
+    }));
+    formData.append('Models', JSON.stringify(models));
+
+    // Append từng file vào FormData
+    files.forEach(item => {
+      formData.append('Files', item.file as any);
+    });
+    console.log('FormData to upload:', formData);
+
+    const response = await apiClient.post(
+      `ConfigLayout/upload-file/${id}?type=${type}`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error uploading file:', error);
+    throw error;
+  }
+};
