@@ -236,7 +236,85 @@ export const renderField = (
               if (extraProps.onPickFile) extraProps.onPickFile(data.fieldName);
             }}
           >
-            <Text style={{ fontWeight: 'bold' }}></Text>
+            <Text style={{ fontWeight: 'bold' }}>
+              {value && (value.name || value.uri || typeof value === 'string')
+                ? 'Đã chọn file'
+                : 'Chọn file'}
+            </Text>
+          </TouchableOpacity>
+
+          {/* Hiển thị file đã chọn hoặc từ API */}
+          {value && (value.name || value.uri || typeof value === 'string') ? (
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginTop: 8,
+              }}
+            >
+              <Text style={{ flex: 1 }}>
+                {value.name ||
+                  (typeof value === 'string' ? value : 'File đã chọn')}
+              </Text>
+              {mode !== 'view' && (
+                <TouchableOpacity
+                  onPress={() => onChange(data.fieldName, null)}
+                  style={{ padding: 4 }}
+                >
+                  <Image source={icons.clear} style={AppStyles.icon}></Image>
+                </TouchableOpacity>
+              )}
+            </View>
+          ) : null}
+        </View>
+      );
+      return (
+        <View style={{ borderWidth: 1, marginBottom: 8, padding: 8 }}>
+          <TouchableOpacity
+            disabled={mode === 'view'}
+            onPress={() => {
+              if (extraProps.onPickFile) extraProps.onPickFile(data.fieldName);
+            }}
+          >
+            <Text style={{ fontWeight: 'bold' }}>
+              {value || value.name || value.uri ? 'File Đã chọn' : 'Chọn file'}
+            </Text>
+          </TouchableOpacity>
+
+          {/* Hiển thị file đã chọn hoặc từ API */}
+          {value ? (
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginTop: 8,
+              }}
+            >
+              <Text style={{ flex: 1 }}>
+                {value.name ||
+                  (typeof value === 'string' ? value : 'File đã chọn')}
+              </Text>
+              {mode !== 'view' && (
+                <TouchableOpacity
+                  onPress={() => onChange(data.fieldName, null)}
+                  style={{ padding: 4 }}
+                >
+                  <Image source={icons.clear} style={AppStyles.icon}></Image>
+                </TouchableOpacity>
+              )}
+            </View>
+          ) : null}
+        </View>
+      );
+      return (
+        <View style={{ borderWidth: 1, marginBottom: 8, padding: 8 }}>
+          <TouchableOpacity
+            disabled={mode === 'view'}
+            onPress={() => {
+              if (extraProps.onPickFile) extraProps.onPickFile(data.fieldName);
+            }}
+          >
+            <Text style={{ fontWeight: 'bold' }}>{value}</Text>
           </TouchableOpacity>
           {/* Hiển thị danh sách file đã chọn */}
           {Array.isArray(value) && value.length > 0 ? (

@@ -114,20 +114,20 @@ const DetailEmployee = ({ navigation, route }) => {
   const handlePickFile = async fieldName => {
     try {
       const res = await pick({
-        allowMultiSelection: true,
+        allowMultiSelection: false, // Chỉ chọn 1 file
         type: ['*/*'],
       });
       if (res && res.length > 0) {
         setFormData(prev => ({
           ...prev,
-          [fieldName]: res.map(file => ({
-            uri: file.uri,
-            name: file.name,
-          })),
+          [fieldName]: {
+            uri: res[0].uri,
+            name: res[0].name,
+          },
         }));
       }
     } catch (err) {
-      // Xử lý khi cancel hoặc lỗi
+      console.error('Error picking file:', err); // Improved error handling
     }
   };
 
