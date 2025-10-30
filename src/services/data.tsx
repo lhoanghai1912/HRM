@@ -4213,13 +4213,14 @@ export const getPickerData = async (
   }
 };
 
-export const updateEmployee = async (id: number, fields: {}) => {
+export const updateEmployee = async (fields: {}) => {
   try {
-    const response = await apiClient.put(`Employee/${id}`, fields, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    // const response = await apiClient.put(`Employee/${id}`, fields, {
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    // });
+    const response = await apiClient.put(`Employee/`, fields);
     return response.data;
   } catch (error) {
     console.error('Error updating employee:', error);
