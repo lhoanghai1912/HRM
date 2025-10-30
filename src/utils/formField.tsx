@@ -7,8 +7,16 @@ import AppStyles from '../components/AppStyle';
 type RenderFieldExtraProps = {
   onPickDate?: (fieldName: string) => void;
   onPickMonth?: (fieldName: string) => void;
-  onPickSelectOne?: (fieldName: string, pickerData: any) => void;
-  onPickSelectMulti?: (fieldName: string, pickerData: any) => void;
+  onPickSelectOne?: (
+    fieldName: string,
+    displayField: string,
+    pickerData: any,
+  ) => void;
+  onPickSelectMulti?: (
+    fieldName: string,
+    displayField: string,
+    pickerData: any,
+  ) => void;
   pickerData?: any[]; // thêm dòng này
   formData?: Record<string, any>; // thêm dòng này
   onPickFile?: (fieldName: string) => void;
@@ -103,19 +111,14 @@ export const renderField = (
               if (extraProps.onPickSelectOne)
                 extraProps.onPickSelectOne(
                   data.fieldName,
+                  data.displayField,
                   extraProps.pickerData,
                 );
             }}
           >
             <Text>
               {(() => {
-                // Ưu tiên lấy label từ formData nếu có
-                if (
-                  extraProps.formData &&
-                  extraProps.formData[data.fieldName + 'Label']
-                ) {
-                  return extraProps.formData[data.fieldName + 'Label'];
-                }
+                // Ưu tiên lấy label từ formData nếu
                 // value là object { value, label }
                 if (value && typeof value === 'object' && value.label) {
                   return value.label;
@@ -144,6 +147,7 @@ export const renderField = (
             if (extraProps.onPickSelectMulti)
               extraProps.onPickSelectMulti(
                 data.fieldName,
+                data.displayField,
                 extraProps.pickerData,
               );
           }}
@@ -178,15 +182,29 @@ export const renderField = (
         </TouchableOpacity>
       );
     case 'date':
+      // Kiểm tra và convert value thành Date
+      let dateValue = value;
+      if (typeof value === 'string') {
+        dateValue = new Date(value);
+      } else if (!value || !(value instanceof Date)) {
+        dateValue = null;
+      }
+
       return (
         <TouchableOpacity
-          disabled={mode === 'view'}
-          style={{ borderWidth: 1, marginBottom: 8, padding: 8 }}
-          onPress={() => {
-            if (extraProps.onPickDate) extraProps.onPickDate(data.fieldName);
-          }}
+          onPress={() => extraProps.onPickDate?.(data.fieldName)}
+          disabled={mode === 'view' || data.IsReadOnly}
         >
-          <Text>{value ? value.toLocaleDateString() : data.fieldName}</Text>
+          <AppInput
+            value={
+              dateValue && !isNaN(dateValue.getTime())
+                ? dateValue.toLocaleDateString('vi-VN')
+                : ''
+            }
+            placeholder={data.fieldName}
+            editable={false}
+            pointerEvents="none"
+          />
         </TouchableOpacity>
       );
     case 'month':

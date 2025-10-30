@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   RefreshControl,
   ActivityIndicator,
   TouchableOpacity,
+  Image,
 } from 'react-native';
 import CustomHeader from '../../../components/CustomHeader';
 import icons from '../../../assets/icons';
@@ -39,6 +40,8 @@ const Employee = ({}) => {
 
   const flatListRef = useRef<FlatList>(null);
   const scrollY = useRef(0);
+  const [searchInput, setSearchInput] = useState(''); // Input tạm thời
+  const [searchQuery, setSearchQuery] = useState(''); // Query thực tế để gọi API
 
   // Sử dụng hook phân trang
   const {
@@ -49,9 +52,11 @@ const Employee = ({}) => {
     noMoreData,
     handleLoadMore,
     handleRefresh,
-  } = usePaginatedList(employee_GetAll, PAGE_SIZE, { orderBy: 'id desc' });
+  } = usePaginatedList(employee_GetAll, PAGE_SIZE, {
+    orderBy: 'id desc',
+    search: searchQuery,
+  });
   const onEndReachedCalledDuringMomentum = useRef(false);
-  console.log('employee data:', employee);
 
   const renderItem = ({ item, index }) => (
     <TouchableOpacity
@@ -115,14 +120,26 @@ const Employee = ({}) => {
   const renderFooter = () => {
     if (loadingMore) {
       return (
-        <View style={{ padding: 16, alignItems: 'center' }}>
+        <View
+          style={{
+            paddingTop: spacing.medium,
+            paddingBottom: spacing.small,
+            alignItems: 'center',
+          }}
+        >
           <ActivityIndicator size="small" />
         </View>
       );
     }
     if (!loading && noMoreData && employee.length > 0) {
       return (
-        <View style={{ padding: 16, alignItems: 'center' }}>
+        <View
+          style={{
+            paddingTop: spacing.medium,
+            paddingBottom: spacing.small,
+            alignItems: 'center',
+          }}
+        >
           <Text style={{ color: '#888' }}>Đã hết dữ liệu</Text>
         </View>
       );
@@ -148,21 +165,24 @@ const Employee = ({}) => {
       {/* <NavBar title="Employee Application" /> */}
       {/* Toolbar */}
       <View style={styles.toolbar}>
-        <TextInput placeholder="Tìm kiếm" style={styles.searchInput} />
-        <TouchableOpacity style={styles.addButton}>
-          <Text style={styles.addButtonText}>+ Thêm</Text>
+        <TextInput
+          placeholder="Tìm kiếm"
+          value={searchInput}
+          style={styles.searchInput}
+          onChangeText={setSearchInput}
+        />
+        <TouchableOpacity onPress={() => setSearchQuery(searchInput)}>
+          <Image source={icons.search} style={AppStyles.icon} />
         </TouchableOpacity>
       </View>
       <View style={styles.footer}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <Text style={styles.footerText}>
-            {` Tổng số bản ghi: ${employee.length}`}
+          <Text style={AppStyles.text}>
+            Đang hiển thị {employee.length} bản ghi
           </Text>
-          {/* <Text style={styles.footerText}>{visibleCount}</Text> */}
+          <Text style={AppStyles.text}></Text>
+          {/* <Text style={AppStyles.text}>{visibleCount}</Text> */}
         </View>
-        <Text style={styles.footerText}>
-          Đang hiển thị {employee.length} bản ghi
-        </Text>
       </View>
       {/* Table */}
       <View style={{ flex: 1 }}>
@@ -324,8 +344,8 @@ const styles = StyleSheet.create({
   toolbar: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingHorizontal: spacing.medium,
+    paddingVertical: spacing.small,
     backgroundColor: '#fff',
     borderBottomWidth: 1,
     borderBottomColor: '#e5e7eb',
@@ -333,26 +353,15 @@ const styles = StyleSheet.create({
   title: { fontSize: 20, fontWeight: 'bold', color: '#222' },
   searchInput: {
     flex: 1,
-    height: 40,
-    paddingHorizontal: 12,
+    paddingHorizontal: spacing.medium,
     backgroundColor: '#f3f4f6',
-    borderRadius: 6,
+    borderRadius: spacing.small,
     borderWidth: 1,
-    borderColor: '#d1d5db',
+    marginRight: spacing.medium,
+    borderColor: colors.Gray,
   },
-  addButton: {
-    marginLeft: 16,
-    backgroundColor: '#f97316',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 6,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  addButtonText: { color: '#fff', fontWeight: 'bold', fontSize: 16 },
   table: {
     flex: 1,
-    // maxHeight: ms(500),
     backgroundColor: colors.background,
   },
   tableRowHeader: {
@@ -404,7 +413,7 @@ const styles = StyleSheet.create({
   },
   footer: {
     backgroundColor: '#f3f4f6',
-    paddingHorizontal: 16,
+    paddingHorizontal: spacing.medium,
     paddingVertical: 10,
     flexDirection: 'row',
     alignItems: 'center',
@@ -413,7 +422,7 @@ const styles = StyleSheet.create({
     borderTopColor: '#e5e7eb',
     marginBottom: spacing.small,
   },
-  footerText: { color: '#374151' },
+  headerText: { color: '#374151' },
   loadMoreBtn: {
     paddingVertical: 12,
     alignItems: 'center',

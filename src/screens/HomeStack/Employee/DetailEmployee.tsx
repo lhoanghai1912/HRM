@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Image,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import CustomHeader from '../../../components/CustomHeader';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -28,6 +29,8 @@ import * as ImagePicker from 'react-native-image-picker';
 import { pick } from '@react-native-documents/picker';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
+import Toast from 'react-native-toast-message';
+import { lo } from '../../../language/Resource';
 
 const DetailEmployee = ({ route }) => {
   const [field, setField] = useState<any>();
@@ -40,6 +43,7 @@ const DetailEmployee = ({ route }) => {
   const [openMonth, setOpenMonth] = useState(false);
   const [open, setOpen] = useState(false);
   const [pickerField, setPickerField] = useState<string | null>(null);
+  const [displayField, setDisplayField] = useState<string | null>(null);
   const [pickerData, setPickerData] = useState<any>({ pageData: [] });
   const [openPicker, setOpenPicker] = useState(false);
   const [datePickerField, setDatePickerField] = useState(null);
@@ -54,15 +58,17 @@ const DetailEmployee = ({ route }) => {
   const [hasMore, setHasMore] = useState(false);
   const [pickerConfig, setPickerConfig] = useState(null);
   const [pickerPage, setPickerPage] = useState(1);
-  const [changedFields, setChangedFields] = useState<
-    { fieldName: string; fieldValue: any }[]
-  >([]);
+  const [changedFields, setChangedFields] = useState<{ [key: string]: any }>(
+    {},
+  );
   const [pickedFiles, setPickedFiles] = useState<
     { fieldName: string; file: {} }[]
   >([]);
+  const [customConfigs, setCustomConfigs] = useState<
+    { fieldName: string; config: any }[]
+  >([]);
 
   // console.log('test render', testData);
-  console.log('changedFields', changedFields);
 
   useFocusEffect(
     useCallback(() => {
@@ -102,8 +108,30 @@ const DetailEmployee = ({ route }) => {
       const layout = await getData('profile');
       const employeeData = await getEmployee(employeeId);
       const formData = mapEmployeeToFormData(layout, employeeData);
+
+      // Parse tất cả customConfig
+      const configs: { fieldName: string; config: any }[] = [];
+      layout?.pageData?.forEach(parent => {
+        parent.groupFieldConfigs?.forEach(cfg => {
+          if (cfg.customConfig && typeof cfg.customConfig === 'string') {
+            try {
+              const parsedConfig = JSON.parse(cfg.customConfig);
+              configs.push({
+                fieldName: cfg.fieldName,
+                config: parsedConfig,
+              });
+            } catch (e) {
+              console.error('Error parsing customConfig:', e);
+            }
+          }
+        });
+      });
+
       setField(layout);
       setFormData(formData);
+      setCustomConfigs(configs);
+
+      console.log('Custom configs:', configs);
     } catch (error) {
       console.error(error);
     } finally {
@@ -167,26 +195,56 @@ const DetailEmployee = ({ route }) => {
       }));
     }
   };
-  console.log('Picked files array:', pickedFiles);
 
-  const handleChange = (fieldName, value) => {
+  const handleChange = (fieldName: string, value) => {
     setFormData(prev => ({ ...prev, [fieldName]: value }));
 
-    setChangedFields(prev => {
-      // Nếu field đã có trong mảng thì cập nhật, nếu chưa thì thêm mới
-      const idx = prev.findIndex(f => f.fieldName === fieldName);
-      if (idx !== -1) {
-        const updated = [...prev];
-        updated[idx] = { fieldName, fieldValue: value };
-        return updated;
+    setChangedFields(prev => ({
+      ...prev,
+      [fieldName]: value,
+    }));
+  };
+
+  // Hàm validate các trường bắt buộc
+  const validateRequiredFields = () => {
+    const missingFields: string[] = [];
+
+    customConfigs.forEach(({ fieldName, config }) => {
+      if (config?.isRequired === true) {
+        const value = formData[fieldName];
+        // Kiểm tra giá trị rỗng
+        if (
+          value === undefined ||
+          value === null ||
+          value === '' ||
+          (Array.isArray(value) && value.length === 0)
+        ) {
+          // Tìm label của field để hiển thị
+          const fieldConfig = field?.pageData
+            ?.flatMap(parent => parent.groupFieldConfigs || [])
+            .find(cfg => cfg.fieldName === fieldName);
+          missingFields.push(fieldConfig?.label || fieldName);
+        }
       }
-      return [...prev, { fieldName, fieldValue: value }];
     });
+
+    return missingFields;
   };
 
   const handleSave = async () => {
     try {
+      // Validate trước khi save
+      const missingFields = validateRequiredFields();
+      if (missingFields.length > 0) {
+        Alert.alert(
+          'Lỗi',
+          `Vui lòng nhập các trường bắt buộc:\n- ${missingFields.join('\n- ')}`,
+        );
+        return;
+      }
       setLoading(true);
+      console.log('changedFields to save:', changedFields);
+
       if (changedFields.length > 0) {
         console.log('Updating employee fields:', changedFields);
         await updateEmployee(employeeId, changedFields);
@@ -201,35 +259,47 @@ const DetailEmployee = ({ route }) => {
           files: pickedFiles,
         });
       }
+
+      // Reset sau khi save thành công
+      setChangedFields([]);
+      setPickedFiles([]);
+      await fetchAllData();
+
+      alert('Lưu thành công!');
     } catch (error) {
       console.error('Error saving data:', error);
+      alert('Lỗi khi lưu dữ liệu');
     } finally {
       setLoading(false);
     }
   };
 
-  const handlePickSelect = async (fieldName, cfg) => {
+  const handlePickSelect = async (fieldName, displayField, cfg) => {
     setPickerField(fieldName);
+    // Lấy displayField từ config hoặc mặc định là fieldName + 'Name'
+    setDisplayField(displayField);
     setPickerConfig(cfg);
     setPickerPage(1);
 
     // Mở modal ngay lập tức với dữ liệu rỗng
-    setPickerData({ pageData: [] }); // Reset dữ liệu cũ với đúng structure
+    setPickerData({ pageData: [] });
     setOpenPicker(true);
 
     // Load dữ liệu trong background
     try {
       let data = [];
+      console.log('Loading picker data...', cfg);
+
       if (cfg.tableNameSource === 'PickList') {
         data = await getPickerData(
-          cfg.tableNameSource,
           { page: 1, pageSize: 10, filter: '', orderBy: '', search: '' },
           cfg,
+          cfg.tableNameSource,
         );
         setHasMore(data.length === 10);
       }
       console.log('Picker data:', data);
-      setPickerData(data); // Wrap data trong pageData
+      setPickerData(data);
     } catch (error) {
       console.error('Error loading picker data:', error);
       setPickerData({ pageData: [] });
@@ -283,15 +353,21 @@ const DetailEmployee = ({ route }) => {
     });
     return formData;
   };
+  console.log('layout', field);
 
   const renderFields = () => {
     try {
       if (!field || !field.pageData) return null;
-      const parents = field.pageData.filter(item => item.parentId === null);
+      const parents = field.pageData
+        .filter(item => item.parentId === null)
+        .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
+
       return parents.map(parent => {
         const children = field.pageData.filter(
           child => child.parentId === parent.id,
         );
+        // .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
+
         const expanded = expandedSections[parent.id] ?? true;
         return (
           <View
@@ -324,41 +400,62 @@ const DetailEmployee = ({ route }) => {
                   <Text style={{ fontSize: 14, fontWeight: 'bold' }}>
                     {child.name}
                   </Text>
-                  {child.groupFieldConfigs?.map(cfg => (
-                    <View
-                      key={cfg.id}
-                      style={{ marginHorizontal: 16, marginBottom: 4 }}
-                    >
-                      <Text style={AppStyles.label}>{cfg.label}</Text>
-                      <Text>{`${cfg.typeControl}- ${mapFieldType(
-                        cfg.typeControl,
-                      )}`}</Text>
-                      {renderField(
-                        cfg,
-                        formData[cfg.fieldName],
-                        handleChange,
-                        'edit',
-                        {
-                          formData, // truyền thêm formData vào extraProps
-                          onPickDate: fieldName => handlePickDate(fieldName),
-                          onPickMonth: fieldName => handlePickMonth(fieldName),
-                          onPickSelectOne: (fieldName, pickerData) =>
-                            handlePickSelect(fieldName, cfg),
-                          onPickSelectMulti: (fieldName, pickerData) =>
-                            handlePickSelect(fieldName, cfg),
-                          onPickFile: fieldName => handlePickFile(fieldName),
-                          onPickImage: fieldName => handlePickImage(fieldName),
-                        },
-                      )}
-                    </View>
-                  ))}
+                  {child.groupFieldConfigs
+                    ?.sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0))
+                    .map(cfg => {
+                      // Lấy customConfig từ state
+                      const customConfig =
+                        customConfigs.find(c => c.fieldName === cfg.fieldName)
+                          ?.config || null;
+
+                      return (
+                        <View
+                          key={cfg.id}
+                          style={{ marginHorizontal: 16, marginBottom: 4 }}
+                        >
+                          <Text style={AppStyles.label}>
+                            {cfg.label}
+                            {customConfig?.isRequired && (
+                              <Text style={{ color: 'red' }}> *</Text>
+                            )}
+                          </Text>
+                          <Text>{`${cfg.typeControl}- ${mapFieldType(
+                            cfg.typeControl,
+                          )}`}</Text>
+                          {renderField(
+                            cfg,
+                            formData[cfg.fieldName],
+                            handleChange,
+                            'edit',
+                            {
+                              formData,
+                              onPickDate: fieldName =>
+                                handlePickDate(fieldName),
+                              onPickMonth: fieldName =>
+                                handlePickMonth(fieldName),
+                              onPickSelectOne: (fieldName, pickerData) =>
+                                handlePickSelect(fieldName, displayField, cfg),
+                              onPickSelectMulti: (fieldName, pickerData) =>
+                                handlePickSelect(fieldName, displayField, cfg),
+                              onPickFile: fieldName =>
+                                handlePickFile(fieldName),
+                              onPickImage: fieldName =>
+                                handlePickImage(fieldName),
+                            },
+                          )}
+                        </View>
+                      );
+                    })}
                 </View>
               ))}
           </View>
         );
       });
-    } catch (error) {}
+    } catch (error) {
+      console.error('Error rendering fields:', error);
+    }
   };
+  console.log('formData', formData);
 
   return (
     <View style={styles.container}>
@@ -413,19 +510,50 @@ const DetailEmployee = ({ route }) => {
           onSelect={selected => {
             if (Array.isArray(selected)) {
               // Multi select: selected là mảng object { value, label }
+              const values = selected.map(i => i.value);
+              const labels = selected.map(i => i.label);
+
+              handleChange(pickerField, values);
+              handleChange(displayField, labels);
+
               setFormData(prev => ({
                 ...prev,
-                [pickerField]: selected.map(i => i.value),
-                [`${pickerField}Label`]: selected.map(i => i.label),
+                [pickerField]: values,
+                [displayField]: labels,
               }));
+
+              console.log('Multi select:', {
+                field: pickerField,
+                displayField: displayField,
+                values,
+                labels,
+              });
             } else {
               // Single select: selected là object { value, label }
+              console.log('Single select:', {
+                field: pickerField,
+                value: selected.value,
+                displayField: displayField,
+                label: selected.label,
+              });
+
+              handleChange(pickerField, selected.value);
+              handleChange(displayField, selected.label);
+
               setFormData(prev => ({
                 ...prev,
                 [pickerField]: selected.value,
-                [`${pickerField}Label`]: selected.label,
+                [displayField]: selected.label,
+              }));
+
+              setChangedFields(prev => ({
+                ...prev,
+                [pickerField]: selected.value,
+                [displayField]: selected.label,
               }));
             }
+
+            setOpenPicker(false);
           }}
           onClose={() => setOpenPicker(false)}
           multi={pickerType === 'selectMulti'}
