@@ -66,19 +66,19 @@ export const form_user = (
 
 export const form_itemStack = (t = i18next.t.bind(i18next)) => [
   {
-    id: 'Shift',
-    title: t('label.stack_shift'),
-    icon: icons.list,
-    bg: '#EAF1FF',
-    screen: Screen_Name.Shift,
-  },
-  {
     id: 'attendance',
     title: t('label.stack_attendance'), // Chấm công
     icon: icons.list,
     bg: '#EDF6FF',
     // screen: Screen_Name.Attendance, // Đặt tên màn hình đúng với navigation
-    screen: Screen_Name.Attendance,
+    screen: Screen_Name.Attendance_Drawer,
+  },
+  {
+    id: 'Shift',
+    title: t('label.stack_shift'),
+    icon: icons.list,
+    bg: '#EAF1FF',
+    screen: Screen_Name.Shift,
   },
   {
     id: 'payroll',

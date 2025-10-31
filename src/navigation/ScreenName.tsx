@@ -31,6 +31,10 @@ export const Screen_Name = {
   User: 'User',
   ChangePassword: 'ChangePassword',
 
+  //Drawer
+  Employee_Drawer: 'Employee_Drawer',
+  Attendance_Drawer: 'Attendance_Drawer',
+
   // Attendance
   Attendance: 'Attendance',
 
@@ -41,8 +45,7 @@ export const Screen_Name = {
   //Shift
   Shift: 'Shift',
   Details_Shift: 'Details_Shift',
-  Employee_Drawer: 'Employee_Drawer',
-  AttendanceDrawer: 'AttendanceDrawer',
+
   Check_Drawer: 'Check_Drawer',
 
   //Application

@@ -4198,13 +4198,11 @@ export const getEmployee = async (id: number) => {
 export const getPickerData = async (
   paramQuery = { page: 1, pageSize: 10, filter: '', orderBy: '', search: '' },
   groupFieldConfig?: any,
-  tableName?: string,
 ) => {
   try {
     const response = await apiClient.post('pick-list', {
       paramQuery,
       groupFieldConfig,
-      tableName,
     });
     return response.data;
   } catch (error) {

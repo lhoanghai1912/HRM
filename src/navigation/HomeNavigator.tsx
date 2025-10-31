@@ -35,7 +35,7 @@ const HomeNavigator = () => {
       />
 
       <Stack.Screen
-        name={Screen_Name.AttendanceDrawer}
+        name={Screen_Name.Attendance_Drawer}
         component={AttendanceDrawer}
       />
       {/* <Stack.Screen name={Screen_Name.Notification} component={Notifications} />

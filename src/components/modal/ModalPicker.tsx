@@ -18,7 +18,7 @@ const ModalPicker = ({
   selectedValue,
   onSelect,
   onClose,
-  multi = false,
+  multi,
   onLoadMore, // callback để load thêm dữ liệu
   loadingMore, // boolean: đang load thêm
   hasMore = false, // boolean: còn dữ liệu để load tiếp
@@ -28,9 +28,11 @@ const ModalPicker = ({
     Array.isArray(selectedValue) ? selectedValue : [],
   );
   console.log('ModalPicker data:', data);
+  console.log('selectedValue:', selectedValue);
+  console.log('multiValue:', multiValue);
 
   const handleSelect = value => {
-    if (multi) {
+    if (multi === true) {
       let newValue = [...multiValue];
       if (newValue.includes(value)) {
         newValue = newValue.filter(v => v !== value);
@@ -96,43 +98,72 @@ const ModalPicker = ({
               )}
             </View>
           ) : multi ? (
-            <ScrollView
-              onScroll={handleScroll}
-              scrollEventThrottle={100}
-              style={{ maxHeight: '80%' }}
-            >
-              {data?.pageData?.map((item, idx) => {
-                const value = item.value ?? item.id;
-                const label = item.label ?? item.name ?? '';
-                const checked = multiValue.includes(value);
-                return (
+            <View style={{ flex: 1 }}>
+              <Text
+                style={[
+                  AppStyles.label,
+                  { textAlign: 'center', marginBottom: spacing.medium },
+                ]}
+              >
+                Chọn {fieldLabel}
+              </Text>
+              <ScrollView
+                onScroll={handleScroll}
+                scrollEventThrottle={100}
+                contentContainerStyle={{
+                  // alignItems: 'center',
+                  // justifyContent: 'center',
+                  backgroundColor: 'red',
+                }}
+              >
+                {data?.pageData?.map((item, idx) => {
+                  const value = item.value ?? item.id;
+                  const label = item.pickListValue ?? item.name ?? '';
+                  const checked = multiValue.includes(value);
+                  return (
+                    <TouchableOpacity
+                      key={value ?? idx}
+                      style={styles.row}
+                      onPress={() => handleSelect(value)}
+                    >
+                      <View
+                        style={[styles.checkbox, checked && styles.checked]}
+                      >
+                        {checked && <Text style={styles.checkText}>✓</Text>}
+                      </View>
+                      <Text
+                        style={[
+                          AppStyles.text,
+                          {
+                            alignItems: 'center',
+                            flex: 1,
+                            textAlign: 'center',
+                          },
+                        ]}
+                      >
+                        {label}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+                {loadingMore && (
+                  <ActivityIndicator
+                    style={{ marginVertical: spacing.small }}
+                  />
+                )}
+                {hasMore && !loadingMore && (
                   <TouchableOpacity
-                    key={value ?? idx}
-                    style={styles.row}
-                    onPress={() => handleSelect(value)}
+                    style={styles.loadMoreBtn}
+                    onPress={onLoadMore}
                   >
-                    <View style={[styles.checkbox, checked && styles.checked]}>
-                      {checked && <Text style={styles.checkText}>✓</Text>}
-                    </View>
-                    <Text>{label}</Text>
+                    <Text style={{ color: '#007AFF' }}>Tải thêm</Text>
                   </TouchableOpacity>
-                );
-              })}
-              {loadingMore && (
-                <ActivityIndicator style={{ marginVertical: spacing.small }} />
-              )}
-              {hasMore && !loadingMore && (
-                <TouchableOpacity
-                  style={styles.loadMoreBtn}
-                  onPress={onLoadMore}
-                >
-                  <Text style={{ color: '#007AFF' }}>Tải thêm</Text>
-                </TouchableOpacity>
-              )}
+                )}
+              </ScrollView>
               <TouchableOpacity style={styles.doneBtn} onPress={handleDone}>
                 <Text style={{ color: '#fff' }}>Xong</Text>
               </TouchableOpacity>
-            </ScrollView>
+            </View>
           ) : (
             <View style={{ flex: 1 }}>
               <Text
