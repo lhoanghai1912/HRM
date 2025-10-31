@@ -118,16 +118,26 @@ export const renderField = (
           >
             <Text>
               {(() => {
-                // Ưu tiên lấy label từ formData nếu
-                // value là object { value, label }
+                // 1. Nếu value là object có label
                 if (value && typeof value === 'object' && value.label) {
                   return value.label;
                 }
-                // fallback: tìm trong extraProps.pickerData
+                // 2. Tìm trong pickerData
                 const found = (extraProps.pickerData || []).find(
                   item => item.value === value || item.id === value,
                 );
-                return found ? found.label ?? found.name : 'Chọn...';
+                if (found && (found.label || found.name)) {
+                  return found.label ?? found.name;
+                }
+                // 3. Nếu không có thì lấy từ formData[displayField]
+                if (
+                  extraProps.formData &&
+                  extraProps.formData[data.displayField]
+                ) {
+                  return extraProps.formData[data.displayField];
+                }
+                // 4. Fallback
+                return 'Chọn...';
               })()}
             </Text>
           </TouchableOpacity>
