@@ -80,8 +80,8 @@ const DetailEmployee = ({ route }) => {
   useEffect(() => {
     if (employeeData) {
       fetchAllData();
+      console.log('layout', field);
     }
-    console.log('layout', field);
   }, [employeeData]);
 
   const fetchData = async () => {

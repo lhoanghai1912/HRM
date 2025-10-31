@@ -3,6 +3,8 @@ import { View, TouchableOpacity, Text, Image } from 'react-native';
 import AppInput from '../components/AppInput';
 import icons from '../assets/icons';
 import AppStyles from '../components/AppStyle';
+import { lo } from '../language/Resource';
+import { joinString, splitString } from '../components/stringHelper';
 
 type RenderFieldExtraProps = {
   onPickDate?: (fieldName: string) => void;
@@ -167,25 +169,75 @@ export const renderField = (
               // Ưu tiên lấy label từ formData nếu có
               if (
                 extraProps.formData &&
+                extraProps.formData[data.displayField]
+              ) {
+                console.log('extraProps', extraProps);
+                console.log(
+                  'extraProps.formData[data.displayField',
+                  extraProps.formData[data.displayField],
+                );
+                const split = splitString(
+                  extraProps.formData[data.displayField],
+                  ';',
+                );
+                console.log('split', split);
+
+                // const labels = extraProps.formData[data.displayField];
+                const labels = joinString(split, ', ');
+                console.log('labels', labels);
+
+                return Array.isArray(labels) ? labels.join(', ') : labels;
+              }
+
+              // Backup: Thử với fieldName + 'Label'
+              if (
+                extraProps.formData &&
                 extraProps.formData[data.fieldName + 'Label']
               ) {
-                // Nếu là mảng, join lại
                 const labels = extraProps.formData[data.fieldName + 'Label'];
                 return Array.isArray(labels) ? labels.join(', ') : labels;
               }
+
               // Nếu value là mảng object { value, label }
               if (Array.isArray(value) && value.length > 0) {
-                return value
-                  .map(item =>
-                    typeof item === 'object' && item.label
-                      ? item.label
-                      : (extraProps.pickerData || []).find(
-                          i => i.value === item || i.id === item,
-                        )?.label ?? '',
-                  )
-                  .filter(Boolean)
-                  .join(', ');
+                const mappedLabels = value
+                  .map(item => {
+                    let label = '';
+                    if (typeof item === 'object' && item.label) {
+                      label = item.label;
+                    } else {
+                      const found = (extraProps.pickerData || []).find(
+                        i => i.value === item || i.id === item,
+                      );
+                      label =
+                        found?.label ||
+                        found?.name ||
+                        found?.pickListValue ||
+                        '';
+                    }
+                    return label;
+                  })
+                  .filter(Boolean);
+
+                return mappedLabels.join(', ');
               }
+
+              // // Nếu value là mảng ID/value đơn giản
+              // if (Array.isArray(value) && value.length > 0) {
+              //   const foundLabels = value
+              //     .map(val => {
+              //       const found = (extraProps.pickerData || []).find(
+              //         i => i.value === val || i.id === val,
+              //       );
+              //       const label =
+              //         found?.label || found?.name || found?.pickListValue || '';
+              //       return label;
+              //     })
+              //     .filter(Boolean);
+
+              //   return foundLabels.join(', ');
+              // }
+
               return 'Chọn...';
             })()}
           </Text>

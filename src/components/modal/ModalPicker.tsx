@@ -98,26 +98,17 @@ const ModalPicker = ({
               )}
             </View>
           ) : multi ? (
-            <View style={{ flex: 1 }}>
-              <Text
-                style={[
-                  AppStyles.label,
-                  { textAlign: 'center', marginBottom: spacing.medium },
-                ]}
-              >
-                Chọn {fieldLabel}
-              </Text>
+            <View style={styles.multiContainer}>
+              <Text style={styles.headerText}>Chọn {fieldLabel}</Text>
               <ScrollView
                 onScroll={handleScroll}
                 scrollEventThrottle={100}
-                contentContainerStyle={{
-                  // alignItems: 'center',
-                  // justifyContent: 'center',
-                  backgroundColor: 'red',
-                }}
+                style={styles.scrollView}
+                contentContainerStyle={styles.scrollContent}
+                showsVerticalScrollIndicator={true}
               >
                 {data?.pageData?.map((item, idx) => {
-                  const value = item.value ?? item.id;
+                  const value = item.values ?? item.id;
                   const label = item.pickListValue ?? item.name ?? '';
                   const checked = multiValue.includes(value);
                   return (
@@ -131,18 +122,7 @@ const ModalPicker = ({
                       >
                         {checked && <Text style={styles.checkText}>✓</Text>}
                       </View>
-                      <Text
-                        style={[
-                          AppStyles.text,
-                          {
-                            alignItems: 'center',
-                            flex: 1,
-                            textAlign: 'center',
-                          },
-                        ]}
-                      >
-                        {label}
-                      </Text>
+                      <Text style={styles.rowText}>{label}</Text>
                     </TouchableOpacity>
                   );
                 })}
@@ -161,27 +141,18 @@ const ModalPicker = ({
                 )}
               </ScrollView>
               <TouchableOpacity style={styles.doneBtn} onPress={handleDone}>
-                <Text style={{ color: '#fff' }}>Xong</Text>
+                <Text style={styles.doneBtnText}>Xong</Text>
               </TouchableOpacity>
             </View>
           ) : (
-            <View style={{ flex: 1 }}>
-              <Text
-                style={[
-                  AppStyles.label,
-                  { textAlign: 'center', marginBottom: spacing.medium },
-                ]}
-              >
-                Chọn {fieldLabel}
-              </Text>
-
+            <View style={styles.singleContainer}>
+              <Text style={styles.headerText}>Chọn {fieldLabel}</Text>
               <ScrollView
                 onScroll={handleScroll}
                 scrollEventThrottle={100}
-                contentContainerStyle={{
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
+                style={styles.scrollView}
+                contentContainerStyle={styles.scrollContent}
+                showsVerticalScrollIndicator={true}
               >
                 {data?.pageData?.map((item, idx) => {
                   const value = item.value ?? item.id;
@@ -233,87 +204,122 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.2)',
     justifyContent: 'center',
     alignItems: 'center',
+    padding: spacing.medium,
   },
   container: {
     backgroundColor: colors.white,
-    borderRadius: spacing.small,
-    padding: spacing.medium,
-    minWidth: '70%',
-    maxHeight: '50%',
-    justifyContent: 'center',
+    borderRadius: 12,
+    minWidth: '80%',
+    maxWidth: '90%',
+    maxHeight: '70%',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   loadingContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 20,
+    padding: spacing.large,
+    minHeight: 150,
   },
   loadingText: {
-    marginTop: 10,
+    marginTop: spacing.small,
     color: '#666',
     fontSize: spacing.medium,
+  },
+  multiContainer: {
+    // Không set chiều cao cố định, để co theo content
+  },
+  singleContainer: {},
+  headerText: {
+    fontSize: 18,
+    fontWeight: '600',
+    textAlign: 'center',
+    paddingVertical: spacing.medium,
+    paddingHorizontal: spacing.medium,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+    backgroundColor: '#f8f9fa',
+    borderRadius: 12,
+  },
+  scrollView: {
+    flexGrow: 0, // Quan trọng: không để grow, cho phép co theo content
+    maxHeight: '80%', // Giới hạn chiều cao scroll
+    marginVertical: spacing.medium,
+  },
+  scrollContent: {
+    padding: spacing.small,
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: 4,
-    marginBottom: spacing.medium,
+    paddingVertical: spacing.small,
+    paddingHorizontal: spacing.medium,
+    marginVertical: 2,
+    borderRadius: 8,
+    borderWidth: 0.5,
+    borderColor: colors.Gray,
+    minHeight: 44, // Đảm bảo chiều cao tối thiểu cho dễ touch
   },
   selectedRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: spacing.medium,
-    borderWidth: 0.5,
-    borderColor: colors.Gray,
-    borderRadius: 15,
     backgroundColor: colors.primary,
+    borderColor: colors.primary,
   },
   rowText: {
-    borderWidth: 0.5,
-    borderColor: colors.Gray,
-    borderRadius: 15,
-    fontSize: spacing.medium,
-    paddingVertical: spacing.small,
+    fontSize: 16,
     color: '#333',
     flex: 1,
-    textAlign: 'center',
+    textAlign: 'left',
   },
   selectedText: {
     color: colors.white,
     fontWeight: '500',
   },
   checkbox: {
-    width: 20,
-    height: 20,
-    borderRadius: 4,
-    borderWidth: 1,
-    borderColor: '#888',
+    width: 22,
+    height: 22,
+    borderRadius: 6,
+    borderWidth: 2,
+    borderColor: '#ddd',
     backgroundColor: '#fff',
-    marginRight: spacing.small,
+    marginRight: spacing.medium,
     justifyContent: 'center',
     alignItems: 'center',
   },
   checked: {
     backgroundColor: '#007AFF',
+    borderColor: '#007AFF',
   },
   checkText: {
     color: '#fff',
     fontWeight: 'bold',
+    fontSize: 12,
   },
-
   doneBtn: {
-    marginTop: spacing.medium,
-    alignSelf: 'flex-end',
-    padding: spacing.small,
+    margin: spacing.medium,
+    paddingVertical: spacing.small,
+    paddingHorizontal: spacing.large,
     backgroundColor: '#007AFF',
-    borderRadius: 4,
+    borderRadius: 8,
+    alignSelf: 'center',
+    minWidth: 80,
+  },
+  doneBtnText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+    textAlign: 'center',
   },
   loadMoreBtn: {
     marginVertical: spacing.small,
-    alignSelf: 'center',
-    padding: spacing.small,
-    borderRadius: 4,
+    paddingVertical: spacing.small,
+    paddingHorizontal: spacing.medium,
+    borderRadius: 6,
     borderWidth: 1,
     borderColor: '#007AFF',
+    alignSelf: 'center',
   },
 });
 
