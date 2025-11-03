@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Modal,
   View,
@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 import { colors } from '../../utils/color';
 import { spacing } from '../../utils/spacing';
-import AppStyles from '../AppStyle';
 
 const ModalPicker = ({
   visible,
@@ -24,38 +23,65 @@ const ModalPicker = ({
   hasMore = false, // boolean: còn dữ liệu để load tiếp
   fieldLabel = '',
 }) => {
-  const [multiValue, setMultiValue] = useState(
-    Array.isArray(selectedValue) ? selectedValue : [],
-  );
-  console.log('ModalPicker data:', data);
-  console.log('selectedValue:', selectedValue);
-  console.log('multiValue:', multiValue);
+  const [multiValue, setMultiValue] = useState([]);
+
+  // Hàm parse selectedValue thành array
+  const parseSelectedValue = value => {
+    if (!value) return [];
+
+    if (Array.isArray(value)) {
+      return value;
+    }
+
+    if (typeof value === 'string') {
+      // Tách string "10;11" thành ["10", "11"]
+      return value.split(';').filter(item => item.trim().length > 0);
+    }
+
+    return [value];
+  };
+
+  // Cập nhật multiValue khi selectedValue hoặc visible thay đổi
+  useEffect(() => {
+    if (multi && visible) {
+      const parsedValues = parseSelectedValue(selectedValue);
+      setMultiValue(parsedValues);
+    }
+  }, [selectedValue, multi, visible]);
 
   const handleSelect = value => {
     if (multi === true) {
       let newValue = [...multiValue];
-      if (newValue.includes(value)) {
-        newValue = newValue.filter(v => v !== value);
+      // Convert cả hai về string để so sánh
+      const valueStr = String(value);
+      const hasValue = newValue.some(v => String(v) === valueStr);
+
+      if (hasValue) {
+        newValue = newValue.filter(v => String(v) !== valueStr);
       } else {
         newValue.push(value);
       }
+
       setMultiValue(newValue);
     } else {
-      onSelect(value);
       const item = data.pageData.find(i => (i.value ?? i.id) === value);
       const label = item?.label ?? item?.name ?? item?.pickListValue ?? '';
-      onSelect({ value, label }); // truyền cả value và label ra ngoài
+      onSelect({ value, label });
       onClose();
     }
   };
 
   const handleDone = () => {
     const selectedItems = data.pageData
-      .filter(i => multiValue.includes(i.value ?? i.id))
+      .filter(i => {
+        const itemValue = i.value ?? i.id;
+        return multiValue.some(v => String(v) === String(itemValue));
+      })
       .map(i => ({
         value: i.value ?? i.id,
         label: i.label ?? i.name ?? i.pickListValue ?? '',
       }));
+
     onSelect(selectedItems);
     onClose();
   };
@@ -108,13 +134,19 @@ const ModalPicker = ({
                 showsVerticalScrollIndicator={true}
               >
                 {data?.pageData?.map((item, idx) => {
-                  const value = item.values ?? item.id;
-                  const label = item.pickListValue ?? item.name ?? '';
-                  const checked = multiValue.includes(value);
+                  const value = item.value ?? item.id; // Sửa: dùng item.value thay vì item.values
+                  const label =
+                    item.pickListValue ?? item.name ?? item.label ?? '';
+
+                  // So sánh string để kiểm tra đã chọn
+                  const checked = multiValue.some(
+                    v => String(v) === String(value),
+                  );
+
                   return (
                     <TouchableOpacity
                       key={value ?? idx}
-                      style={styles.row}
+                      style={[styles.row, checked && styles.checkedRow]}
                       onPress={() => handleSelect(value)}
                     >
                       <View
@@ -122,7 +154,11 @@ const ModalPicker = ({
                       >
                         {checked && <Text style={styles.checkText}>✓</Text>}
                       </View>
-                      <Text style={styles.rowText}>{label}</Text>
+                      <Text
+                        style={[styles.rowText, checked && styles.checkedText]}
+                      >
+                        {label}
+                      </Text>
                     </TouchableOpacity>
                   );
                 })}
@@ -198,6 +234,7 @@ const ModalPicker = ({
   );
 };
 
+// Thêm styles cho checked state
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
@@ -320,6 +357,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#007AFF',
     alignSelf: 'center',
+  },
+  checkedRow: {
+    backgroundColor: '#e3f2fd',
+    borderColor: '#1976d2',
+  },
+  checkedText: {
+    color: '#1976d2',
+    fontWeight: '500',
   },
 });
 

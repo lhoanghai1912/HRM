@@ -41,6 +41,8 @@ export const Screen_Name = {
   //Employee
   Employee: 'Employee',
   Details_Employee: 'Details_Employee',
+  Contract: 'Contract',
+  Details_Contract: 'Details_Contract',
 
   //Shift
   Shift: 'Shift',

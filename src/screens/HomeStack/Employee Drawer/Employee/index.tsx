@@ -9,20 +9,21 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
-import CustomHeader from '../../../components/CustomHeader';
-import icons from '../../../assets/icons';
-import { usePaginatedList } from '../../../components/Paginated';
-import { employee_GetAll } from '../../../services/hr';
-import { lo } from '../../../language/Resource';
-import { ms, spacing } from '../../../utils/spacing';
-import { colors } from '../../../utils/color';
+import CustomHeader from '../../../../components/CustomHeader';
+import icons from '../../../../assets/icons';
+import { usePaginatedList } from '../../../../components/Paginated';
+import { employee_GetAll } from '../../../../services/hr';
+import { lo } from '../../../../language/Resource';
+import { ms, spacing } from '../../../../utils/spacing';
+import { colors } from '../../../../utils/color';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
-import AppStyles from '../../../components/AppStyle';
-import { navigate } from '../../../navigation/RootNavigator';
-import { Screen_Name } from '../../../navigation/ScreenName';
+import AppStyles from '../../../../components/AppStyle';
+import { navigate } from '../../../../navigation/RootNavigator';
+import { Screen_Name } from '../../../../navigation/ScreenName';
 import { useNavigation } from '@react-navigation/native';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
-import NavBar from '../../../components/Navbar';
+import NavBar from '../../../../components/Navbar';
+import styles from '../styles';
 
 const PAGE_SIZE = 15;
 const COLUMN_MIN_WIDTHS = {
@@ -57,6 +58,8 @@ const Employee = ({}) => {
     search: searchQuery,
   });
   const onEndReachedCalledDuringMomentum = useRef(false);
+
+  console.log('Employee data:', employee);
 
   const renderItem = ({ item, index }) => (
     <TouchableOpacity
@@ -149,21 +152,12 @@ const Employee = ({}) => {
 
   return (
     <View style={styles.container}>
-      {/* <CustomHeader
-        label="Employee Application"
-        Home={false}
-        // leftIcon={icons.menu}
-        // leftPress={() => navigation.goBack()}
-      /> */}
       <CustomHeader
         label="Employee Application"
         leftIcon={icons.menu}
         leftPress={() => navigation.openDrawer()}
-        // rightIcon={icons.document}
-        // rightPress={() => {}}
       />
-      {/* <NavBar title="Employee Application" /> */}
-      {/* Toolbar */}
+
       <View style={styles.toolbar}>
         <TextInput
           placeholder="Tìm kiếm"
@@ -265,7 +259,7 @@ const Employee = ({}) => {
 
             <FlatList
               ref={flatListRef}
-              data={Array.isArray(employee) ? employee : []}
+              data={employee}
               keyExtractor={item =>
                 item.id?.toString() ||
                 item.employeeCode?.toString() ||
@@ -339,101 +333,4 @@ const Employee = ({}) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
-  toolbar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: spacing.medium,
-    paddingVertical: spacing.small,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#e5e7eb',
-  },
-  title: { fontSize: 20, fontWeight: 'bold', color: '#222' },
-  searchInput: {
-    flex: 1,
-    paddingHorizontal: spacing.medium,
-    backgroundColor: '#f3f4f6',
-    borderRadius: spacing.small,
-    borderWidth: 1,
-    marginRight: spacing.medium,
-    borderColor: colors.Gray,
-  },
-  table: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  tableRowHeader: {
-    flexDirection: 'row',
-    backgroundColor: '#f3f4f6',
-    paddingHorizontal: 8,
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#d1d5db',
-    alignItems: 'center',
-  },
-  tableRow: {
-    flexDirection: 'row',
-    backgroundColor: '#fff',
-    paddingHorizontal: 8,
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#e5e7eb',
-    alignItems: 'center',
-  },
-  checkboxCell: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  checkbox: {
-    width: 20,
-    height: 20,
-    borderWidth: 1,
-    borderColor: '#9ca3af',
-    borderRadius: 4,
-    backgroundColor: '#fff',
-  },
-  cell: {
-    color: '#222',
-    paddingHorizontal: spacing.small,
-    textAlign: 'center',
-    paddingVertical: 4,
-  },
-  headerCell: {
-    fontWeight: 'bold',
-    color: '#374151',
-    textAlign: 'center',
-    paddingVertical: 4,
-    paddingHorizontal: spacing.small,
-  },
-  bodyScroll: {
-    flex: 1,
-    // maxHeight: ms(500),
-  },
-  footer: {
-    backgroundColor: '#f3f4f6',
-    paddingHorizontal: spacing.medium,
-    paddingVertical: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    borderTopWidth: 1,
-    borderTopColor: '#e5e7eb',
-    marginBottom: spacing.small,
-  },
-  headerText: { color: '#374151' },
-  loadMoreBtn: {
-    paddingVertical: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#e5e7eb',
-    marginVertical: 8,
-    borderRadius: 6,
-  },
-  loadMoreText: {
-    color: '#f97316',
-    fontWeight: 'bold',
-  },
-});
 export default Employee;

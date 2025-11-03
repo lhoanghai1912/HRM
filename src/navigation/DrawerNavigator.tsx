@@ -18,8 +18,11 @@ import Remote from '../screens/HomeStack/Application/Remote';
 import Business_Trip from '../screens/HomeStack/Application/Trip';
 import Shift_Update from '../screens/HomeStack/Application/Shift_Update';
 import Detail_Late_Early from '../screens/HomeStack/Application/Late_Early/Detail';
-import Employee from '../screens/HomeStack/Employee';
-import DetailEmployee from '../screens/HomeStack/Employee/DetailEmployee';
+import Employee from '../screens/HomeStack/Employee Drawer/Employee';
+
+import DetailEmployee from '../screens/HomeStack/Employee Drawer/Employee/DetailEmployee';
+import Contract from '../screens/HomeStack/Employee Drawer/Contract';
+import DetailContract from '../screens/HomeStack/Employee Drawer/Contract/DetailContract';
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
@@ -107,9 +110,9 @@ export const EmployeeDrawer = () => (
           [Screen_Name.Employee]: focused
             ? icons.username_focus
             : icons.username,
-          [Screen_Name.Details_Shift]: focused
-            ? icons.username_focus
-            : icons.username,
+          [Screen_Name.Contract]: focused
+            ? icons.document_focus
+            : icons.document,
         };
         return (
           <Image
@@ -122,6 +125,7 @@ export const EmployeeDrawer = () => (
     })}
   >
     <Drawer.Screen name={Screen_Name.Employee} component={EmployeeStack} />
+    <Drawer.Screen name={Screen_Name.Contract} component={ContractStack} />
   </Drawer.Navigator>
 );
 
@@ -137,6 +141,20 @@ export const EmployeeStack = () => (
     <Stack.Screen
       name={Screen_Name.Details_Employee}
       component={DetailEmployee}
+    />
+  </Stack.Navigator>
+);
+
+export const ContractStack = () => (
+  <Stack.Navigator
+    id={undefined}
+    screenOptions={{ headerShown: false }}
+    initialRouteName={Screen_Name.Contract}
+  >
+    <Stack.Screen name={Screen_Name.Contract} component={Contract} />
+    <Stack.Screen
+      name={Screen_Name.Details_Contract}
+      component={DetailContract}
     />
   </Stack.Navigator>
 );

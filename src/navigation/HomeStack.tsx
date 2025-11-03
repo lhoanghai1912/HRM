@@ -15,7 +15,7 @@ import {
 } from './DrawerNavigator';
 import Details_Shift from '../screens/HomeStack/Shift/Details';
 import Shift from '../screens/HomeStack/Shift';
-import Test from '../screens/HomeStack/Employee/DetailEmployee';
+import Test from '../screens/HomeStack/Employee Drawer/Employee/DetailEmployee';
 
 const Stack = createNativeStackNavigator();
 

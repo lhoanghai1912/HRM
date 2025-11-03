@@ -8,10 +8,7 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native';
-import CustomHeader from '../../../components/CustomHeader';
 import { ScrollView } from 'react-native-gesture-handler';
-import { spacing } from '../../../utils/spacing';
-import { mapFieldType, renderField } from '../../../utils/formField';
 import DatePicker from 'react-native-date-picker';
 import MonthPicker from 'react-native-month-year-picker';
 import {
@@ -21,16 +18,19 @@ import {
   getPickerData,
   updateEmployee,
   uploadFile,
-} from '../../../services/data';
-import AppStyles from '../../../components/AppStyle';
-import icons from '../../../assets/icons';
-import ModalPicker from '../../../components/modal/ModalPicker';
+} from '../../../../services/data';
+
 import * as ImagePicker from 'react-native-image-picker';
 import { pick } from '@react-native-documents/picker';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 import Toast from 'react-native-toast-message';
-import { lo } from '../../../language/Resource';
+import AppStyles from '../../../../components/AppStyle';
+import icons from '../../../../assets/icons';
+import ModalPicker from '../../../../components/modal/ModalPicker';
+import { mapFieldType, renderField } from '../../../../utils/formField';
+import CustomHeader from '../../../../components/CustomHeader';
+import { spacing } from '../../../../utils/spacing';
 
 const DetailEmployee = ({ route }) => {
   const [field, setField] = useState<any>();
@@ -651,8 +651,8 @@ const DetailEmployee = ({ route }) => {
                 );
                 return [
                   ...filtered,
-                  { fieldName: pickerField, fieldValue: values },
-                  { fieldName: displayField, fieldValue: labels },
+                  { fieldName: pickerField, fieldValue: values.join(';') },
+                  { fieldName: displayField, fieldValue: labels.join(';') },
                 ];
               });
               console.log('Multi select:', {
@@ -661,6 +661,13 @@ const DetailEmployee = ({ route }) => {
                 values,
                 labels,
               });
+
+              setFormData(prev => ({
+                ...prev,
+                [pickerField]: values.join(';'),
+                // [displayField]: labels,
+              }));
+              console.log('Updated formData:', formData);
             } else {
               // Single select
               console.log('Single select:', {
@@ -676,6 +683,7 @@ const DetailEmployee = ({ route }) => {
                 [pickerField]: selected.value,
                 [displayField]: selected.label,
               }));
+              console.log('Updated formData:', formData);
 
               // Cập nhật changedFields
               setChangedFields(prev => {

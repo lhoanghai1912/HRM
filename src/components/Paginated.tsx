@@ -28,8 +28,9 @@ export function usePaginatedList(fetchApi, PAGE_SIZE = 15, params = {}) {
           ...params,
           ...extraParams,
         });
-        const result = res?.pageData || []; // Sửa ở đây: chỉ lấy mảng pageData
+        console.log('FetchData response:', res);
 
+        const result = res?.pageData || []; // Sửa ở đây: chỉ lấy mảng pageData
         if (isRefresh || currentPage === 1) {
           setData(result);
           setNoMoreData(result.length < PAGE_SIZE);

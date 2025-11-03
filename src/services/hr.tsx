@@ -59,3 +59,22 @@ export const employee_GetAll = async (params: GetAllParams) => {
     throw error;
   }
 };
+
+export const contract_GetAll = async (params: GetAllParams) => {
+  try {
+    const filteredParams = Object.fromEntries(
+      Object.entries(params).filter(
+        ([key, value]) => value !== undefined && value !== null,
+      ),
+    );
+    const queryString = new URLSearchParams(filteredParams as any).toString();
+
+    const res = await apiClient.get(`Contract?${queryString}`);
+    console.log('contract_GetAll res:', res.data);
+
+    return res.data;
+  } catch (error) {
+    console.log('Error fetching employee_GetAll:', error);
+    throw error;
+  }
+};

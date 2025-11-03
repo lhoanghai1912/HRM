@@ -18,9 +18,10 @@ type RenderFieldExtraProps = {
     fieldName: string,
     displayField: string,
     pickerData: any,
+    selectedValues?: string[],
   ) => void;
-  pickerData?: any[]; // thêm dòng này
-  formData?: Record<string, any>; // thêm dòng này
+  pickerData?: any[];
+  formData?: Record<string, any>;
   onPickFile?: (fieldName: string) => void;
   onPickImage?: (fieldName: string) => void;
 };
@@ -156,87 +157,56 @@ export const renderField = (
             marginBottom: 8,
           }}
           onPress={() => {
-            if (extraProps.onPickSelectMulti)
+            if (extraProps.onPickSelectMulti) {
+              // Parse value hiện tại để truyền cho picker
+              let selectedValues = [];
+
+              // Nếu value là string có dạng "10;11;12"
+              if (typeof value === 'string' && value.length > 0) {
+                selectedValues = splitString(value, ';');
+              }
+              // Nếu value đã là mảng
+              else if (Array.isArray(value)) {
+                selectedValues = value;
+              }
+
               extraProps.onPickSelectMulti(
                 data.fieldName,
                 data.displayField,
                 extraProps.pickerData,
+                selectedValues, // Truyền thêm selectedValues
               );
+            }
           }}
         >
           <Text>
             {(() => {
-              // Ưu tiên lấy label từ formData nếu có
+              if (
+                !value ||
+                (typeof value === 'string' && value.trim().length === 0) ||
+                (Array.isArray(value) && value.length === 0)
+              ) {
+                return 'Chọn...';
+              }
               if (
                 extraProps.formData &&
                 extraProps.formData[data.displayField]
               ) {
-                console.log('extraProps', extraProps);
-                console.log(
-                  'extraProps.formData[data.displayField',
-                  extraProps.formData[data.displayField],
-                );
-                const split = splitString(
-                  extraProps.formData[data.displayField],
-                  ';',
-                );
-                console.log('split', split);
+                const displayValue = extraProps.formData[data.displayField];
 
-                // const labels = extraProps.formData[data.displayField];
-                const labels = joinString(split, ', ');
-                console.log('labels', labels);
+                // Nếu displayField là string có dạng "Label1;Label2"
+                if (typeof displayValue === 'string') {
+                  const split = splitString(displayValue, ';');
+                  const labels = joinString(split, ', ');
+                  return labels;
+                }
 
-                return Array.isArray(labels) ? labels.join(', ') : labels;
+                //   // Nếu displayField là mảng
+                if (Array.isArray(displayValue)) {
+                  const labels = joinString(displayValue, ', ');
+                  return labels;
+                }
               }
-
-              // Backup: Thử với fieldName + 'Label'
-              if (
-                extraProps.formData &&
-                extraProps.formData[data.fieldName + 'Label']
-              ) {
-                const labels = extraProps.formData[data.fieldName + 'Label'];
-                return Array.isArray(labels) ? labels.join(', ') : labels;
-              }
-
-              // Nếu value là mảng object { value, label }
-              if (Array.isArray(value) && value.length > 0) {
-                const mappedLabels = value
-                  .map(item => {
-                    let label = '';
-                    if (typeof item === 'object' && item.label) {
-                      label = item.label;
-                    } else {
-                      const found = (extraProps.pickerData || []).find(
-                        i => i.value === item || i.id === item,
-                      );
-                      label =
-                        found?.label ||
-                        found?.name ||
-                        found?.pickListValue ||
-                        '';
-                    }
-                    return label;
-                  })
-                  .filter(Boolean);
-
-                return mappedLabels.join(', ');
-              }
-
-              // // Nếu value là mảng ID/value đơn giản
-              // if (Array.isArray(value) && value.length > 0) {
-              //   const foundLabels = value
-              //     .map(val => {
-              //       const found = (extraProps.pickerData || []).find(
-              //         i => i.value === val || i.id === val,
-              //       );
-              //       const label =
-              //         found?.label || found?.name || found?.pickListValue || '';
-              //       return label;
-              //     })
-              //     .filter(Boolean);
-
-              //   return foundLabels.join(', ');
-              // }
 
               return 'Chọn...';
             })()}
