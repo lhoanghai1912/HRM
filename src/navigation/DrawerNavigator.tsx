@@ -23,6 +23,7 @@ import Employee from '../screens/HomeStack/Employee Drawer/Employee';
 import DetailEmployee from '../screens/HomeStack/Employee Drawer/Employee/DetailEmployee';
 import Contract from '../screens/HomeStack/Employee Drawer/Contract';
 import DetailContract from '../screens/HomeStack/Employee Drawer/Contract/DetailContract';
+import Not_Expand from '../screens/HomeStack/Employee Drawer/!Expand';
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
@@ -142,6 +143,7 @@ export const EmployeeStack = () => (
       name={Screen_Name.Details_Employee}
       component={DetailEmployee}
     />
+    <Stack.Screen name={Screen_Name.Not_Expand} component={Not_Expand} />
   </Stack.Navigator>
 );
 

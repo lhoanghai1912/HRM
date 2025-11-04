@@ -4200,7 +4200,7 @@ export const getPickerData = async (
   groupFieldConfig?: any,
 ) => {
   try {
-    const response = await apiClient.post('pick-list', {
+    const response = await apiClient.post('PickList/pick-list', {
       paramQuery,
       groupFieldConfig,
     });

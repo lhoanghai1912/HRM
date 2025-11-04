@@ -70,7 +70,7 @@ const ForgotPassword = ({ navigation }) => {
           />
 
           <Text style={[AppStyles.text, { textAlign: 'center' }]}>
-            {t('message.register')}
+            {t('button.forgot_pw')}
           </Text>
         </View>
 

@@ -66,13 +66,11 @@ const styles = StyleSheet.create({
   headerCell: {
     fontWeight: 'bold',
     color: '#374151',
-    textAlign: 'center',
-    paddingVertical: 4,
     paddingHorizontal: spacing.small,
+    textAlign: 'center',
   },
   bodyScroll: {
     flex: 1,
-    // maxHeight: ms(500),
   },
   footer: {
     backgroundColor: '#f3f4f6',

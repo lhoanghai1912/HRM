@@ -48,7 +48,7 @@ apiClient.interceptors.response.use(
     if (error.response) {
       const status = error.response.status;
       const data = error.response.data;
-      const message = data.Message;
+      const message = data.message;
       const value = data.value; // Giả sử server trả về lỗi trong trường 'value'
 
       console.log('📥 Response status:', status);

@@ -40,31 +40,30 @@ const LoginScreen = () => {
   const insets = useSafeAreaInsets();
   const dispatch = useDispatch();
   const { t } = useTranslation();
-  const [username, setUserName] = useState('hoanglh01');
-  const [password, setPassword] = useState('Hoanghai02@');
+  const [username, setUserName] = useState('admin');
+  const [password, setPassword] = useState('1234@Abcd');
   const [company, setCompany] = useState('');
   const [loading, setLoading] = useState(false);
   const [modalLanguage, setModalLanguage] = useState(false);
   const { userData } = useSelector((state: any) => state.user);
   const handleLogin = async () => {
-    // try {
-    //   setLoading(true);
-    //   const res = await login(username, password);
-    //   console.log('login res', res);
-    //   dispatch(setToken({ token: res.accessToken }));
-    //   const user = await getMe();
-    //   console.log('user getme', user);
-    //   dispatch(setUserData({ userData: user }));
-    //   Toast.show({
-    //     type: 'success',
-    //     text1: `${t('message.welcome')} `,
-    //     text2: `${t('message.welcome_back')} ${res.profile.fullName}`,
-    //   });
-    // } catch (error) {
-    // } finally {
-    //   setLoading(false);
-    // }
-    dispatch(setToken({ token: 'dummy_token' }));
+    try {
+      setLoading(true);
+      const res = await login(username, password);
+      console.log('login res', res);
+      dispatch(setToken({ token: res.data.accessToken }));
+      // const user = await getMe();
+      // console.log('user getme', user);
+      dispatch(setUserData({ userData: res.data.user }));
+      Toast.show({
+        type: 'success',
+        text1: `${t('message.welcome')} `,
+        text2: `${t('message.welcome_back')} ${res.profile.fullName}`,
+      });
+    } catch (error) {
+    } finally {
+      setLoading(false);
+    }
   };
   console.log('userdata', userData);
 
@@ -151,14 +150,7 @@ const LoginScreen = () => {
             marginBottom: spacing.small,
           }}
         />
-        <Image
-          source={images.top_cv}
-          style={{
-            resizeMode: 'contain',
-            width: ms(150),
-            height: ms(70),
-          }}
-        />
+
         <Text style={AppStyles.text}>{t('message.welcome')}</Text>
       </View>
 

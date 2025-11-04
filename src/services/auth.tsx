@@ -33,7 +33,7 @@ export const register = async (
 
 export const sendOtp = async (email: string) => {
   try {
-    const res = await apiClient.post('Auth/send-otp-fp', { email });
+    const res = await apiClient.post('Auth/send-otp-to-email', { email });
     return res.data;
   } catch (error) {
     throw error;
@@ -46,7 +46,7 @@ export const forgot_pw = async (
   newPassword?: string,
 ) => {
   try {
-    const res = await apiClient.post('Auth/verify-otp-fp', {
+    const res = await apiClient.post('Auth/verify-otp', {
       email,
       otpCode,
       newPassword,

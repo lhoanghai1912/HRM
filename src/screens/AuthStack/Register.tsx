@@ -57,7 +57,7 @@ const RegisterScreen = () => {
       const res = await register(username, mail, password);
       console.log(res);
       // setModalEnterOtp(true);
-      dispatch(setToken({ token: res.accessToken }));
+      dispatch(setToken({ token: res.data.accessToken }));
     } catch (error) {
       console.log('error:', error);
     } finally {
@@ -78,14 +78,7 @@ const RegisterScreen = () => {
             marginBottom: spacing.small,
           }}
         />
-        <Image
-          source={images.top_cv}
-          style={{
-            resizeMode: 'contain',
-            width: ms(150),
-            height: ms(70),
-          }}
-        />
+
         <Text style={AppStyles.text}>{t('message.welcome')}</Text>
       </View>
 

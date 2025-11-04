@@ -1,4 +1,7 @@
+import { DrawerNavigationProp } from '@react-navigation/drawer';
+import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   View,
   Text,
@@ -9,22 +12,18 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
-import NavBar from '../../components/Navbar';
-import { ms, spacing } from '../../utils/spacing';
-import icons from '../../assets/icons';
-import images from '../../assets/images';
-import { fonts } from '../../utils/fontSize';
-import { colors } from '../../utils/color';
-import { useTranslation } from 'react-i18next';
-import { useSelector, useDispatch } from 'react-redux';
-import AppStyles from '../../components/AppStyle';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { employee_Get } from '../../services/hr';
+import { useSelector } from 'react-redux';
 import { employee_Update, employeeAvatar_Update } from '../../services/user';
+import icons from '../../assets/icons';
+import { ms, spacing } from '../../utils/spacing';
 import { launchImageLibrary } from 'react-native-image-picker';
-import { useNavigation } from '@react-navigation/native';
-import { DrawerNavigationProp } from '@react-navigation/drawer';
+import { colors } from '../../utils/color';
+import images from '../../assets/images';
+import AppStyles from '../../components/AppStyle';
 import CustomHeader from '../../components/CustomHeader';
+import { fonts } from '../../utils/fontSize';
+import { employee_Get } from '../../services/hr';
 
 const Profile = () => {
   const navigation = useNavigation<DrawerNavigationProp<any>>();
@@ -46,16 +45,16 @@ const Profile = () => {
   }, [userData.employeeId]);
 
   const fetchEmployee = async () => {
-    // try {
-    //   const res = await employee_Get(userData.employeeId);
-    //   console.log('Fetched employee data:', res);
-    //   if (!editingSection) {
-    //     setEmployee(res.employee);
-    //     setOriginalEmployee(res.employee);
-    //   }
-    // } catch (error) {
-    //   console.error('Error fetching employee data:', error);
-    // }
+    try {
+      const res = await employee_Get(userData.employeeId);
+      console.log('Fetched employee data:', res);
+      if (!editingSection) {
+        setEmployee(res.employee);
+        setOriginalEmployee(res.employee);
+      }
+    } catch (error) {
+      console.error('Error fetching employee data:', error);
+    }
   };
 
   const getEmployeeObjectKey = (sectionKey: string) => {
@@ -421,9 +420,9 @@ const Profile = () => {
           <CustomHeader
             label={userData?.employee?.fullName}
             Home={false}
-            leftIcon={icons.menu}
+            leftIcon={icons.back}
             leftPress={() => {
-              navigation.openDrawer();
+              navigation.goBack();
             }}
           />
         </>

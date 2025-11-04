@@ -6,6 +6,8 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Image,
+  RefreshControl,
+  FlatList,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
@@ -15,23 +17,18 @@ import { Screen_Name } from '../../../../navigation/ScreenName';
 import { ms, spacing } from '../../../../utils/spacing';
 import { usePaginatedList } from '../../../../components/Paginated';
 import { navigate } from '../../../../navigation/RootNavigator';
-import {
-  FlatList,
-  RefreshControl,
-  ScrollView,
-  TextInput,
-} from 'react-native-gesture-handler';
+import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import styles from '../styles';
 import AppStyles from '../../../../components/AppStyle';
-import { contract_GetAll, employee_GetAll } from '../../../../services/hr';
+import { employee_GetAll } from '../../../../services/hr';
 
 const PAGE_SIZE = 15;
 const COLUMN_MIN_WIDTHS = {
   checkbox: ms(40),
-  id: ms(180),
-  start: ms(160),
+  id: ms(120),
+  start: ms(120),
   name: ms(180),
-  position: ms(150),
+  position: ms(120),
   struct: ms(150),
   type: ms(120),
 };
@@ -66,7 +63,7 @@ const Contract = () => {
       key={item.id}
       style={styles.tableRow}
       onPress={() => {
-        navigate(Screen_Name.Details_Employee, { id: item?.id });
+        navigate(Screen_Name.Details_Contract, { id: item?.id });
       }}
     >
       {/* STT */}
@@ -76,40 +73,52 @@ const Contract = () => {
         <Text>{index + 1}</Text>
       </View>
       <Text style={{ borderLeftWidth: 0.5 }} />
-      {/* Mã nhân viên */}
+      {/* Mã hợp đồng*/}
       <Text style={[styles.cell, { minWidth: COLUMN_MIN_WIDTHS.id, flex: 2 }]}>
         {item.employeeCode}
       </Text>
       <Text style={{ borderLeftWidth: 0.5 }} />
       {/* Tên nhân viên */}
+      <TouchableOpacity
+        style={[styles.cell, { minWidth: COLUMN_MIN_WIDTHS.name, flex: 1 }]}
+        onPress={() => {
+          navigate(Screen_Name.Employee, {
+            screen: Screen_Name.Details_Employee,
+            params: { id: item.id },
+          });
+        }}
+      >
+        <Text
+          style={[styles.cell, { minWidth: COLUMN_MIN_WIDTHS.name, flex: 1 }]}
+        >
+          {item.fullName}
+        </Text>
+      </TouchableOpacity>
+      <Text style={{ borderLeftWidth: 0.5 }} />
+
+      {/* Ngày kí hợp đồng */}
       <Text
         style={[styles.cell, { minWidth: COLUMN_MIN_WIDTHS.start, flex: 1 }]}
-      >
-        {item.fullName}
-      </Text>
-      <Text style={{ borderLeftWidth: 0.5 }} />
-      {/* Giới tính */}
-      <Text
-        style={[styles.cell, { minWidth: COLUMN_MIN_WIDTHS.name, flex: 1 }]}
       >
         {item.gender}
       </Text>
       <Text style={{ borderLeftWidth: 0.5 }} />
-      {/* Số điện thoại */}
+
+      {/* Vị trí */}
       <Text
         style={[styles.cell, { minWidth: COLUMN_MIN_WIDTHS.position, flex: 1 }]}
       >
         {item.phoneNumber}
       </Text>
       <Text style={{ borderLeftWidth: 0.5 }} />
-      {/* Email */}
+      {/* Phòng ban */}
       <Text
         style={[styles.cell, { minWidth: COLUMN_MIN_WIDTHS.struct, flex: 1 }]}
       >
         {item.email}
       </Text>
       <Text style={{ borderLeftWidth: 0.5 }} />
-      {/* Ngày sinh */}
+      {/* Loại hợp đồng */}
       <Text
         style={[styles.cell, { minWidth: COLUMN_MIN_WIDTHS.type, flex: 1 }]}
       >
@@ -197,20 +206,18 @@ const Contract = () => {
               <Text
                 style={[
                   styles.headerCell,
-                  { minWidth: COLUMN_MIN_WIDTHS.name, flex: 2 },
+                  { minWidth: COLUMN_MIN_WIDTHS.id, flex: 2 },
                 ]}
-                // numberOfLines={1}
               >
-                Mã nhân viên
+                Mã hợp đồng
               </Text>
               <Text style={{ borderLeftWidth: 0.5 }} />
 
               <Text
                 style={[
                   styles.headerCell,
-                  { minWidth: COLUMN_MIN_WIDTHS.start, flex: 1 },
+                  { minWidth: COLUMN_MIN_WIDTHS.name, flex: 1 },
                 ]}
-                // numberOfLines={1}
               >
                 Tên nhân viên
               </Text>
@@ -218,11 +225,10 @@ const Contract = () => {
               <Text
                 style={[
                   styles.headerCell,
-                  { minWidth: COLUMN_MIN_WIDTHS.name, flex: 1 },
+                  { minWidth: COLUMN_MIN_WIDTHS.start, flex: 1 },
                 ]}
-                // numberOfLines={1}
               >
-                Giới tính
+                Ngày ký
               </Text>
               <Text style={{ borderLeftWidth: 0.5 }} />
               <Text
@@ -230,9 +236,8 @@ const Contract = () => {
                   styles.headerCell,
                   { minWidth: COLUMN_MIN_WIDTHS.position, flex: 1 },
                 ]}
-                // numberOfLines={1}
               >
-                Số điện thoại
+                Vị trí
               </Text>
               <Text style={{ borderLeftWidth: 0.5 }} />
               <Text
@@ -240,9 +245,8 @@ const Contract = () => {
                   styles.headerCell,
                   { minWidth: COLUMN_MIN_WIDTHS.struct, flex: 1 },
                 ]}
-                // numberOfLines={1}
               >
-                Email
+                Phòng ban
               </Text>
               <Text style={{ borderLeftWidth: 0.5 }} />
               <Text
@@ -250,9 +254,8 @@ const Contract = () => {
                   styles.headerCell,
                   { minWidth: COLUMN_MIN_WIDTHS.type, flex: 1 },
                 ]}
-                // numberOfLines={1}
               >
-                Ngày sinh
+                Loại hợp đồng
               </Text>
             </View>
 
@@ -267,9 +270,16 @@ const Contract = () => {
               style={styles.bodyScroll}
               renderItem={renderItem}
               ListEmptyComponent={
-                !loading && (contract.length === 0 || !contract) ? (
+                !loading && contract.length === 0 ? (
                   <Text
-                    style={[AppStyles.label, { flex: 1, textAlign: 'center' }]}
+                    style={[
+                      AppStyles.label,
+                      {
+                        flex: 1,
+                        textAlign: 'center',
+                        marginTop: spacing.medium,
+                      },
+                    ]}
                   >
                     Không có dữ liệu
                   </Text>
@@ -312,7 +322,6 @@ const Contract = () => {
           </View>
         </ScrollView>
       </View>
-
       {/* Footer */}
 
       {(loading || refreshing) && (

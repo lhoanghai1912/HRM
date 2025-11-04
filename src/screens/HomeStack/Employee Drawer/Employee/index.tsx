@@ -13,17 +13,22 @@ import CustomHeader from '../../../../components/CustomHeader';
 import icons from '../../../../assets/icons';
 import { usePaginatedList } from '../../../../components/Paginated';
 import { employee_GetAll } from '../../../../services/hr';
-import { lo } from '../../../../language/Resource';
 import { ms, spacing } from '../../../../utils/spacing';
-import { colors } from '../../../../utils/color';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import AppStyles from '../../../../components/AppStyle';
 import { navigate } from '../../../../navigation/RootNavigator';
 import { Screen_Name } from '../../../../navigation/ScreenName';
 import { useNavigation } from '@react-navigation/native';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
-import NavBar from '../../../../components/Navbar';
 import styles from '../styles';
+
+// checkbox: ms(40),
+// id: ms(120),
+// start: ms(120),
+// name: ms(180),
+// position: ms(120),
+// struct: ms(150),
+// type: ms(120),
 
 const PAGE_SIZE = 15;
 const COLUMN_MIN_WIDTHS = {
@@ -200,7 +205,6 @@ const Employee = ({}) => {
                   styles.headerCell,
                   { minWidth: COLUMN_MIN_WIDTHS.name, flex: 2 },
                 ]}
-                // numberOfLines={1}
               >
                 Mã nhân viên
               </Text>
@@ -211,7 +215,6 @@ const Employee = ({}) => {
                   styles.headerCell,
                   { minWidth: COLUMN_MIN_WIDTHS.work, flex: 1 },
                 ]}
-                // numberOfLines={1}
               >
                 Tên nhân viên
               </Text>
@@ -221,7 +224,6 @@ const Employee = ({}) => {
                   styles.headerCell,
                   { minWidth: COLUMN_MIN_WIDTHS.time, flex: 1 },
                 ]}
-                // numberOfLines={1}
               >
                 Giới tính
               </Text>
@@ -231,7 +233,6 @@ const Employee = ({}) => {
                   styles.headerCell,
                   { minWidth: COLUMN_MIN_WIDTHS.unit, flex: 1 },
                 ]}
-                // numberOfLines={1}
               >
                 Số điện thoại
               </Text>
@@ -241,7 +242,6 @@ const Employee = ({}) => {
                   styles.headerCell,
                   { minWidth: COLUMN_MIN_WIDTHS.object, flex: 1 },
                 ]}
-                // numberOfLines={1}
               >
                 Email
               </Text>
@@ -251,7 +251,6 @@ const Employee = ({}) => {
                   styles.headerCell,
                   { minWidth: COLUMN_MIN_WIDTHS.location, flex: 1 },
                 ]}
-                // numberOfLines={1}
               >
                 Ngày sinh
               </Text>
@@ -270,7 +269,14 @@ const Employee = ({}) => {
               ListEmptyComponent={
                 !loading && employee.length === 0 ? (
                   <Text
-                    style={[AppStyles.label, { flex: 1, textAlign: 'center' }]}
+                    style={[
+                      AppStyles.label,
+                      {
+                        flex: 1,
+                        textAlign: 'center',
+                        marginTop: spacing.medium,
+                      },
+                    ]}
                   >
                     Không có dữ liệu
                   </Text>
