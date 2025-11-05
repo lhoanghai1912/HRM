@@ -13,6 +13,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#e5e7eb',
   },
+
+  tableHeader: {},
   title: { fontSize: 20, fontWeight: 'bold', color: '#222' },
   searchInput: {
     flex: 1,

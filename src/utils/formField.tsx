@@ -100,8 +100,12 @@ export const renderField = (
         />
       );
     case 'selectOne':
-      return (
-        <>
+      //Check displayFieldSource: LocationName
+      if (
+        data.displayFieldSource &&
+        data.displayFieldSource === 'LocationName'
+      ) {
+        return (
           <TouchableOpacity
             disabled={mode === 'view'}
             style={{
@@ -109,6 +113,7 @@ export const renderField = (
               borderRadius: 10,
               padding: 8,
               marginBottom: 8,
+              backgroundColor: '#e6f7ff', // màu khác biệt
             }}
             onPress={() => {
               if (extraProps.onPickSelectOne)
@@ -117,9 +122,10 @@ export const renderField = (
                   data.displayField,
                   extraProps.pickerData,
                 );
+              console.log('extraProps', extraProps.formData);
             }}
           >
-            <Text>
+            <Text style={{ color: '#1890ff', fontWeight: 'bold' }}>
               {(() => {
                 // 1. Nếu value là object có label
                 if (value && typeof value === 'object' && value.label) {
@@ -129,8 +135,11 @@ export const renderField = (
                 const found = (extraProps.pickerData || []).find(
                   item => item.value === value || item.id === value,
                 );
-                if (found && (found.label || found.name)) {
-                  return found.label ?? found.name;
+                if (
+                  found &&
+                  (found.label || found.name || found.pickListValue)
+                ) {
+                  return found.label ?? found.name ?? found.pickListValue;
                 }
                 // 3. Nếu không có thì lấy từ formData[displayField]
                 if (
@@ -140,12 +149,60 @@ export const renderField = (
                   return extraProps.formData[data.displayField];
                 }
                 // 4. Fallback
-                return 'Chọn...';
+                return 'Chọn quốc gia...';
               })()}
             </Text>
           </TouchableOpacity>
-        </>
-      );
+        );
+      } else {
+        return (
+          <>
+            <TouchableOpacity
+              disabled={mode === 'view'}
+              style={{
+                borderWidth: 1,
+                borderRadius: 10,
+                padding: 8,
+                marginBottom: 8,
+              }}
+              onPress={() => {
+                if (extraProps.onPickSelectOne)
+                  extraProps.onPickSelectOne(
+                    data.fieldName,
+                    data.displayField,
+                    extraProps.pickerData,
+                  );
+                console.log('extraProps', extraProps.formData);
+              }}
+            >
+              <Text>
+                {(() => {
+                  // 1. Nếu value là object có label
+                  if (value && typeof value === 'object' && value.label) {
+                    return value.label;
+                  }
+                  // 2. Tìm trong pickerData
+                  const found = (extraProps.pickerData || []).find(
+                    item => item.value === value || item.id === value,
+                  );
+                  if (found && (found.label || found.name)) {
+                    return found.label ?? found.name;
+                  }
+                  // 3. Nếu không có thì lấy từ formData[displayField]
+                  if (
+                    extraProps.formData &&
+                    extraProps.formData[data.displayField]
+                  ) {
+                    return extraProps.formData[data.displayField];
+                  }
+                  // 4. Fallback
+                  return 'Chọn...';
+                })()}
+              </Text>
+            </TouchableOpacity>
+          </>
+        );
+      }
     case 'selectMulti':
       return (
         <TouchableOpacity
@@ -188,26 +245,49 @@ export const renderField = (
               ) {
                 return 'Chọn...';
               }
+              if (Array.isArray(value) && typeof value[0] === 'object') {
+                console.log('value', value);
+
+                const labels = value
+                  .map(
+                    v =>
+                      v.pickListValue ||
+                      v.label ||
+                      v.name ||
+                      (typeof v === 'string' ? v : ''),
+                  )
+                  .filter(Boolean);
+                if (labels.length > 0) return joinString(labels, ', ');
+              }
+
+              // Nếu formData có displayField
               if (
                 extraProps.formData &&
                 extraProps.formData[data.displayField]
               ) {
                 const displayValue = extraProps.formData[data.displayField];
-
-                // Nếu displayField là string có dạng "Label1;Label2"
                 if (typeof displayValue === 'string') {
-                  const split = splitString(displayValue, ';');
-                  const labels = joinString(split, ', ');
+                  const toArray = JSON.parse(displayValue);
+                  const mapValue = toArray.map(d => {
+                    return d.pickListValue;
+                  });
+                  const labels = joinString(mapValue, ', ');
+
+                  // console.log('mang sau khi chuyen', labels);
+                  // console.log('value',labels.pickListValue);
+
                   return labels;
                 }
-
-                //   // Nếu displayField là mảng
                 if (Array.isArray(displayValue)) {
-                  const labels = joinString(displayValue, ', ');
+                  console.log('defg', displayValue);
+
+                  const labels = joinString(
+                    displayValue.map(d => d.pickListValue),
+                    ', ',
+                  );
                   return labels;
                 }
               }
-
               return 'Chọn...';
             })()}
           </Text>

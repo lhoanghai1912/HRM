@@ -45,26 +45,52 @@ const ModalPicker = ({
   useEffect(() => {
     if (multi && visible) {
       const parsedValues = parseSelectedValue(selectedValue);
-      setMultiValue(parsedValues);
-    }
-  }, [selectedValue, multi, visible]);
 
-  const handleSelect = value => {
+      // Nếu parsedValues là array của IDs (string/number), convert sang array of objects
+      if (parsedValues.length > 0 && typeof parsedValues[0] !== 'object') {
+        const selectedObjects =
+          data?.pageData?.filter(item => {
+            const itemId = item.value ?? item.id;
+            return parsedValues.some(v => String(v) === String(itemId));
+          }) || [];
+        setMultiValue(selectedObjects);
+      } else {
+        // Nếu đã là array of objects thì dùng luôn
+        setMultiValue(parsedValues);
+      }
+    }
+  }, [selectedValue, multi, visible, data]);
+
+  const handleSelect = item => {
     if (multi === true) {
-      let newValue = [...multiValue];
-      // Convert cả hai về string để so sánh
+      // Lấy ID từ item
+      const value = item.value ?? item.id;
       const valueStr = String(value);
-      const hasValue = newValue.some(v => String(v) === valueStr);
+
+      let newValue = [...multiValue];
+
+      // Kiểm tra xem đã chọn chưa (so sánh theo ID)
+      const hasValue = newValue.some(v => {
+        const vId = v.value ?? v.id ?? v;
+        return String(vId) === valueStr;
+      });
 
       if (hasValue) {
-        newValue = newValue.filter(v => String(v) !== valueStr);
+        // Bỏ chọn: loại bỏ item khỏi mảng
+        newValue = newValue.filter(v => {
+          const vId = v.value ?? v.id ?? v;
+          return String(vId) !== valueStr;
+        });
       } else {
-        newValue.push(value);
+        // Chọn: thêm toàn bộ item vào mảng
+        newValue.push(item);
       }
 
       setMultiValue(newValue);
+      console.log('multiValue on select:', newValue);
     } else {
-      const item = data.pageData.find(i => (i.value ?? i.id) === value);
+      // Single select: giữ nguyên logic cũ
+      const value = item.value ?? item.id;
       const label = item?.label ?? item?.name ?? item?.pickListValue ?? '';
       onSelect({ value, label });
       onClose();
@@ -72,17 +98,15 @@ const ModalPicker = ({
   };
 
   const handleDone = () => {
-    const selectedItems = data.pageData
-      .filter(i => {
-        const itemValue = i.value ?? i.id;
-        return multiValue.some(v => String(v) === String(itemValue));
-      })
-      .map(i => ({
-        value: i.value ?? i.id,
-        label: i.label ?? i.name ?? i.pickListValue ?? '',
-      }));
+    console.log('multiValue on done:', multiValue);
 
-    onSelect(selectedItems);
+    // Map multiValue thành format {value, label}
+    const selectedItems = multiValue.map(item => ({
+      value: item.value ?? item.id,
+      label: item.label ?? item.name ?? item.pickListValue ?? '',
+    }));
+
+    onSelect(multiValue);
     onClose();
   };
 
@@ -134,20 +158,24 @@ const ModalPicker = ({
                 showsVerticalScrollIndicator={true}
               >
                 {data?.pageData?.map((item, idx) => {
-                  const value = item.value ?? item.id; // Sửa: dùng item.value thay vì item.values
+                  const value = item.value ?? item.id;
                   const label =
                     item.pickListValue ?? item.name ?? item.label ?? '';
 
-                  // So sánh string để kiểm tra đã chọn
-                  const checked = multiValue.some(
-                    v => String(v) === String(value),
-                  );
+                  // So sánh để kiểm tra đã chọn
+                  const checked = multiValue.some(v => {
+                    const vId = v.value ?? v.id ?? v;
+                    return String(vId) === String(value);
+                  });
 
                   return (
                     <TouchableOpacity
                       key={value ?? idx}
                       style={[styles.row, checked && styles.checkedRow]}
-                      onPress={() => handleSelect(value)}
+                      onPress={() => {
+                        console.log('value select multi:', item);
+                        handleSelect(item); // Truyền cả item
+                      }}
                     >
                       <View
                         style={[styles.checkbox, checked && styles.checked]}
@@ -193,19 +221,26 @@ const ModalPicker = ({
                 {data?.pageData?.map((item, idx) => {
                   const value = item.value ?? item.id;
                   const label =
-                    item.label ?? item.name ?? item.pickListValue ?? '';
-                  const isSelected = selectedValue === value;
+                    item.pickListValue ?? item.name ?? item.label ?? '';
+                  const checked = multiValue.some(
+                    v => String(v) === String(value),
+                  );
                   return (
                     <TouchableOpacity
                       key={value ?? idx}
-                      style={[styles.row, isSelected && styles.selectedRow]}
-                      onPress={() => handleSelect(value)}
+                      style={[styles.row, checked && styles.checkedRow]}
+                      onPress={() => {
+                        console.log('value select multi:', item);
+                        handleSelect(item); // Truyền cả item thay vì chỉ value
+                      }}
                     >
+                      <View
+                        style={[styles.checkbox, checked && styles.checked]}
+                      >
+                        {checked && <Text style={styles.checkText}>✓</Text>}
+                      </View>
                       <Text
-                        style={[
-                          styles.rowText,
-                          isSelected && styles.selectedText,
-                        ]}
+                        style={[styles.rowText, checked && styles.checkedText]}
                       >
                         {label}
                       </Text>

@@ -4266,3 +4266,53 @@ export const uploadFile = async ({
     throw error;
   }
 };
+
+export const getData_Group = async (data: any) => {
+  try {
+    const response = await apiClient.post(
+      `Dictionary/config/data-group`,
+      data,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error getData_Group:', error);
+    throw error;
+  }
+};
+
+export const getLocation = async (
+  paramQuery,
+  countryId = null,
+  provinceId = null,
+) => {
+  try {
+    console.log('getLocation called with:', {
+      paramQuery,
+      countryId,
+      provinceId,
+    });
+
+    const response = await apiClient.post('/Dictionary/location', {
+      paramQuery: {
+        page: paramQuery.page || 1,
+        pageSize: paramQuery.pageSize || 100,
+        filter: paramQuery.filter || '',
+        orderBy: paramQuery.orderBy || '',
+        sortOrder: paramQuery.sortOrder || '',
+      },
+      countryId: countryId,
+      provinceId: provinceId,
+    });
+
+    console.log('getLocation response:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('getLocation error:', error);
+    throw error;
+  }
+};
