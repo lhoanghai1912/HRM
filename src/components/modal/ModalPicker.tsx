@@ -11,6 +11,7 @@ import {
 import { colors } from '../../utils/color';
 import { spacing } from '../../utils/spacing';
 import { lo } from '../../language/Resource';
+import AppStyles from '../AppStyle';
 
 const ModalPicker = ({
   visible,
@@ -19,104 +20,70 @@ const ModalPicker = ({
   onSelect,
   onClose,
   multi,
-  onLoadMore, // callback để load thêm dữ liệu
-  loadingMore, // boolean: đang load thêm
-  hasMore = false, // boolean: còn dữ liệu để load tiếp
+  onLoadMore,
+  loadingMore,
+  hasMore = false,
   fieldLabel = '',
 }) => {
   const [multiValue, setMultiValue] = useState([]);
+
   console.log('ModalPicker selectedValue:', selectedValue);
-  // Hàm parse selectedValue thành array
-  const parseSelectedValue = value => {
+  console.log('ModalPicker data:', data);
+
+  // Parse selectedValue thành array of IDs
+  const parseSelectedIds = value => {
     if (!value) return [];
 
+    // Nếu là array
     if (Array.isArray(value)) {
-      return value;
+      // Nếu là array of objects [{value, label}]
+      if (value.length > 0 && typeof value[0] === 'object') {
+        return value.map(v => String(v.value ?? v.id ?? v));
+      }
+      // Nếu là array of IDs [1, 2, 3]
+      return value.map(v => String(v));
     }
 
+    // Nếu là string "10;11;12"
     if (typeof value === 'string') {
-      // Tách string "10;11" thành ["10", "11"]
       return value.split(';').filter(item => item.trim().length > 0);
     }
 
-    return [value];
+    // Single value
+    return [String(value)];
   };
 
-  // Cập nhật multiValue khi selectedValue hoặc visible thay đổi
+  // Update multiValue khi selectedValue hoặc visible thay đổi
   useEffect(() => {
     if (multi && visible) {
-      const parsedValues = parseSelectedValue(selectedValue);
-
-      // Nếu parsedValues là array của IDs (string/number), convert sang array of objects
-      if (parsedValues.length > 0 && typeof parsedValues[0] !== 'object') {
-        const selectedObjects =
-          data?.pageData?.filter(item => {
-            const itemId = item.value ?? item.id;
-            return parsedValues.some(v => String(v) === String(itemId));
-          }) || [];
-        setMultiValue(selectedObjects);
-      } else {
-        // Nếu đã là array of objects thì dùng luôn
-        setMultiValue(parsedValues);
-      }
+      const selectedIds = parseSelectedIds(selectedValue);
+      console.log('Parsed selected IDs:', selectedIds);
+      setMultiValue(selectedIds);
     }
-  }, [selectedValue, multi, visible, data]);
-
-  useEffect(() => {
-    if (multi) {
-      let parsed = [];
-
-      // Nếu selectedValue là string "10;11;12"
-      if (typeof selectedValue === 'string' && selectedValue.length > 0) {
-        const ids = selectedValue.split(';');
-        // Tìm object tương ứng trong data.pageData
-        parsed = ids
-          .map(id => {
-            return data.pageData?.find(
-              item => String(item.value ?? item.id) === String(id),
-            );
-          })
-          .filter(Boolean);
-      }
-      // Nếu selectedValue đã là array object
-      else if (Array.isArray(selectedValue)) {
-        parsed = selectedValue;
-      }
-
-      console.log('Parsed multiValue:', parsed);
-      setMultiValue(parsed);
-    }
-  }, [selectedValue, multi, data.pageData]);
+  }, [selectedValue, multi, visible]);
 
   const handleSelect = item => {
     if (multi === true) {
-      // Lấy ID từ item
       const value = item.value ?? item.id;
       const valueStr = String(value);
 
       let newValue = [...multiValue];
 
-      // Kiểm tra xem đã chọn chưa (so sánh theo ID)
-      const hasValue = newValue.some(v => {
-        const vId = v.value ?? v.id ?? v;
-        return String(vId) === valueStr;
-      });
+      // Kiểm tra xem đã chọn chưa
+      const hasValue = newValue.includes(valueStr);
 
       if (hasValue) {
-        // Bỏ chọn: loại bỏ item khỏi mảng
-        newValue = newValue.filter(v => {
-          const vId = v.value ?? v.id ?? v;
-          return String(vId) !== valueStr;
-        });
+        // Bỏ chọn
+        newValue = newValue.filter(v => v !== valueStr);
       } else {
-        // Chọn: thêm toàn bộ item vào mảng
-        newValue.push(item);
+        // Chọn thêm
+        newValue.push(valueStr);
       }
 
       setMultiValue(newValue);
-      console.log('multiValue on select:', newValue);
+      console.log('Updated multiValue:', newValue);
     } else {
-      // Single select: giữ nguyên logic cũ
+      // Single select
       const value = item.value ?? item.id;
       const label = item?.label ?? item?.name ?? item?.pickListValue ?? '';
       onSelect({ value, label });
@@ -125,15 +92,25 @@ const ModalPicker = ({
   };
 
   const handleDone = () => {
-    console.log('multiValue on done:', multiValue);
+    console.log('Final multiValue:', multiValue);
 
-    // Map multiValue thành format {value, label}
-    const selectedItems = multiValue.map(item => ({
-      value: item.value ?? item.id,
-      label: item.label ?? item.name ?? item.pickListValue ?? '',
-    }));
+    // Map IDs thành objects với label
+    const selectedItems = multiValue
+      .map(id => {
+        const item = data.pageData?.find(
+          i => String(i.value ?? i.id) === String(id),
+        );
+        if (!item) return null;
+        return {
+          value: item.value ?? item.id,
+          label: item.label ?? item.name ?? item.pickListValue ?? '',
+          pickListValue: item.pickListValue ?? item.label ?? item.name ?? '',
+        };
+      })
+      .filter(Boolean);
 
-    onSelect(multiValue);
+    console.log('Selected items:', selectedItems);
+    onSelect(selectedItems);
     onClose();
   };
 
@@ -162,7 +139,6 @@ const ModalPicker = ({
         onPress={onClose}
       >
         <View style={styles.container}>
-          {/* Show loading when no data available yet */}
           {!data?.pageData || data.pageData.length === 0 ? (
             <View style={styles.loadingContainer}>
               {loadingMore ? (
@@ -185,38 +161,31 @@ const ModalPicker = ({
                 showsVerticalScrollIndicator={true}
               >
                 {data?.pageData?.map((item, idx) => {
-                  console.log('multi item', multiValue);
-
                   const value = item.value ?? item.id;
+                  const valueStr = String(value);
                   const label =
                     item.pickListValue ?? item.name ?? item.label ?? '';
-                  console.log('value', multiValue);
 
-                  // So sánh để kiểm tra đã chọn
-                  const checked = multiValue.some(v => {
-                    const vId = v.value ?? v.id ?? v;
-                    return String(vId) === String(value);
-                  });
+                  // Kiểm tra đã chọn: so sánh với array of IDs
+                  const checked = multiValue.includes(valueStr);
+
+                  console.log(
+                    `Item ${valueStr}: checked=${checked}, multiValue=`,
+                    multiValue,
+                  );
 
                   return (
                     <TouchableOpacity
                       key={value ?? idx}
-                      style={[styles.row, checked && styles.checkedRow]}
-                      onPress={() => {
-                        console.log('value select multi:', item);
-                        handleSelect(item); // Truyền cả item
-                      }}
+                      style={styles.row}
+                      onPress={() => handleSelect(item)}
                     >
                       <View
                         style={[styles.checkbox, checked && styles.checked]}
                       >
                         {checked && <Text style={styles.checkText}>✓</Text>}
                       </View>
-                      <Text
-                        style={[styles.rowText, checked && styles.checkedText]}
-                      >
-                        {label}
-                      </Text>
+                      <Text style={styles.itemText}>{label}</Text>
                     </TouchableOpacity>
                   );
                 })}
@@ -235,47 +204,44 @@ const ModalPicker = ({
                 )}
               </ScrollView>
               <TouchableOpacity style={styles.doneBtn} onPress={handleDone}>
-                <Text style={styles.doneBtnText}>Xong</Text>
+                <Text style={{ color: '#fff', fontWeight: 'bold' }}>Xong</Text>
               </TouchableOpacity>
             </View>
           ) : (
-            <View style={styles.singleContainer}>
-              <Text style={styles.headerText}>Chọn {fieldLabel}</Text>
+            // Single select code giữ nguyên
+            <View style={{ flex: 1 }}>
+              <Text
+                style={[
+                  AppStyles.label,
+                  { textAlign: 'center', marginBottom: spacing.medium },
+                ]}
+              >
+                Chọn {fieldLabel}
+              </Text>
+
               <ScrollView
                 onScroll={handleScroll}
                 scrollEventThrottle={100}
-                style={styles.scrollView}
-                contentContainerStyle={styles.scrollContent}
-                showsVerticalScrollIndicator={true}
+                contentContainerStyle={{
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
               >
                 {data?.pageData?.map((item, idx) => {
-                  console.log('item', item);
-                  console.log('item value', item.value);
-
-                  console.log('item id', item.id);
-                  console.log('selectedValue', selectedValue);
-
                   const value = item.value ?? item.id;
                   const label =
-                    item.pickListValue ?? item.name ?? item.label ?? '';
-                  // const checked = multiValue.some(
-                  //   v => String(v) === String(value),
-                  // );
-                  const checked = selectedValue === item.id;
+                    item.label ?? item.name ?? item.pickListValue ?? '';
+                  const isSelected = selectedValue === value;
                   return (
                     <TouchableOpacity
                       key={value ?? idx}
-                      style={[styles.row, checked && styles.checkedRow]}
-                      onPress={() => {
-                        console.log('value select multi:', item);
-                        handleSelect(item); // Truyền cả item thay vì chỉ value
-                      }}
+                      style={[styles.row, isSelected && styles.selectedRow]}
+                      onPress={() => handleSelect(item)}
                     >
                       <Text
                         style={[
                           styles.rowText,
-                          checked && styles.checkedText,
-                          { textAlign: 'center' },
+                          isSelected && styles.selectedText,
                         ]}
                       >
                         {label}
@@ -338,27 +304,22 @@ const styles = StyleSheet.create({
     fontSize: spacing.medium,
   },
   multiContainer: {
-    // Không set chiều cao cố định, để co theo content
+    flex: 1,
+    minHeight: 300,
   },
   singleContainer: {},
   headerText: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: 'bold',
     textAlign: 'center',
-    paddingVertical: spacing.medium,
-    paddingHorizontal: spacing.medium,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
-    backgroundColor: '#f8f9fa',
-    borderRadius: 12,
+    marginBottom: spacing.medium,
+    color: '#333',
   },
   scrollView: {
-    flexGrow: 0, // Quan trọng: không để grow, cho phép co theo content
-    maxHeight: '80%', // Giới hạn chiều cao scroll
-    marginVertical: spacing.medium,
+    flex: 1,
   },
   scrollContent: {
-    padding: spacing.small,
+    paddingBottom: spacing.medium,
   },
   row: {
     flexDirection: 'row',
@@ -436,6 +397,11 @@ const styles = StyleSheet.create({
   checkedText: {
     color: '#1976d2',
     fontWeight: '500',
+  },
+  itemText: {
+    flex: 1,
+    fontSize: spacing.medium,
+    color: '#333',
   },
 });
 
