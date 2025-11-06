@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { colors } from '../../utils/color';
 import { spacing } from '../../utils/spacing';
+import { lo } from '../../language/Resource';
 
 const ModalPicker = ({
   visible,
@@ -24,7 +25,7 @@ const ModalPicker = ({
   fieldLabel = '',
 }) => {
   const [multiValue, setMultiValue] = useState([]);
-
+  console.log('ModalPicker selectedValue:', selectedValue);
   // Hàm parse selectedValue thành array
   const parseSelectedValue = value => {
     if (!value) return [];
@@ -60,6 +61,32 @@ const ModalPicker = ({
       }
     }
   }, [selectedValue, multi, visible, data]);
+
+  useEffect(() => {
+    if (multi) {
+      let parsed = [];
+
+      // Nếu selectedValue là string "10;11;12"
+      if (typeof selectedValue === 'string' && selectedValue.length > 0) {
+        const ids = selectedValue.split(';');
+        // Tìm object tương ứng trong data.pageData
+        parsed = ids
+          .map(id => {
+            return data.pageData?.find(
+              item => String(item.value ?? item.id) === String(id),
+            );
+          })
+          .filter(Boolean);
+      }
+      // Nếu selectedValue đã là array object
+      else if (Array.isArray(selectedValue)) {
+        parsed = selectedValue;
+      }
+
+      console.log('Parsed multiValue:', parsed);
+      setMultiValue(parsed);
+    }
+  }, [selectedValue, multi, data.pageData]);
 
   const handleSelect = item => {
     if (multi === true) {
@@ -158,9 +185,12 @@ const ModalPicker = ({
                 showsVerticalScrollIndicator={true}
               >
                 {data?.pageData?.map((item, idx) => {
+                  console.log('multi item', multiValue);
+
                   const value = item.value ?? item.id;
                   const label =
                     item.pickListValue ?? item.name ?? item.label ?? '';
+                  console.log('value', multiValue);
 
                   // So sánh để kiểm tra đã chọn
                   const checked = multiValue.some(v => {
@@ -219,12 +249,19 @@ const ModalPicker = ({
                 showsVerticalScrollIndicator={true}
               >
                 {data?.pageData?.map((item, idx) => {
+                  console.log('item', item);
+                  console.log('item value', item.value);
+
+                  console.log('item id', item.id);
+                  console.log('selectedValue', selectedValue);
+
                   const value = item.value ?? item.id;
                   const label =
                     item.pickListValue ?? item.name ?? item.label ?? '';
-                  const checked = multiValue.some(
-                    v => String(v) === String(value),
-                  );
+                  // const checked = multiValue.some(
+                  //   v => String(v) === String(value),
+                  // );
+                  const checked = selectedValue === item.id;
                   return (
                     <TouchableOpacity
                       key={value ?? idx}
@@ -234,13 +271,12 @@ const ModalPicker = ({
                         handleSelect(item); // Truyền cả item thay vì chỉ value
                       }}
                     >
-                      <View
-                        style={[styles.checkbox, checked && styles.checked]}
-                      >
-                        {checked && <Text style={styles.checkText}>✓</Text>}
-                      </View>
                       <Text
-                        style={[styles.rowText, checked && styles.checkedText]}
+                        style={[
+                          styles.rowText,
+                          checked && styles.checkedText,
+                          { textAlign: 'center' },
+                        ]}
                       >
                         {label}
                       </Text>
@@ -329,7 +365,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: spacing.small,
     paddingHorizontal: spacing.medium,
-    marginVertical: 2,
+    marginVertical: spacing.small,
     borderRadius: 8,
     borderWidth: 0.5,
     borderColor: colors.Gray,
@@ -394,7 +430,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   checkedRow: {
-    backgroundColor: '#e3f2fd',
+    backgroundColor: colors.primary,
     borderColor: '#1976d2',
   },
   checkedText: {

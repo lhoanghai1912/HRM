@@ -1,6 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-export function usePaginatedList(fetchApi, PAGE_SIZE = 15, params = {}) {
+export function usePaginatedList(
+  fetchApi,
+  PAGE_SIZE = 15,
+  params = {},
+  param1?,
+) {
   const [data, setData] = useState<any[]>([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -22,12 +27,26 @@ export function usePaginatedList(fetchApi, PAGE_SIZE = 15, params = {}) {
         await new Promise(resolve => setTimeout(resolve, 500));
       }
       try {
-        const res = await fetchApi({
-          Page: currentPage,
-          PageSize: PAGE_SIZE,
-          ...params,
-          ...extraParams,
-        });
+        console.log(
+          'Fetching data with params:',
+          {
+            Page: currentPage,
+            PageSize: PAGE_SIZE,
+            ...params,
+            ...extraParams,
+          },
+          param1,
+        );
+
+        const res = await fetchApi(
+          {
+            Page: currentPage,
+            PageSize: PAGE_SIZE,
+            ...params,
+            ...extraParams,
+          },
+          param1,
+        );
         console.log('FetchData response:', res);
 
         const result = res?.pageData || []; // Sửa ở đây: chỉ lấy mảng pageData

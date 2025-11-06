@@ -7,6 +7,9 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
+import { spacing } from '../../utils/spacing';
+import { fonts } from '../../utils/fontSize';
+import { colors } from '../../utils/color';
 
 const ModalLocation = ({
   visible,
@@ -15,6 +18,7 @@ const ModalLocation = ({
   onClose,
   title = 'Chọn địa điểm',
 }) => {
+  const [selectedLocation, setSelectedLocation] = React.useState(null);
   return (
     <Modal
       visible={visible}
@@ -27,22 +31,35 @@ const ModalLocation = ({
           <Text style={styles.title}>{title}</Text>
           <FlatList
             data={data}
-            keyExtractor={item => item.id?.toString() || item.code?.toString()}
+            keyExtractor={item => item.locationId}
             renderItem={({ item }) => (
               <TouchableOpacity
                 style={styles.item}
                 onPress={() => {
-                  onSelect && onSelect(item);
-                  onClose && onClose();
+                  setSelectedLocation(item.locationId);
+                  const value = item.locationId;
+                  const label = item.locationName;
+                  onSelect({ value, label });
+                  onClose();
                 }}
               >
-                <Text style={styles.itemText}>
-                  {item.name || item.label || item.pickListValue}
+                <Text
+                  style={[
+                    styles.itemText,
+                    {
+                      backgroundColor:
+                        selectedLocation === item.locationId
+                          ? colors.primary
+                          : colors.white,
+                    },
+                  ]}
+                >
+                  {item.locationName}
                 </Text>
               </TouchableOpacity>
             )}
             ListEmptyComponent={
-              <Text style={{ textAlign: 'center', margin: 16 }}>
+              <Text style={{ textAlign: 'center', margin: spacing.medium }}>
                 Không có dữ liệu
               </Text>
             }
@@ -66,27 +83,31 @@ const styles = StyleSheet.create({
   container: {
     width: '85%',
     maxHeight: '70%',
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
+    backgroundColor: colors.background,
+    borderRadius: spacing.medium,
+    padding: spacing.medium,
     elevation: 4,
   },
   title: {
     fontWeight: 'bold',
-    fontSize: 18,
-    marginBottom: 12,
+    fontSize: fonts.large,
+    marginBottom: spacing.medium,
     textAlign: 'center',
   },
   item: {
-    paddingVertical: 12,
+    paddingVertical: spacing.medium,
     borderBottomWidth: 0.5,
-    borderColor: '#eee',
+    borderColor: colors.Gray,
+    borderWidth: 0.5,
+    borderRadius: spacing.medium,
+    backgroundColor: colors.white,
   },
   itemText: {
-    fontSize: 16,
+    fontSize: spacing.medium,
+    textAlign: 'center',
   },
   closeBtn: {
-    marginTop: 12,
+    marginTop: spacing.medium,
     alignItems: 'center',
   },
 });

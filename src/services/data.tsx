@@ -4309,7 +4309,6 @@ export const getLocation = async (
       provinceId: provinceId,
     });
 
-    console.log('getLocation response:', response.data);
     return response.data;
   } catch (error) {
     console.error('getLocation error:', error);

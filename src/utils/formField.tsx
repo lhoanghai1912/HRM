@@ -125,7 +125,7 @@ export const renderField = (
               console.log('extraProps', extraProps.formData);
             }}
           >
-            <Text style={{ color: '#1890ff', fontWeight: 'bold' }}>
+            <Text>
               {(() => {
                 // 1. Nếu value là object có label
                 if (value && typeof value === 'object' && value.label) {
@@ -135,11 +135,8 @@ export const renderField = (
                 const found = (extraProps.pickerData || []).find(
                   item => item.value === value || item.id === value,
                 );
-                if (
-                  found &&
-                  (found.label || found.name || found.pickListValue)
-                ) {
-                  return found.label ?? found.name ?? found.pickListValue;
+                if (found && (found.label || found.name)) {
+                  return found.label ?? found.name;
                 }
                 // 3. Nếu không có thì lấy từ formData[displayField]
                 if (
@@ -149,7 +146,7 @@ export const renderField = (
                   return extraProps.formData[data.displayField];
                 }
                 // 4. Fallback
-                return 'Chọn quốc gia...';
+                return 'Chọn...';
               })()}
             </Text>
           </TouchableOpacity>
@@ -215,23 +212,25 @@ export const renderField = (
           }}
           onPress={() => {
             if (extraProps.onPickSelectMulti) {
-              // Parse value hiện tại để truyền cho picker
-              let selectedValues = [];
+              // Parse value hiện tại thành array id
+              let selectedIds = [];
 
               // Nếu value là string có dạng "10;11;12"
               if (typeof value === 'string' && value.length > 0) {
-                selectedValues = splitString(value, ';');
+                selectedIds = splitString(value, ';');
               }
               // Nếu value đã là mảng
               else if (Array.isArray(value)) {
-                selectedValues = value;
+                selectedIds = value.map(v => v.value ?? v.id ?? v);
               }
+
+              console.log('Selected IDs for multiSelect:', selectedIds);
 
               extraProps.onPickSelectMulti(
                 data.fieldName,
                 data.displayField,
                 extraProps.pickerData,
-                selectedValues, // Truyền thêm selectedValues
+                selectedIds, // Truyền mảng id
               );
             }
           }}

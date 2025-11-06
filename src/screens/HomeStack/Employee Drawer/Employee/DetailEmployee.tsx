@@ -7,6 +7,7 @@ import {
   Image,
   ActivityIndicator,
   Alert,
+  FlatList,
 } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import DatePicker from 'react-native-date-picker';
@@ -35,6 +36,8 @@ import CustomHeader from '../../../../components/CustomHeader';
 import { spacing } from '../../../../utils/spacing';
 import { navigate } from '../../../../navigation/RootNavigator';
 import { Screen_Name } from '../../../../navigation/ScreenName';
+import { usePaginatedList } from '../../../../components/Paginated';
+const PAGE_SIZE = 15;
 
 const DetailEmployee = ({ route }) => {
   const [field, setField] = useState<any>();
@@ -64,8 +67,8 @@ const DetailEmployee = ({ route }) => {
   const [hasMore, setHasMore] = useState(false);
   const [pickerConfig, setPickerConfig] = useState(null);
   const [pickerPage, setPickerPage] = useState(1);
-  const countryId = null;
-  const provinceId = null;
+  const [countryId, setCountryId] = useState(null);
+  const [provinceId, setProvinceId] = useState(null);
   const [changedFields, setChangedFields] = useState<
     { fieldName: string; fieldValue: any }[]
   >([]);
@@ -76,6 +79,14 @@ const DetailEmployee = ({ route }) => {
     { fieldName: string; config: any }[]
   >([]);
   const [employeeData, setEmployeeData] = useState();
+  const [searchInput, setSearchInput] = useState(''); // Input tạm thời
+  const [searchQuery, setSearchQuery] = useState(''); // Query thực tế để gọi API
+
+  const locationParams = useState({
+    orderBy: 'id desc',
+    search: searchQuery,
+  });
+  const locationIdParam = useState();
 
   useFocusEffect(
     useCallback(() => {
@@ -95,6 +106,7 @@ const DetailEmployee = ({ route }) => {
     console.log('Form data updated:', formData);
     console.log('layout:', field);
   }, [formData]);
+
   const fetchData = async () => {
     try {
       setLoading(true);
@@ -116,7 +128,6 @@ const DetailEmployee = ({ route }) => {
       setLoading(false);
     }
   };
-  console.log('openLocationModal', openLocationModal);
 
   const fetchEmployeeData = async () => {
     try {
@@ -301,28 +312,22 @@ const DetailEmployee = ({ route }) => {
     return missingFields;
   };
 
-  const handlePickSelect = async (fieldName, cfg) => {
+  const handlePickSelect = async (fieldName, cfg, selectedIds = []) => {
     setPickerField(fieldName);
-    // Lấy displayField từ config
-    console.log('Picker config:', cfg);
-
-    const display = cfg.displayField;
-    setDisplayField(display);
+    setDisplayField(cfg.displayField);
     setPickerConfig(cfg);
     setPickerPage(1);
-    setPickerType(cfg.typeControl); // Cập nhật kiểu picker
-    // Mở modal ngay lập tức với dữ liệu rỗng
+    setPickerType(cfg.typeControl);
+
+    // Mở modal ngay với selectedValue đúng format
     setPickerData({ pageData: [] });
     setOpenPicker(true);
 
-    // Load dữ liệu trong background
+    // Load dữ liệu
     try {
-      let data = [];
-
-      data = await getPickerData(
+      const data = await getPickerData(
         { page: 1, pageSize: 10, filter: '', orderBy: '', search: '' },
         cfg,
-        // cfg.tableNameSource,
       );
       setHasMore(data.length === 10);
       setPickerData(data);
@@ -333,17 +338,69 @@ const DetailEmployee = ({ route }) => {
   };
 
   const handlePickLocation = async (fieldName, cfg) => {
-    console.log('=== handlePickLocation called ===');
-    console.log('fieldName:', fieldName);
-    console.log('cfg:', cfg);
-
     setPickerField(fieldName);
+    setDisplayField(cfg.displayField);
     setPickerConfig(cfg);
+    console.log('ghjfkjfyuj');
 
-    // Mở modal ngay lập tức với data rỗng
+    // Parse customConfig để lấy FieldParam và FieldConfigDependent
+    let customConfig: any = {};
+    try {
+      customConfig = cfg.customConfig ? JSON.parse(cfg.customConfig) : {};
+    } catch (e) {
+      console.log('Error parsing customConfig:', e);
+    }
+
+    // Xác định giá trị param cần truyền cho API
+    let countryIdParam = null;
+    let provinceIdParam = null;
+
+    console.log('Location picker config:', cfg);
+    console.log('formData for location picker:', formData);
+    console.log('customConfigs for location picker:', customConfigs);
+    console.log('customConfig string:', cfg.customConfig);
+    console.log('countryIdParam:', countryIdParam);
+    console.log('provinceIdParam:', provinceIdParam);
+
+    if (customConfig.FieldParam) {
+      // Tìm fieldName ứng với FieldParam
+      // Ví dụ FieldParam: 'countryId' => tìm field có fieldName chứa 'CountryID'
+      const paramFieldName = Object.keys(formData).find(key =>
+        key.toLowerCase().includes(customConfig.FieldParam.toLowerCase()),
+      );
+      console.log('paramFieldName for location picker:', paramFieldName);
+
+      const allConfigs =
+        field?.pageData?.flatMap(parent => parent.groupFieldConfigs || []) ||
+        [];
+
+      // Tìm cfg có fieldName === paramFieldName
+      const paramFieldConfig = allConfigs.find(
+        cfg => cfg.fieldName === paramFieldName,
+      );
+
+      console.log('paramFieldConfig:', paramFieldConfig);
+
+      const paramValue = paramFieldName ? formData[paramFieldName] : null;
+
+      if (customConfig.FieldParam === 'countryId') {
+        countryIdParam = paramValue;
+      }
+      if (customConfig.FieldParam === 'provinceId') {
+        provinceIdParam = paramValue;
+      }
+      const dependentValue = formData[customConfig.FieldConfigDependent];
+      if (!dependentValue) {
+        Alert.alert(
+          'Thông báo',
+          `Vui lòng chọn ${paramFieldConfig.label} trước`,
+        );
+        return;
+      }
+    }
+
     setLocationData([]);
     setOpenLocationModal(true);
-    console.log('Modal opened with empty data');
 
     // Load dữ liệu trong background
     try {
@@ -354,32 +411,25 @@ const DetailEmployee = ({ route }) => {
         orderBy: '',
         search: '',
       };
-      console.log('Fetching location data...', param, {
-        country: countryId,
-        provinceId: provinceId,
-      });
-      const data = await getLocation(param, {
-        countryId: countryId,
-        provinceId: provinceId,
-      });
-      console.log('Location data fetched:', data);
+      const data = await getLocation(param, countryIdParam, provinceIdParam);
       setLocationData(data?.pageData || data || []);
     } catch (error) {
       console.error('Error loading location data:', error);
       setLocationData([]);
     }
   };
+
   const handleSave = async () => {
     try {
       // Validate trước khi save
-      const missingFields = validateRequiredFields();
-      if (missingFields.length > 0) {
-        Alert.alert(
-          'Lỗi',
-          `Vui lòng nhập các trường bắt buộc:\n- ${missingFields.join('\n- ')}`,
-        );
-        return;
-      }
+      // const missingFields = validateRequiredFields();
+      // if (missingFields.length > 0) {
+      //   Alert.alert(
+      //     'Lỗi',
+      //     `Vui lòng nhập các trường bắt buộc:\n- ${missingFields.join('\n- ')}`,
+      //   );
+      //   return;
+      // }
       setLoading(true);
       console.log('changedFields to save:', changedFields);
 
@@ -567,30 +617,25 @@ const DetailEmployee = ({ route }) => {
                                 handlePickDate(fieldName),
                               onPickMonth: fieldName =>
                                 handlePickMonth(fieldName),
-                              onPickSelectOne: (
-                                fieldName,
-                                displayField,
-                                pickerData,
-                              ) => {
-                                console.log(
-                                  '=== onPickSelectOne triggered ===',
-                                );
-                                console.log(
-                                  'displayFieldSource:',
-                                  cfg.displayFieldSource,
-                                );
-                                console.log('fieldName:', fieldName);
-
+                              onPickSelectOne: fieldName => {
                                 if (cfg.displayFieldSource === 'LocationName') {
-                                  console.log('Calling handlePickLocation');
                                   handlePickLocation(fieldName, cfg);
                                 } else {
-                                  console.log('Calling handlePickSelect');
                                   handlePickSelect(fieldName, cfg);
                                 }
                               },
-                              onPickSelectMulti: fieldName =>
-                                handlePickSelect(fieldName, cfg),
+                              onPickSelectMulti: (
+                                fieldName,
+                                displayField,
+                                pickerData,
+                                selectedIds,
+                              ) => {
+                                console.log(
+                                  'Opening multiSelect with selectedIds:',
+                                  selectedIds,
+                                );
+                                handlePickSelect(fieldName, cfg, selectedIds);
+                              },
                               onPickFile: fieldName =>
                                 handlePickFile(fieldName),
                               onPickImage: fieldName =>
@@ -651,30 +696,25 @@ const DetailEmployee = ({ route }) => {
                                 handlePickDate(fieldName),
                               onPickMonth: fieldName =>
                                 handlePickMonth(fieldName),
-                              onPickSelectOne: (
-                                fieldName,
-                                displayField,
-                                pickerData,
-                              ) => {
-                                console.log(
-                                  '=== onPickSelectOne triggered ===',
-                                );
-                                console.log(
-                                  'displayFieldSource:',
-                                  cfg.displayFieldSource,
-                                );
-                                console.log('fieldName:', fieldName);
-
+                              onPickSelectOne: fieldName => {
                                 if (cfg.displayFieldSource === 'LocationName') {
-                                  console.log('Calling handlePickLocation');
                                   handlePickLocation(fieldName, cfg);
                                 } else {
-                                  console.log('Calling handlePickSelect');
                                   handlePickSelect(fieldName, cfg);
                                 }
                               },
-                              onPickSelectMulti: fieldName =>
-                                handlePickSelect(fieldName, cfg),
+                              onPickSelectMulti: (
+                                fieldName,
+                                displayField,
+                                pickerData,
+                                selectedIds,
+                              ) => {
+                                console.log(
+                                  'Opening multiSelect with selectedIds:',
+                                  selectedIds,
+                                );
+                                handlePickSelect(fieldName, cfg, selectedIds);
+                              },
                               onPickFile: fieldName =>
                                 handlePickFile(fieldName),
                               onPickImage: fieldName =>
@@ -835,58 +875,36 @@ const DetailEmployee = ({ route }) => {
       )}
       {openLocationModal && (
         <>
-          <Text
-            style={{
-              position: 'absolute',
-              top: 100,
-              left: 20,
-              zIndex: 999,
-              backgroundColor: 'yellow',
-            }}
-          >
-            DEBUG: Modal should be visible
-          </Text>
           <ModalLocation
             visible={openLocationModal}
             data={locationData || []}
-            onSelect={item => {
-              console.log('=== Location selected ===');
-              console.log('item:', item);
-              console.log('pickerField:', pickerField);
-              console.log('pickerConfig:', pickerConfig);
+            onSelect={selected => {
+              console.log('location item:', selected);
 
-              const displayFieldName = pickerConfig?.displayField;
-
-              // Cập nhật formData
               setFormData(prev => ({
                 ...prev,
-                [pickerField]: item.id || item.value,
-                [displayFieldName]:
-                  item.name || item.label || item.pickListValue,
+                [pickerField]: selected.value,
+                [displayField]: selected.label,
               }));
-
+              console.log('Updated formData:', formData);
+              setCountryId(formData['countryId'] || null);
+              setProvinceId(formData['provinceId'] || null);
               // Cập nhật changedFields
               setChangedFields(prev => {
                 const safePrev = Array.isArray(prev) ? prev : [];
                 const filtered = safePrev.filter(
                   f =>
-                    f.fieldName !== pickerField &&
-                    f.fieldName !== displayFieldName,
+                    f.fieldName !== pickerField && f.fieldName !== displayField,
                 );
                 return [
                   ...filtered,
-                  { fieldName: pickerField, fieldValue: item.id || item.value },
-                  {
-                    fieldName: displayFieldName,
-                    fieldValue: item.name || item.label || item.pickListValue,
-                  },
+                  { fieldName: pickerField, fieldValue: selected.value },
+                  { fieldName: displayField, fieldValue: selected.label },
                 ];
               });
-
               setOpenLocationModal(false);
             }}
             onClose={() => {
-              console.log('=== Modal closed ===');
               setOpenLocationModal(false);
             }}
             title="Chọn quốc gia"
