@@ -1,9 +1,17 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+interface PaginatedParams {
+  filter?: string;
+  search?: string;
+  orderBy?: string;
+  sortOrder?: string;
+  [key: string]: any;
+}
+
 export function usePaginatedList(
   fetchApi,
   PAGE_SIZE = 15,
-  params = {},
+  params: PaginatedParams = {}, // Các params bổ sung như countryId, provinceId, etc.
   param1?,
 ) {
   const [data, setData] = useState<any[]>([]);
@@ -19,6 +27,7 @@ export function usePaginatedList(
     async (currentPage: number, isRefresh = false, extraParams = {}) => {
       if (loadingRef.current) return;
       loadingRef.current = true;
+
       if (isRefresh) {
         setLoading(true);
         setLoadingMore(false);
@@ -26,30 +35,36 @@ export function usePaginatedList(
         setLoadingMore(true);
         await new Promise(resolve => setTimeout(resolve, 500));
       }
-      try {
-        console.log(
-          'Fetching data with params:',
-          {
-            Page: currentPage,
-            PageSize: PAGE_SIZE,
-            ...params,
-            ...extraParams,
-          },
-          param1,
-        );
 
-        const res = await fetchApi(
-          {
-            Page: currentPage,
-            PageSize: PAGE_SIZE,
-            ...params,
-            ...extraParams,
+      try {
+        // Tạo payload theo cấu trúc mới
+        const payload = {
+          paramQuery: {
+            page: currentPage,
+            pageSize: PAGE_SIZE,
+            filter: params?.filter || '',
+            search: params?.search || '',
+            orderBy: params?.orderBy || '',
+            sortOrder: params?.sortOrder || '',
           },
-          param1,
-        );
+          // Merge các field columns động từ params và extraParams
+          ...Object.keys(params).reduce((acc, key) => {
+            // Loại bỏ các field thuộc paramQuery
+            if (!['filter', 'search', 'orderBy', 'sortOrder'].includes(key)) {
+              acc[key] = params[key];
+            }
+            return acc;
+          }, {}),
+          ...extraParams,
+        };
+
+        console.log('Fetching data with payload:', payload, 'param1:', param1);
+
+        const res = await fetchApi(payload, param1);
         console.log('FetchData response:', res);
 
-        const result = res?.pageData || []; // Sửa ở đây: chỉ lấy mảng pageData
+        const result = res?.pageData || [];
+
         if (isRefresh || currentPage === 1) {
           setData(result);
           setNoMoreData(result.length < PAGE_SIZE);
@@ -70,10 +85,10 @@ export function usePaginatedList(
         setRefreshing(false);
       }
     },
-    [fetchApi, PAGE_SIZE, params],
+    [fetchApi, PAGE_SIZE, params, param1],
   );
 
-  // CHỈ GIỮ 1 useEffect, gọi khi params thay đổi
+  // Gọi khi params thay đổi
   useEffect(() => {
     setData([]);
     setPage(1);
