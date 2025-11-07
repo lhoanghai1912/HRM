@@ -41,16 +41,18 @@ export const employee_Get = async (id: any) => {
   }
 };
 
-export const employee_GetAll = async (params: GetAllParams) => {
+// Sửa: employee_GetAll sử dụng POST với body structure mới
+export const employee_GetAll = async (payload: any) => {
   try {
-    const filteredParams = Object.fromEntries(
-      Object.entries(params).filter(
-        ([key, value]) => value !== undefined && value !== null,
-      ),
-    );
-    const queryString = new URLSearchParams(filteredParams as any).toString();
+    console.log('employee_GetAll payload:', payload);
 
-    const res = await apiClient.get(`Employee?${queryString}`);
+    // Payload đã có structure đúng từ usePaginatedList:
+    // {
+    //   paramQuery: { page, pageSize, filter, search, orderBy, sortOrder },
+    //   ...otherFields
+    // }
+
+    const res = await apiClient.post('Employee/All', payload);
     console.log('employee_GetAll res:', res.data);
 
     return res.data;
@@ -60,21 +62,17 @@ export const employee_GetAll = async (params: GetAllParams) => {
   }
 };
 
-export const contract_GetAll = async (params: GetAllParams) => {
+// Sửa: contract_GetAll sử dụng POST với body structure mới
+export const contract_GetAll = async (payload: any) => {
   try {
-    const filteredParams = Object.fromEntries(
-      Object.entries(params).filter(
-        ([key, value]) => value !== undefined && value !== null,
-      ),
-    );
-    const queryString = new URLSearchParams(filteredParams as any).toString();
+    console.log('contract_GetAll payload:', payload);
 
-    const res = await apiClient.get(`Contract?${queryString}`);
+    const res = await apiClient.post('Contract/All', payload);
     console.log('contract_GetAll res:', res.data);
 
     return res.data;
   } catch (error) {
-    console.log('Error fetching employee_GetAll:', error);
+    console.log('Error fetching contract_GetAll:', error);
     throw error;
   }
 };
