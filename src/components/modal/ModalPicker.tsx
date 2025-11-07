@@ -185,7 +185,7 @@ const ModalPicker = ({
                       >
                         {checked && <Text style={styles.checkText}>✓</Text>}
                       </View>
-                      <Text style={styles.itemText}>{label}</Text>
+                      <Text style={styles.rowText}>{label}</Text>
                     </TouchableOpacity>
                   );
                 })}
@@ -304,22 +304,27 @@ const styles = StyleSheet.create({
     fontSize: spacing.medium,
   },
   multiContainer: {
-    flex: 1,
-    minHeight: 300,
+    // Không set chiều cao cố định, để co theo content
   },
   singleContainer: {},
   headerText: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: '600',
     textAlign: 'center',
-    marginBottom: spacing.medium,
-    color: '#333',
+    paddingVertical: spacing.medium,
+    paddingHorizontal: spacing.medium,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+    backgroundColor: '#f8f9fa',
+    borderRadius: 12,
   },
   scrollView: {
-    flex: 1,
+    flexGrow: 0, // Quan trọng: không để grow, cho phép co theo content
+    maxHeight: '80%', // Giới hạn chiều cao scroll
+    marginVertical: spacing.medium,
   },
   scrollContent: {
-    paddingBottom: spacing.medium,
+    padding: spacing.small,
   },
   row: {
     flexDirection: 'row',
@@ -397,11 +402,6 @@ const styles = StyleSheet.create({
   checkedText: {
     color: '#1976d2',
     fontWeight: '500',
-  },
-  itemText: {
-    flex: 1,
-    fontSize: spacing.medium,
-    color: '#333',
   },
 });
 
