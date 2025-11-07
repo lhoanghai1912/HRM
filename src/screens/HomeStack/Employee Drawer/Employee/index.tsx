@@ -59,8 +59,11 @@ const Employee = ({}) => {
     handleLoadMore,
     handleRefresh,
   } = usePaginatedList(employee_GetAll, PAGE_SIZE, {
-    orderBy: 'id desc',
+    orderBy: 'employeeId',
+    sortOrder: ' desc',
     search: searchQuery,
+    fieldColumns:
+      'EmployeeCode,FullName,genderID,maritalStatusID,personalTaxCode,birthDay,mobile,homeLand,ethnicID,religionID,nationalityID,identifyNumber,officeEmail,,currentProvinceID,currentWardID',
   });
   const onEndReachedCalledDuringMomentum = useRef(false);
 
@@ -68,10 +71,10 @@ const Employee = ({}) => {
 
   const renderItem = ({ item, index }) => (
     <TouchableOpacity
-      key={item.id}
+      key={item.EmployeeID}
       style={styles.tableRow}
       onPress={() => {
-        navigate(Screen_Name.Details_Employee, { id: item?.id });
+        navigate(Screen_Name.Details_Employee, { id: item.EmployeeID });
       }}
     >
       {/* STT */}
@@ -259,11 +262,7 @@ const Employee = ({}) => {
             <FlatList
               ref={flatListRef}
               data={employee}
-              keyExtractor={item =>
-                item.id?.toString() ||
-                item.employeeCode?.toString() ||
-                Math.random().toString()
-              }
+              keyExtractor={item => item.EmployeeID}
               style={styles.bodyScroll}
               renderItem={renderItem}
               ListEmptyComponent={

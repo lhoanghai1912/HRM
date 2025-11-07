@@ -4211,14 +4211,17 @@ export const getPickerData = async (
   }
 };
 
-export const updateEmployee = async (id: string, fields: {}) => {
+export const updateEmployee = async (id: string, fields: any[]) => {
   try {
-    const response = await apiClient.put(`Employee/${id}`, fields, {
+    const formData = new FormData();
+    // Fields phải là chuỗi JSON, có thể là mảng phẳng hoặc lồng mảng nếu backend yêu cầu
+    formData.append('Fields', JSON.stringify(fields));
+
+    const response = await apiClient.put(`Employee/${id}`, formData, {
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'multipart/form-data',
       },
     });
-    // const response = await apiClient.put(`Employee/`, fields);
     return response.data;
   } catch (error) {
     console.error('Error updating employee:', error);

@@ -12,7 +12,6 @@ export function usePaginatedList(
   fetchApi,
   PAGE_SIZE = 15,
   params: PaginatedParams = {}, // Các params bổ sung như countryId, provinceId, etc.
-  param1?,
 ) {
   const [data, setData] = useState<any[]>([]);
   const [page, setPage] = useState(1);
@@ -58,9 +57,9 @@ export function usePaginatedList(
           ...extraParams,
         };
 
-        console.log('Fetching data with payload:', payload, 'param1:', param1);
+        console.log('Fetching data with payload:', payload);
 
-        const res = await fetchApi(payload, param1);
+        const res = await fetchApi(payload);
         console.log('FetchData response:', res);
 
         const result = res?.pageData || [];
@@ -70,8 +69,8 @@ export function usePaginatedList(
           setNoMoreData(result.length < PAGE_SIZE);
         } else {
           setData(prev => {
-            const ids = new Set(prev.map(j => j.id));
-            const merged = result.filter(j => !ids.has(j.id));
+            const ids = new Set(prev.map(j => j.EmployeeID));
+            const merged = result.filter(j => !ids.has(j.EmployeeID));
             return [...prev, ...merged];
           });
           setNoMoreData(result.length < PAGE_SIZE);
@@ -85,7 +84,7 @@ export function usePaginatedList(
         setRefreshing(false);
       }
     },
-    [fetchApi, PAGE_SIZE, params, param1],
+    [fetchApi, PAGE_SIZE, params],
   );
 
   // Gọi khi params thay đổi

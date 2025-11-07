@@ -45,14 +45,13 @@ export const employee_Get = async (id: any) => {
 export const employee_GetAll = async (payload: any) => {
   try {
     console.log('employee_GetAll payload:', payload);
-
     // Payload đã có structure đúng từ usePaginatedList:
     // {
     //   paramQuery: { page, pageSize, filter, search, orderBy, sortOrder },
     //   ...otherFields
     // }
 
-    const res = await apiClient.post('Employee/All', payload);
+    const res = await apiClient.post('Employee/all', payload);
     console.log('employee_GetAll res:', res.data);
 
     return res.data;

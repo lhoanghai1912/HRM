@@ -72,7 +72,11 @@ const Group = ({ route }) => {
       key={item.id}
       style={styles.tableRow}
       onPress={() => {
-        navigate(Screen_Name.Detail_Group, { id: item?.id });
+        navigate(Screen_Name.Detail_Group, {
+          id: item?.id,
+          parent: groupConfig,
+          data: item,
+        });
       }}
     >
       {/* STT */}
@@ -82,52 +86,58 @@ const Group = ({ route }) => {
         <Text>{index + 1}</Text>
       </View>
       <Text style={{ borderLeftWidth: 0.5 }} />
-      {/* Mã hợp đồng*/}
+      {/* Mối quan hệ*/}
       <Text
         style={[styles.cell, { minWidth: COLUMN_MIN_WIDTHS.rela, flex: 2 }]}
       >
-        {item.relationshipGenderName}
+        {item.relationshipName}
       </Text>
       <Text style={{ borderLeftWidth: 0.5 }} />
-      {/* Tên nhân viên */}
+      {/* Tên */}
       <TouchableOpacity
         style={[styles.cell, { minWidth: COLUMN_MIN_WIDTHS.name, flex: 1 }]}
         onPress={() => {
-          navigate(Screen_Name.Employee, {
-            screen: Screen_Name.Details_Employee,
-            params: { id: item.id },
+          navigate(Screen_Name.Details_Employee, {
+            // screen: Screen_Name.Details_Employee,
+            parent: groupConfig,
+            id: item.employeeId,
+            data: item,
           });
         }}
       >
-        <Text>{item.name}</Text>
+        <Text
+          style={[styles.cell, { minWidth: COLUMN_MIN_WIDTHS.gender, flex: 1 }]}
+        >
+          {item.fullName}
+        </Text>
       </TouchableOpacity>
       <Text style={{ borderLeftWidth: 0.5 }} />
 
-      {/* Ngày kí hợp đồng */}
+      {/* Giới tính */}
       <Text
         style={[styles.cell, { minWidth: COLUMN_MIN_WIDTHS.gender, flex: 1 }]}
       >
-        {item.gender}
+        {item.genderName || ''}
       </Text>
       <Text style={{ borderLeftWidth: 0.5 }} />
 
-      {/* Vị trí */}
+      {/* Ngày sinh */}
       <Text style={[styles.cell, { minWidth: COLUMN_MIN_WIDTHS.dob, flex: 1 }]}>
-        {/* {item.phoneNumber} */}
+        {item.birthday}
       </Text>
       <Text style={{ borderLeftWidth: 0.5 }} />
-      {/* Phòng ban */}
+      {/* SĐT */}
       <Text
         style={[styles.cell, { minWidth: COLUMN_MIN_WIDTHS.phone, flex: 1 }]}
       >
-        {/* {item.relationshipEmail} */}
+        {item.mobile}
       </Text>
       <Text style={{ borderLeftWidth: 0.5 }} />
-      {/* Loại hợp đồng */}
+      {/* Email */}
       <Text
         style={[styles.cell, { minWidth: COLUMN_MIN_WIDTHS.email, flex: 1 }]}
       >
-        {/* {item.relationshipBirthday} */}
+        {item.email}
       </Text>
     </TouchableOpacity>
   );

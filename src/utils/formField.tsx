@@ -382,8 +382,16 @@ export const renderField = (
               }}
             >
               <Text style={{ flex: 1 }}>
-                {value.name ||
-                  (typeof value === 'string' ? value : 'File đã chọn')}
+                {
+                  // Nếu có displayField trong formData thì lấy giá trị đó
+                  extraProps.formData &&
+                  data.displayField &&
+                  extraProps.formData[data.displayField]
+                    ? extraProps.formData[data.displayField]
+                    : value.name ||
+                      value.uri ||
+                      (typeof value === 'string' ? value : 'File đã chọn')
+                }
               </Text>
               {mode !== 'view' && (
                 <TouchableOpacity

@@ -23,9 +23,9 @@ import Employee from '../screens/HomeStack/Employee Drawer/Employee';
 import DetailEmployee from '../screens/HomeStack/Employee Drawer/Employee/DetailEmployee';
 import Contract from '../screens/HomeStack/Employee Drawer/Contract';
 import DetailContract from '../screens/HomeStack/Employee Drawer/Contract/DetailContract';
-import Not_Expand from '../screens/HomeStack/Employee Drawer/!Expand/DetailGroup';
-import GroupDetail from '../screens/HomeStack/Employee Drawer/!Expand/DetailGroup';
-import Group from '../screens/HomeStack/Employee Drawer/!Expand';
+import Not_Expand from '../screens/HomeStack/Employee Drawer/Group/DetailGroup';
+import GroupDetail from '../screens/HomeStack/Employee Drawer/Group/DetailGroup';
+import Group from '../screens/HomeStack/Employee Drawer/Group';
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();

@@ -43,7 +43,7 @@ const DetailEmployee = ({ route }) => {
   const [field, setField] = useState<any>();
   const navigation = useNavigation<DrawerNavigationProp<any>>();
 
-  const employeeId = route?.params?.id || 6;
+  const employeeId = route?.params?.id;
   const [formData, setFormData] = useState({});
   const [testData, setTestData] = useState(dataTest);
   const [date, setDate] = useState(new Date());
@@ -431,15 +431,11 @@ const DetailEmployee = ({ route }) => {
       //   return;
       // }
       setLoading(true);
-      console.log('changedFields to save:', changedFields);
+      console.log('changedFields to save:', [changedFields]);
 
       // Kiểm tra có thay đổi không
-      if (Object.keys(changedFields).length > 0) {
-        console.log('Updating employee fields:', changedFields);
-        await updateEmployee(employeeId, changedFields);
-      }
-
       // 2. Upload các file đã chọn
+
       if (pickedFiles.length > 0) {
         console.log('Uploading files:', pickedFiles);
         await uploadFile({
@@ -447,6 +443,11 @@ const DetailEmployee = ({ route }) => {
           type: 'Employee',
           files: pickedFiles,
         });
+
+        if (Object.keys(changedFields).length > 0) {
+          console.log('Updating employee fields:', [changedFields]);
+          await updateEmployee(employeeId, changedFields);
+        }
       }
 
       // Reset sau khi save thành công

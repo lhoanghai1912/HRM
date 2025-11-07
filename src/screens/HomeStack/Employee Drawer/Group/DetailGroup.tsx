@@ -15,6 +15,7 @@ import {
   dataTest,
   getData,
   getEmployee,
+  getLocation,
   getPickerData,
   updateEmployee,
   uploadFile,
@@ -28,9 +29,11 @@ import Toast from 'react-native-toast-message';
 import AppStyles from '../../../../components/AppStyle';
 import icons from '../../../../assets/icons';
 import ModalPicker from '../../../../components/modal/ModalPicker';
-import { renderField } from '../../../../utils/formField';
+import { mapFieldType, renderField } from '../../../../utils/formField';
 import CustomHeader from '../../../../components/CustomHeader';
 import { spacing } from '../../../../utils/spacing';
+import { navigate } from '../../../../navigation/RootNavigator';
+import { Screen_Name } from '../../../../navigation/ScreenName';
 
 const GroupDetail = ({ route }) => {
   const [field, setField] = useState<any>();
@@ -56,6 +59,9 @@ const GroupDetail = ({ route }) => {
   const [openPicker, setOpenPicker] = useState(false);
   const [datePickerField, setDatePickerField] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [openLocationModal, setOpenLocationModal] = useState(false);
+  console.log('route', route.params);
+
   const [expandedSections, setExpandedSections] = useState<{
     [key: number]: boolean;
   }>({});
@@ -66,6 +72,8 @@ const GroupDetail = ({ route }) => {
   const [hasMore, setHasMore] = useState(false);
   const [pickerConfig, setPickerConfig] = useState(null);
   const [pickerPage, setPickerPage] = useState(1);
+  const [locationData, setLocationData] = useState<any>(null);
+
   const [changedFields, setChangedFields] = useState<
     { fieldName: string; fieldValue: any }[]
   >([]);
@@ -73,38 +81,64 @@ const GroupDetail = ({ route }) => {
     { fieldName: string; file: {} }[]
   >([]);
   const [employeeData, setEmployeeData] = useState();
-  console.log('route', route.params);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchData();
+      fetchEmployeeData();
+      console.log('formData', formData);
+    }, [route.params]),
+  ); // Chỉ gọi API khi mount
 
   useFocusEffect(
     useCallback(() => {
       if (parent) {
         fetchParentData();
       }
-    }, [parent]),
+    }, [parent, route]),
   );
 
   useEffect(() => {
     if (employeeData) {
       fetchAllData();
     }
-  }, [employeeData]);
+  }, [employeeData, route]);
 
   useEffect(() => {
     console.log('Form data updated:', formData);
     console.log('layout:', field);
-  }, [formData]);
+  }, [formData, route]);
+  useEffect(() => {
+    if (field && field.pageData && parent) {
+      const children = field.pageData.filter(
+        child => child.parentId === parent.id,
+      );
+      const expandedInit = {};
+      children.forEach(child => {
+        expandedInit[child.id] = false;
+      });
+      setExpandedSections(expandedInit);
+    }
+  }, [field, parent]);
   const fetchData = async () => {
     try {
       setLoading(true);
       const data = await getData('profile');
+      console.log('Fetched layout data:', data);
+
       setField(data);
 
       // Khởi tạo expandedSections cho tất cả parentId
       if (data && data.pageData) {
         const parents = data.pageData.filter(item => item.parentId === null);
+        const children = field.pageData.filter(
+          child => child.parentId === parent.id,
+        );
+        console.log('children', children);
+
         const expandedInit = {};
-        parents.forEach(parent => {
-          expandedInit[parent.id] = false; // hoặc false nếu muốn mặc định thu gọn
+        children.forEach(child => {
+          expandedInit[child.id] = false;
         });
         setExpandedSections(expandedInit);
       }
@@ -118,12 +152,86 @@ const GroupDetail = ({ route }) => {
   const fetchEmployeeData = async () => {
     try {
       setLoading(true);
-      const data = await getEmployee(employeeId);
-      setEmployeeData(data);
+      setEmployeeData(route?.params?.data);
     } catch (error) {
       console.log('Error fetching employee data:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handlePickLocation = async (fieldName, cfg) => {
+    setPickerField(fieldName);
+    setDisplayField(cfg.displayField);
+    setPickerConfig(cfg);
+    console.log('ghjfkjfyuj');
+
+    // Parse customConfig để lấy FieldParam và FieldConfigDependent
+    let customConfig: any = {};
+    try {
+      customConfig = cfg.customConfig ? JSON.parse(cfg.customConfig) : {};
+    } catch (e) {
+      console.log('Error parsing customConfig:', e);
+    }
+
+    // Xác định giá trị param cần truyền cho API
+    let countryIdParam = null;
+    let provinceIdParam = null;
+
+    if (customConfig.FieldParam) {
+      // Tìm fieldName ứng với FieldParam
+      // Ví dụ FieldParam: 'countryId' => tìm field có fieldName chứa 'CountryID'
+      const paramFieldName = Object.keys(formData).find(key =>
+        key.toLowerCase().includes(customConfig.FieldParam.toLowerCase()),
+      );
+      console.log('paramFieldName for location picker:', paramFieldName);
+
+      const allConfigs =
+        field?.pageData?.flatMap(parent => parent.groupFieldConfigs || []) ||
+        [];
+
+      // Tìm cfg có fieldName === paramFieldName
+      const paramFieldConfig = allConfigs.find(
+        cfg => cfg.fieldName === paramFieldName,
+      );
+
+      console.log('paramFieldConfig:', paramFieldConfig);
+
+      const paramValue = paramFieldName ? formData[paramFieldName] : null;
+
+      if (customConfig.FieldParam === 'countryId') {
+        countryIdParam = paramValue;
+      }
+      if (customConfig.FieldParam === 'provinceId') {
+        provinceIdParam = paramValue;
+      }
+      const dependentValue = formData[customConfig.FieldConfigDependent];
+      if (!dependentValue) {
+        Alert.alert(
+          'Thông báo',
+          `Vui lòng chọn ${paramFieldConfig.label} trước`,
+        );
+        return;
+      }
+    }
+
+    setLocationData([]);
+    setOpenLocationModal(true);
+
+    // Load dữ liệu trong background
+    try {
+      const param = {
+        page: 1,
+        pageSize: 100,
+        filter: '',
+        orderBy: '',
+        search: '',
+      };
+      const data = await getLocation(param, countryIdParam, provinceIdParam);
+      setLocationData(data?.pageData || data || []);
+    } catch (error) {
+      console.error('Error loading location data:', error);
+      setLocationData([]);
     }
   };
 
@@ -296,50 +404,44 @@ const GroupDetail = ({ route }) => {
   const validateRequiredFields = () => {
     const missingFields: string[] = [];
 
-    customConfigs.forEach(({ fieldName, config }) => {
-      if (config?.isRequired === true) {
-        const value = formData[fieldName];
-        // Kiểm tra giá trị rỗng
-        if (
-          value === undefined ||
-          value === null ||
-          value === '' ||
-          (Array.isArray(value) && value.length === 0)
-        ) {
-          // Tìm label của field để hiển thị
-          const fieldConfig = field?.pageData
-            ?.flatMap(parent => parent.groupFieldConfigs || [])
-            .find(cfg => cfg.fieldName === fieldName);
-          missingFields.push(fieldConfig?.label || fieldName);
-        }
-      }
-    });
+    // customConfigs.forEach(({ fieldName, config }) => {
+    //   if (config?.isRequired === true) {
+    //     const value = formData[fieldName];
+    //     // Kiểm tra giá trị rỗng
+    //     if (
+    //       value === undefined ||
+    //       value === null ||
+    //       value === '' ||
+    //       (Array.isArray(value) && value.length === 0)
+    //     ) {
+    //       // Tìm label của field để hiển thị
+    //       const fieldConfig = field?.pageData
+    //         ?.flatMap(parent => parent.groupFieldConfigs || [])
+    //         .find(cfg => cfg.fieldName === fieldName);
+    //       missingFields.push(fieldConfig?.label || fieldName);
+    //     }
+    //   }
+    // });
 
     return missingFields;
   };
 
-  const handlePickSelect = async (fieldName, cfg) => {
+  const handlePickSelect = async (fieldName, cfg, selectedIds = []) => {
     setPickerField(fieldName);
-    // Lấy displayField từ config
-    console.log('Picker config:', cfg);
-
-    const display = cfg.displayField;
-    setDisplayField(display);
+    setDisplayField(cfg.displayField);
     setPickerConfig(cfg);
     setPickerPage(1);
-    setPickerType(cfg.typeControl); // Cập nhật kiểu picker
-    // Mở modal ngay lập tức với dữ liệu rỗng
+    setPickerType(cfg.typeControl);
+
+    // Mở modal ngay với selectedValue đúng format
     setPickerData({ pageData: [] });
     setOpenPicker(true);
 
-    // Load dữ liệu trong background
+    // Load dữ liệu
     try {
-      let data = [];
-
-      data = await getPickerData(
+      const data = await getPickerData(
         { page: 1, pageSize: 10, filter: '', orderBy: '', search: '' },
         cfg,
-        // cfg.tableNameSource,
       );
       setHasMore(data.length === 10);
       setPickerData(data);
@@ -452,141 +554,216 @@ const GroupDetail = ({ route }) => {
     return formData;
   };
 
-  const sortFields = fields => {
-    return [...fields].sort((a, b) => {
-      if ((a.sortOrder || 0) !== (b.sortOrder || 0)) {
-        return (a.sortOrder || 0) - (b.sortOrder || 0);
-      }
-      return (a.columnIndex || 0) - (b.columnIndex || 0);
-    });
-  };
-
   const renderFields = () => {
     try {
       if (!field || !field.pageData || !parent) return null;
+      console.log('Rendering fields with field:', field, 'and parent:', parent);
+      const selectedFields = field.pageData
+        .filter(item => item.parentId === parent.id)
+        .sort((a, b) => {
+          if ((a.sortOrder || 0) !== (b.sortOrder || 0)) {
+            return (a.sortOrder || 0) - (b.sortOrder || 0);
+          }
+          return (a.columnIndex || 0) - (b.columnIndex || 0);
+        });
+      console.log('selectedFields:', selectedFields);
 
-      const parentConfig = field.pageData.find(p => p.id === parent.id);
-      const children = field.pageData.filter(c => c.parentId === parent.id);
-
-      if (!parentConfig) return null;
-
-      return (
-        <View
-          style={{
-            marginBottom: 24,
-            borderWidth: 1,
-            borderColor: '#ccc',
-            borderRadius: 8,
-          }}
-        >
-          {/* Header của parent */}
-          <View style={{ padding: 16, backgroundColor: '#f5f5f5' }}>
-            <Text style={{ fontWeight: 'bold', fontSize: 18 }}>
-              {parentConfig.name}
-            </Text>
-          </View>
-
-          {/* Render groupFieldConfigs của parent */}
-          {parentConfig.groupFieldConfigs &&
-            parentConfig.groupFieldConfigs.length > 0 && (
-              <View
-                style={{ marginHorizontal: 16, marginTop: 16, marginBottom: 8 }}
-              >
-                {sortFields(parentConfig.groupFieldConfigs).map(cfg => {
-                  const customConfig =
-                    customConfigs.find(c => c.fieldName === cfg.fieldName)
-                      ?.config || null;
-
-                  return (
-                    <View key={cfg.id} style={{ marginBottom: 12 }}>
-                      <Text style={AppStyles.label}>
-                        {cfg.label}
-                        {customConfig?.isRequired && (
-                          <Text style={{ color: 'red' }}> *</Text>
-                        )}
-                      </Text>
-                      {renderField(
-                        cfg,
-                        formData[cfg.fieldName],
-                        handleChange,
-                        'edit',
-                        {
-                          formData,
-                          onPickDate: fieldName => handlePickDate(fieldName),
-                          onPickMonth: fieldName => handlePickMonth(fieldName),
-                          onPickSelectOne: (fieldName, pickerData) =>
-                            handlePickSelect(fieldName, cfg),
-                          onPickSelectMulti: (fieldName, pickerData) =>
-                            handlePickSelect(fieldName, cfg),
-                          onPickFile: fieldName => handlePickFile(fieldName),
-                          onPickImage: fieldName => handlePickImage(fieldName),
-                        },
-                      )}
-                    </View>
-                  );
-                })}
-              </View>
-            )}
-
-          {/* Render children */}
-          {children.map(child => (
-            <View
-              key={child.id}
-              style={{ marginHorizontal: 16, marginBottom: 16 }}
+      return selectedFields.map(parent => {
+        const children = field.pageData
+          .filter(child => child.parentId === parent.id)
+          .sort((a, b) => {
+            if ((a.columnIndex || 0) !== (b.columnIndex || 0)) {
+              return (a.columnIndex || 0) - (b.columnIndex || 0);
+            }
+            return (a.sortOrder || 0) - (b.sortOrder || 0);
+          });
+        const expanded = expandedSections[parent.id] ?? true;
+        return (
+          <View
+            key={parent.id}
+            style={{
+              marginBottom: 24,
+              borderWidth: 1,
+              borderColor: '#ccc',
+              borderRadius: 8,
+            }}
+          >
+            <TouchableOpacity
+              style={styles.section}
+              onPress={() => toggleSection(parent.id)}
             >
-              <Text
-                style={{ fontSize: 16, fontWeight: 'bold', marginBottom: 8 }}
-              >
-                {child.name}
+              <Text style={{ fontWeight: 'bold', fontSize: 16, margin: 8 }}>
+                {parent.name}
               </Text>
-              {child.groupFieldConfigs &&
-                sortFields(child.groupFieldConfigs).map(cfg => {
-                  const customConfig =
-                    customConfigs.find(c => c.fieldName === cfg.fieldName)
-                      ?.config || null;
+              <Image
+                style={[AppStyles.icon]}
+                source={expanded ? icons.down : icons.up}
+              />
+            </TouchableOpacity>
 
-                  return (
-                    <View key={cfg.id} style={{ marginBottom: 12 }}>
-                      <Text style={AppStyles.label}>
-                        {cfg.label}
-                        {customConfig?.isRequired && (
-                          <Text style={{ color: 'red' }}> *</Text>
-                        )}
-                      </Text>
-                      {renderField(
-                        cfg,
-                        formData[cfg.fieldName],
-                        handleChange,
-                        'edit',
-                        {
-                          formData,
-                          onPickDate: fieldName => handlePickDate(fieldName),
-                          onPickMonth: fieldName => handlePickMonth(fieldName),
-                          onPickSelectOne: (fieldName, pickerData) =>
-                            handlePickSelect(fieldName, cfg),
-                          onPickSelectMulti: (fieldName, pickerData) =>
-                            handlePickSelect(fieldName, cfg),
-                          onPickFile: fieldName => handlePickFile(fieldName),
-                          onPickImage: fieldName => handlePickImage(fieldName),
-                        },
-                      )}
-                    </View>
-                  );
-                })}
-            </View>
-          ))}
-        </View>
-      );
+            {/* Nếu parent có groupFieldConfigs thì render luôn ở đây */}
+            {expanded &&
+              parent.groupFieldConfigs &&
+              parent.groupFieldConfigs.length > 0 && (
+                <View style={{ marginHorizontal: 16, marginBottom: 8 }}>
+                  {parent.groupFieldConfigs
+                    .sort((a, b) => {
+                      if ((a.columnIndex || 0) !== (b.columnIndex || 0)) {
+                        return (a.columnIndex || 0) - (b.columnIndex || 0);
+                      }
+                      return (a.sortOrder || 0) - (b.sortOrder || 0);
+                    })
+                    .map(cfg => {
+                      const customConfig =
+                        customConfigs.find(c => c.fieldName === cfg.fieldName)
+                          ?.config || null;
+
+                      return (
+                        <View
+                          key={cfg.id}
+                          style={{ marginHorizontal: 16, marginBottom: 4 }}
+                        >
+                          <Text style={AppStyles.label}>
+                            {cfg.label}
+                            {customConfig?.isRequired && (
+                              <Text style={{ color: 'red' }}> *</Text>
+                            )}
+                          </Text>
+                          <Text>{`${cfg.typeControl}- ${mapFieldType(
+                            cfg.typeControl,
+                          )}`}</Text>
+                          {renderField(
+                            cfg,
+                            formData[cfg.fieldName],
+                            handleChange,
+                            'edit',
+                            {
+                              formData,
+                              onPickDate: fieldName =>
+                                handlePickDate(fieldName),
+                              onPickMonth: fieldName =>
+                                handlePickMonth(fieldName),
+                              onPickSelectOne: fieldName => {
+                                if (cfg.displayFieldSource === 'LocationName') {
+                                  handlePickLocation(fieldName, cfg);
+                                } else {
+                                  handlePickSelect(fieldName, cfg);
+                                }
+                              },
+                              onPickSelectMulti: (
+                                fieldName,
+                                displayField,
+                                pickerData,
+                                selectedIds,
+                              ) => {
+                                console.log(
+                                  'Opening multiSelect with selectedIds:',
+                                  selectedIds,
+                                );
+                                handlePickSelect(fieldName, cfg, selectedIds);
+                              },
+                              onPickFile: fieldName =>
+                                handlePickFile(fieldName),
+                              onPickImage: fieldName =>
+                                handlePickImage(fieldName),
+                            },
+                          )}
+                        </View>
+                      );
+                    })}
+                </View>
+              )}
+
+            {/* Nếu child có groupFieldConfigs thì render luôn ở đây */}
+            {expanded &&
+              children.map(child => (
+                <View
+                  key={child.id}
+                  style={{ marginHorizontal: 16, marginBottom: 8 }}
+                >
+                  <Text style={{ fontSize: 14, fontWeight: 'bold' }}>
+                    {child.name}
+                  </Text>
+                  {child.groupFieldConfigs
+                    .sort((a, b) => {
+                      if ((a.columnIndex || 0) !== (b.columnIndex || 0)) {
+                        return (a.columnIndex || 0) - (b.columnIndex || 0);
+                      }
+                      return (a.sortOrder || 0) - (b.sortOrder || 0);
+                    })
+                    .map(cfg => {
+                      // Lấy customConfig từ state
+                      const customConfig =
+                        customConfigs.find(c => c.fieldName === cfg.fieldName)
+                          ?.config || null;
+
+                      return (
+                        <View
+                          key={cfg.id}
+                          style={{ marginHorizontal: 16, marginBottom: 4 }}
+                        >
+                          <Text style={AppStyles.label}>
+                            {cfg.label}
+                            {customConfig?.isRequired && (
+                              <Text style={{ color: 'red' }}> *</Text>
+                            )}
+                          </Text>
+                          <Text>{`${cfg.typeControl}- ${mapFieldType(
+                            cfg.typeControl,
+                          )}`}</Text>
+                          {renderField(
+                            cfg,
+                            formData[cfg.fieldName],
+                            handleChange,
+                            'edit',
+                            {
+                              formData,
+                              onPickDate: fieldName =>
+                                handlePickDate(fieldName),
+                              onPickMonth: fieldName =>
+                                handlePickMonth(fieldName),
+                              onPickSelectOne: fieldName => {
+                                if (cfg.displayFieldSource === 'LocationName') {
+                                  handlePickLocation(fieldName, cfg);
+                                } else {
+                                  handlePickSelect(fieldName, cfg);
+                                }
+                              },
+                              onPickSelectMulti: (
+                                fieldName,
+                                displayField,
+                                pickerData,
+                                selectedIds,
+                              ) => {
+                                console.log(
+                                  'Opening multiSelect with selectedIds:',
+                                  selectedIds,
+                                );
+                                handlePickSelect(fieldName, cfg, selectedIds);
+                              },
+                              onPickFile: fieldName =>
+                                handlePickFile(fieldName),
+                              onPickImage: fieldName =>
+                                handlePickImage(fieldName),
+                            },
+                          )}
+                        </View>
+                      );
+                    })}
+                </View>
+              ))}
+          </View>
+        );
+      });
     } catch (error) {
       console.error('Error rendering fields:', error);
-      return null;
     }
   };
 
   return (
     <View style={styles.container}>
       <CustomHeader
-        label={parent?.name || 'Chi tiết'}
+        label={parent?.name || 'Chi tiết Group'}
         leftIcon={icons.back}
         leftPress={() => navigation.goBack()}
         rightIcon={icons.document_focus}
