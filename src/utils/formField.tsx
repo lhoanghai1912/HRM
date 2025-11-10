@@ -383,13 +383,14 @@ export const renderField = (
             >
               <Text style={{ flex: 1 }}>
                 {
-                  // Nếu có displayField trong formData thì lấy giá trị đó
-                  extraProps.formData &&
-                  data.displayField &&
-                  extraProps.formData[data.displayField]
+                  // Ưu tiên hiển thị tên file vừa chọn
+                  value.name
+                    ? value.name
+                    : extraProps.formData &&
+                      data.displayField &&
+                      extraProps.formData[data.displayField]
                     ? extraProps.formData[data.displayField]
-                    : value.name ||
-                      value.uri ||
+                    : value.uri ||
                       (typeof value === 'string' ? value : 'File đã chọn')
                 }
               </Text>

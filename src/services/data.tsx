@@ -4212,10 +4212,14 @@ export const getPickerData = async (
 };
 
 export const updateEmployee = async (id: string, fields: any[]) => {
+  console.log('updateEmployee called with:', { id, fields });
+
   try {
     const formData = new FormData();
     // Fields phải là chuỗi JSON, có thể là mảng phẳng hoặc lồng mảng nếu backend yêu cầu
     formData.append('Fields', JSON.stringify(fields));
+
+    console.log('FormData to update employee:', formData);
 
     const response = await apiClient.put(`Employee/${id}`, formData, {
       headers: {
@@ -4246,11 +4250,12 @@ export const uploadFile = async ({
       fieldName: item.fieldName,
       index: index,
     }));
+    const modelsUpload = [[models]];
     formData.append('Models', JSON.stringify(models));
 
     // Append từng file vào FormData
     files.forEach(item => {
-      formData.append('Files', item.file as any);
+      formData.append('Files', item.file);
     });
     console.log('FormData to upload:', formData);
 

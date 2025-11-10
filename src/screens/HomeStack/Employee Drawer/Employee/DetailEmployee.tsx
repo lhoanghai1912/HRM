@@ -437,17 +437,19 @@ const DetailEmployee = ({ route }) => {
       // 2. Upload các file đã chọn
 
       if (pickedFiles.length > 0) {
+        const uploadFileValue = pickedFiles;
         console.log('Uploading files:', pickedFiles);
-        await uploadFile({
+        const res = await uploadFile({
           id: employeeId,
           type: 'Employee',
           files: pickedFiles,
         });
+        console.log('Files uploaded successfully', res);
+      }
 
-        if (Object.keys(changedFields).length > 0) {
-          console.log('Updating employee fields:', [changedFields]);
-          await updateEmployee(employeeId, changedFields);
-        }
+      if (Object.keys(changedFields).length > 0) {
+        console.log('Updating employee fields:', [changedFields]);
+        await updateEmployee(employeeId, changedFields);
       }
 
       // Reset sau khi save thành công

@@ -79,49 +79,61 @@ const Employee = ({}) => {
     >
       {/* STT */}
       <View
-        style={[styles.checkboxCell, { minWidth: COLUMN_MIN_WIDTHS.checkbox }]}
+        style={[styles.checkboxCell, { width: COLUMN_MIN_WIDTHS.checkbox }]}
       >
         <Text>{index + 1}</Text>
       </View>
       <Text style={{ borderLeftWidth: 0.5 }} />
       {/* Mã nhân viên */}
       <Text
-        style={[styles.cell, { minWidth: COLUMN_MIN_WIDTHS.name, flex: 2 }]}
+        numberOfLines={1}
+        ellipsizeMode="tail"
+        style={[styles.cell, { width: COLUMN_MIN_WIDTHS.name, flex: 2 }]}
       >
         {item.employeeCode}
       </Text>
       <Text style={{ borderLeftWidth: 0.5 }} />
       {/* Tên nhân viên */}
       <Text
-        style={[styles.cell, { minWidth: COLUMN_MIN_WIDTHS.work, flex: 1 }]}
+        numberOfLines={1}
+        ellipsizeMode="tail"
+        style={[styles.cell, { width: COLUMN_MIN_WIDTHS.work, flex: 1 }]}
       >
         {item.fullName}
       </Text>
       <Text style={{ borderLeftWidth: 0.5 }} />
       {/* Giới tính */}
       <Text
-        style={[styles.cell, { minWidth: COLUMN_MIN_WIDTHS.time, flex: 1 }]}
+        numberOfLines={1}
+        ellipsizeMode="tail"
+        style={[styles.cell, { width: COLUMN_MIN_WIDTHS.time, flex: 1 }]}
       >
         {item.gender}
       </Text>
       <Text style={{ borderLeftWidth: 0.5 }} />
       {/* Số điện thoại */}
       <Text
-        style={[styles.cell, { minWidth: COLUMN_MIN_WIDTHS.unit, flex: 1 }]}
+        numberOfLines={1}
+        ellipsizeMode="tail"
+        style={[styles.cell, { width: COLUMN_MIN_WIDTHS.unit, flex: 1 }]}
       >
         {item.phoneNumber}
       </Text>
       <Text style={{ borderLeftWidth: 0.5 }} />
       {/* Email */}
       <Text
-        style={[styles.cell, { minWidth: COLUMN_MIN_WIDTHS.object, flex: 1 }]}
+        numberOfLines={1}
+        ellipsizeMode="tail"
+        style={[styles.cell, { width: COLUMN_MIN_WIDTHS.object, flex: 1 }]}
       >
         {item.email}
       </Text>
       <Text style={{ borderLeftWidth: 0.5 }} />
       {/* Ngày sinh */}
       <Text
-        style={[styles.cell, { minWidth: COLUMN_MIN_WIDTHS.location, flex: 1 }]}
+        numberOfLines={1}
+        ellipsizeMode="tail"
+        style={[styles.cell, { width: COLUMN_MIN_WIDTHS.location, flex: 1 }]}
       >
         {item.birthDate}
       </Text>
@@ -206,7 +218,10 @@ const Employee = ({}) => {
               <Text
                 style={[
                   styles.headerCell,
-                  { minWidth: COLUMN_MIN_WIDTHS.name, flex: 2 },
+                  {
+                    minWidth: COLUMN_MIN_WIDTHS.name,
+                    flex: 2,
+                  },
                 ]}
               >
                 Mã nhân viên
