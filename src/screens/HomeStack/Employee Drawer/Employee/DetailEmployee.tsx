@@ -226,16 +226,19 @@ const DetailEmployee = ({ route }) => {
   const handlePickFile = async fieldName => {
     try {
       const res = await pick({
-        allowMultiSelection: false, // Chỉ chọn 1 file
+        allowMultiSelection: false,
         type: ['*/*'],
       });
+
       if (res && res.length > 0) {
         const file = {
           uri: res[0].uri,
-          name: res[0].name,
-          type: res[0].type,
+          name: res[0].name || `file_${Date.now()}`,
+          type: res[0].type || 'application/octet-stream',
           size: res[0].size,
         };
+
+        console.log('Picked file for field:', fieldName, file);
 
         // Cập nhật formData để hiển thị
         setFormData(prev => ({
@@ -243,8 +246,7 @@ const DetailEmployee = ({ route }) => {
           [fieldName]: file,
         }));
 
-        // Lưu vào pickedFiles
-
+        // Lưu vào pickedFiles để upload sau
         setPickedFiles(prev => {
           const idx = prev.findIndex(f => f.fieldName === fieldName);
           if (idx !== -1) {
@@ -254,11 +256,10 @@ const DetailEmployee = ({ route }) => {
           }
           return [...prev, { fieldName, file }];
         });
-
-        console.log('Picked file:', res);
       }
     } catch (err) {
       console.error('Error picking file:', err);
+      Alert.alert('Lỗi', 'Không thể chọn file');
     }
   };
   const handlePickImage = async fieldName => {
@@ -433,27 +434,36 @@ const DetailEmployee = ({ route }) => {
       setLoading(true);
       console.log('changedFields to save:', [changedFields]);
 
-      // Kiểm tra có thay đổi không
-      // 2. Upload các file đã chọn
-
+      // 1. Upload các file đã chọn trước
       if (pickedFiles.length > 0) {
-        const uploadFileValue = pickedFiles;
         console.log('Uploading files:', pickedFiles);
-        const res = await uploadFile({
-          id: employeeId,
-          type: 'Employee',
-          files: pickedFiles,
-        });
-        console.log('Files uploaded successfully', res);
+        try {
+          await uploadFile({
+            id: employeeId,
+            type: 'Employee',
+            files: pickedFiles,
+          });
+          console.log('Files uploaded successfully');
+          Toast.show({
+            type: 'success',
+            text1: 'Upload file thành công',
+          });
+        } catch (uploadError) {
+          console.error('Error uploading files:', uploadError);
+          Alert.alert('Lỗi', 'Lỗi khi upload file');
+          setLoading(false);
+          return;
+        }
       }
 
+      // 2. Cập nhật các field đã thay đổi
       if (Object.keys(changedFields).length > 0) {
         console.log('Updating employee fields:', [changedFields]);
         await updateEmployee(employeeId, changedFields);
       }
 
       // Reset sau khi save thành công
-      setChangedFields(changedFields);
+      setChangedFields([]);
       setPickedFiles([]);
       fetchData();
       fetchEmployeeData();

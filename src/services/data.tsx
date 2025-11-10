@@ -4245,19 +4245,43 @@ export const uploadFile = async ({
   try {
     const formData = new FormData();
 
-    // Tạo Models array với index tương ứng
+    // Tạo Models array theo format API
+    // Format: [{"fieldName":"gFN0000001CustomID","index":0}]
     const models = files.map((item, index) => ({
       fieldName: item.fieldName,
       index: index,
     }));
-    const modelsUpload = [[models]];
+
+    // Append Models như JSON string
     formData.append('Models', JSON.stringify(models));
 
     // Append từng file vào FormData
-    files.forEach(item => {
-      formData.append('Files', item.file);
+    // Format giống curl: -F 'Files=@filename.pdf;type=application/pdf'
+    files.forEach((item, index) => {
+      const fileObj = {
+        uri: item.file.uri,
+        type: item.file.type || 'application/octet-stream',
+        name: item.file.name || `file_${Date.now()}_${index}`,
+      };
+
+      // Append với key 'Files' (không có số index)
+      formData.append('Files', fileObj as any);
     });
-    console.log('FormData to upload:', formData);
+
+    console.log('=== Upload File Request ===');
+    console.log('URL:', `ConfigLayout/upload-file/${id}?type=${type}`);
+    console.log('Models:', JSON.stringify(models));
+    console.log('Files count:', files.length);
+    console.log(
+      'Files details:',
+      files.map((f, i) => ({
+        index: i,
+        fieldName: f.fieldName,
+        fileName: f.file.name,
+        fileType: f.file.type,
+        fileSize: f.file.size,
+      })),
+    );
 
     const response = await apiClient.post(
       `ConfigLayout/upload-file/${id}?type=${type}`,
@@ -4268,9 +4292,19 @@ export const uploadFile = async ({
         },
       },
     );
+
+    console.log('=== Upload File Response ===');
+    console.log('Status:', response.status);
+    console.log('Data:', response.data);
+
     return response.data;
   } catch (error) {
-    console.error('Error uploading file:', error);
+    console.error('=== Upload File Error ===');
+    console.error('Error:', error);
+    if (error.response) {
+      console.error('Response status:', error.response.status);
+      console.error('Response data:', error.response.data);
+    }
     throw error;
   }
 };
