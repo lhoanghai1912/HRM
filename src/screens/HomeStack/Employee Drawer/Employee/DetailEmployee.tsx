@@ -223,6 +223,33 @@ const DetailEmployee = ({ route }) => {
     setOpenMonth(true);
   };
 
+  const handleClearFile = (fieldName: string) => {
+    // Tìm config của field để lấy displayField
+    const allConfigs =
+      field?.pageData?.flatMap(parent => parent.groupFieldConfigs || []) || [];
+    const fieldConfig = allConfigs.find(cfg => cfg.fieldName === fieldName);
+    const displayFieldName = fieldConfig?.displayField;
+
+    // Xóa khỏi pickedFiles
+    setPickedFiles(prev => prev.filter(f => f.fieldName !== fieldName));
+
+    // Xóa khỏi formData
+    setFormData(prev => {
+      const updated = { ...prev, [fieldName]: null };
+      if (displayFieldName) {
+        updated[displayFieldName] = null;
+      }
+      return updated;
+    });
+
+    // Xóa khỏi changedFields
+    setChangedFields(prev =>
+      prev.filter(
+        f => f.fieldName !== fieldName && f.fieldName !== displayFieldName,
+      ),
+    );
+  };
+
   const handlePickFile = async fieldName => {
     try {
       const res = await pick({
@@ -231,30 +258,50 @@ const DetailEmployee = ({ route }) => {
       });
 
       if (res && res.length > 0) {
-        const file = {
-          uri: res[0].uri,
-          name: res[0].name || `file_${Date.now()}`,
-          type: res[0].type || 'application/octet-stream',
-          size: res[0].size,
-        };
+        const file = res[0];
 
-        console.log('Picked file for field:', fieldName, file);
+        // Tìm displayField
+        const allConfigs =
+          field?.pageData?.flatMap(parent => parent.groupFieldConfigs || []) ||
+          [];
+        const fieldConfig = allConfigs.find(cfg => cfg.fieldName === fieldName);
+        const displayFieldName = fieldConfig?.displayField;
 
-        // Cập nhật formData để hiển thị
-        setFormData(prev => ({
-          ...prev,
-          [fieldName]: file,
-        }));
-
-        // Lưu vào pickedFiles để upload sau
+        // Xóa file cũ trong pickedFiles nếu có
         setPickedFiles(prev => {
-          const idx = prev.findIndex(f => f.fieldName === fieldName);
-          if (idx !== -1) {
-            const updated = [...prev];
-            updated[idx] = { fieldName, file };
-            return updated;
+          const updated = [
+            ...prev.filter(f => f.fieldName !== fieldName),
+            { fieldName, file: { ...file } },
+          ];
+          console.log('pickedFiles after select:', updated);
+          return updated;
+        });
+
+        // Cập nhật formData để hiển thị tên file
+        setFormData(prev => {
+          const updated = {
+            ...prev,
+            [fieldName]: file,
+          };
+          if (displayFieldName) {
+            updated[displayFieldName] = file.name;
           }
-          return [...prev, { fieldName, file }];
+          return updated;
+        });
+
+        // Cập nhật changedFields
+        setChangedFields(prev => {
+          const safePrev = Array.isArray(prev) ? prev : [];
+          const filtered = safePrev.filter(
+            f => f.fieldName !== fieldName && f.fieldName !== displayFieldName,
+          );
+          return [
+            ...filtered,
+            { fieldName, fieldValue: file.uri },
+            ...(displayFieldName
+              ? [{ fieldName: displayFieldName, fieldValue: file.name }]
+              : []),
+          ];
         });
       }
     } catch (err) {
@@ -422,28 +469,21 @@ const DetailEmployee = ({ route }) => {
 
   const handleSave = async () => {
     try {
-      // Validate trước khi save
-      // const missingFields = validateRequiredFields();
-      // if (missingFields.length > 0) {
-      //   Alert.alert(
-      //     'Lỗi',
-      //     `Vui lòng nhập các trường bắt buộc:\n- ${missingFields.join('\n- ')}`,
-      //   );
-      //   return;
-      // }
       setLoading(true);
-      console.log('changedFields to save:', [changedFields]);
 
-      // 1. Upload các file đã chọn trước
-      if (pickedFiles.length > 0) {
-        console.log('Uploading files:', pickedFiles);
+      // Lấy giá trị pickedFiles mới nhất
+      const filesToUpload = [...pickedFiles];
+
+      // Upload file trước
+      if (filesToUpload.length > 0) {
+        console.log('Uploading files:', filesToUpload);
         try {
-          await uploadFile({
+          const uploadResult = await uploadFile({
             id: employeeId,
             type: 'Employee',
-            files: pickedFiles,
+            files: filesToUpload,
           });
-          console.log('Files uploaded successfully');
+          console.log('Upload result:', uploadResult);
           Toast.show({
             type: 'success',
             text1: 'Upload file thành công',
@@ -451,18 +491,15 @@ const DetailEmployee = ({ route }) => {
         } catch (uploadError) {
           console.error('Error uploading files:', uploadError);
           Alert.alert('Lỗi', 'Lỗi khi upload file');
-          setLoading(false);
           return;
         }
       }
 
-      // 2. Cập nhật các field đã thay đổi
-      if (Object.keys(changedFields).length > 0) {
-        console.log('Updating employee fields:', [changedFields]);
+      // Cập nhật các field đã thay đổi
+      if (changedFields.length > 0) {
         await updateEmployee(employeeId, changedFields);
       }
 
-      // Reset sau khi save thành công
       setChangedFields([]);
       setPickedFiles([]);
       fetchData();
@@ -653,6 +690,8 @@ const DetailEmployee = ({ route }) => {
                                 handlePickFile(fieldName),
                               onPickImage: fieldName =>
                                 handlePickImage(fieldName),
+                              onClearFile: fieldName =>
+                                handleClearFile(fieldName), // Thêm callback này
                             },
                           )}
                         </View>
@@ -732,6 +771,8 @@ const DetailEmployee = ({ route }) => {
                                 handlePickFile(fieldName),
                               onPickImage: fieldName =>
                                 handlePickImage(fieldName),
+                              onClearFile: fieldName =>
+                                handleClearFile(fieldName),
                             },
                           )}
                         </View>

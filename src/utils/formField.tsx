@@ -24,6 +24,7 @@ type RenderFieldExtraProps = {
   formData?: Record<string, any>;
   onPickFile?: (fieldName: string) => void;
   onPickImage?: (fieldName: string) => void;
+  onClearFile?: (fieldName: string, displayField: string) => void; // Thêm dòng này
 };
 
 // Ánh xạ DataType hoặc TypeControl từ API sang loại trường đã định nghĩa
@@ -396,7 +397,15 @@ export const renderField = (
               </Text>
               {mode !== 'view' && (
                 <TouchableOpacity
-                  onPress={() => onChange(data.fieldName, null)}
+                  onPress={() => {
+                    // Clear trong formData
+                    onChange(data.fieldName, null, data.displayField, null);
+
+                    // Clear trong pickedFiles (nếu có callback)
+                    if (extraProps.onClearFile) {
+                      extraProps.onClearFile(data.fieldName, data.displayField);
+                    }
+                  }}
                   style={{ padding: 4 }}
                 >
                   <Image source={icons.clear} style={AppStyles.icon}></Image>
