@@ -606,7 +606,7 @@ const DetailEmployee = ({ route }) => {
             <TouchableOpacity
               style={styles.section}
               onPress={() =>
-                parent.isExpand === true
+                parent.typeEditGroup === '2'
                   ? toggleSection(parent.id)
                   : navigate(Screen_Name.Group, {
                       parent,
@@ -668,9 +668,16 @@ const DetailEmployee = ({ route }) => {
                               onPickMonth: fieldName =>
                                 handlePickMonth(fieldName),
                               onPickSelectOne: fieldName => {
-                                if (cfg.displayFieldSource === 'LocationName') {
+                                const locationID = JSON.parse(
+                                  cfg.customConfig,
+                                ).LocationID;
+                                if (locationID === true) {
+                                  console.log('abc');
+
                                   handlePickLocation(fieldName, cfg);
                                 } else {
+                                  console.log('def');
+
                                   handlePickSelect(fieldName, cfg);
                                 }
                               },
@@ -749,9 +756,16 @@ const DetailEmployee = ({ route }) => {
                               onPickMonth: fieldName =>
                                 handlePickMonth(fieldName),
                               onPickSelectOne: fieldName => {
-                                if (cfg.displayFieldSource === 'LocationName') {
+                                const locationID = JSON.parse(
+                                  cfg.customConfig,
+                                ).LocationID;
+                                if (locationID === true) {
+                                  console.log('abc');
+
                                   handlePickLocation(fieldName, cfg);
                                 } else {
+                                  console.log('def');
+
                                   handlePickSelect(fieldName, cfg);
                                 }
                               },

@@ -101,10 +101,15 @@ export const renderField = (
         />
       );
     case 'selectOne':
+      console.log(
+        'customConfig',
+        JSON.parse(data.customConfig).LocationID == true ? ' true ' : ' false ',
+      );
+
       //Check displayFieldSource: LocationName
       if (
-        data.displayFieldSource &&
-        data.displayFieldSource === 'LocationName'
+        data.customConfig &&
+        JSON.parse(data.customConfig).LocationID === true
       ) {
         return (
           <TouchableOpacity
@@ -124,6 +129,7 @@ export const renderField = (
                   extraProps.pickerData,
                 );
               console.log('extraProps', extraProps.formData);
+              console.log('extraProps123123213213213123', extraProps.formData);
             }}
           >
             <Text>
