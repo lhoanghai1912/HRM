@@ -832,8 +832,8 @@ const GroupDetail = ({ route }) => {
                 );
                 return [
                   ...filtered,
-                  { fieldName: pickerField, fieldValue: values.join(';') },
-                  { fieldName: displayField, fieldValue: labels.join(';') },
+                  { fieldName: pickerField, fieldValue: values.join(',') },
+                  { fieldName: displayField, fieldValue: labels.join(',') },
                 ];
               });
               console.log('Multi select:', {
@@ -845,7 +845,7 @@ const GroupDetail = ({ route }) => {
 
               setFormData(prev => ({
                 ...prev,
-                [pickerField]: values.join(';'),
+                [pickerField]: values.join(','),
                 // [displayField]: labels,
               }));
               console.log('Updated formData:', formData);

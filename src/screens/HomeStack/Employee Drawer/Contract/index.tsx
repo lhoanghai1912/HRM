@@ -21,6 +21,7 @@ import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import styles from '../styles';
 import AppStyles from '../../../../components/AppStyle';
 import { employee_GetAll } from '../../../../services/hr';
+import { colors } from '../../../../utils/color';
 
 const PAGE_SIZE = 15;
 const COLUMN_MIN_WIDTHS = {
@@ -51,9 +52,14 @@ const Contract = () => {
     handleLoadMore,
     handleRefresh,
   } = usePaginatedList(employee_GetAll, PAGE_SIZE, {
-    orderBy: 'id desc',
+    orderBy: 'employeeId',
+    sortOrder: ' desc',
     search: searchQuery,
+    fieldColumns:
+      'EmployeeCode,FullName,genderID,maritalStatusID,personalTaxCode,birthDay,mobile,homeLand,ethnicID,religionID,nationalityID,identifyNumber,officeEmail,,currentProvinceID,currentWardID',
   });
+  console.log('    Contract render with data:', contract);
+
   const onEndReachedCalledDuringMomentum = useRef(false);
 
   console.log('Contract data:', contract);
@@ -63,24 +69,28 @@ const Contract = () => {
       key={item.id}
       style={styles.tableRow}
       onPress={() => {
-        navigate(Screen_Name.Details_Contract, { id: item?.id });
+        navigate(Screen_Name.Details_Contract, { id: item.employeeId });
       }}
     >
       {/* STT */}
       <View
-        style={[styles.checkboxCell, { minWidth: COLUMN_MIN_WIDTHS.checkbox }]}
+        style={[styles.checkboxCell, { width: COLUMN_MIN_WIDTHS.checkbox }]}
       >
         <Text>{index + 1}</Text>
       </View>
       <Text style={{ borderLeftWidth: 0.5 }} />
       {/* Mã hợp đồng*/}
-      <Text style={[styles.cell, { minWidth: COLUMN_MIN_WIDTHS.id, flex: 2 }]}>
+      <Text
+        numberOfLines={1}
+        ellipsizeMode="tail"
+        style={[styles.cell, { width: COLUMN_MIN_WIDTHS.id, flex: 2 }]}
+      >
         {item.employeeCode}
       </Text>
       <Text style={{ borderLeftWidth: 0.5 }} />
       {/* Tên nhân viên */}
       <TouchableOpacity
-        style={[styles.cell, { minWidth: COLUMN_MIN_WIDTHS.name, flex: 1 }]}
+        style={[styles.cell, { width: COLUMN_MIN_WIDTHS.name, flex: 1 }]}
         onPress={() => {
           navigate(Screen_Name.Employee, {
             screen: Screen_Name.Details_Employee,
@@ -89,7 +99,16 @@ const Contract = () => {
         }}
       >
         <Text
-          style={[styles.cell, { minWidth: COLUMN_MIN_WIDTHS.name, flex: 1 }]}
+          style={[
+            styles.cell,
+            {
+              width: COLUMN_MIN_WIDTHS.name,
+              flex: 1,
+              textDecorationLine: 'underline',
+            },
+          ]}
+          numberOfLines={1}
+          ellipsizeMode="tail"
         >
           {item.fullName}
         </Text>
@@ -98,7 +117,9 @@ const Contract = () => {
 
       {/* Ngày kí hợp đồng */}
       <Text
-        style={[styles.cell, { minWidth: COLUMN_MIN_WIDTHS.start, flex: 1 }]}
+        numberOfLines={1}
+        ellipsizeMode="tail"
+        style={[styles.cell, { width: COLUMN_MIN_WIDTHS.start, flex: 1 }]}
       >
         {item.gender}
       </Text>
@@ -106,21 +127,27 @@ const Contract = () => {
 
       {/* Vị trí */}
       <Text
-        style={[styles.cell, { minWidth: COLUMN_MIN_WIDTHS.position, flex: 1 }]}
+        numberOfLines={1}
+        ellipsizeMode="tail"
+        style={[styles.cell, { width: COLUMN_MIN_WIDTHS.position, flex: 1 }]}
       >
         {item.phoneNumber}
       </Text>
       <Text style={{ borderLeftWidth: 0.5 }} />
       {/* Phòng ban */}
       <Text
-        style={[styles.cell, { minWidth: COLUMN_MIN_WIDTHS.struct, flex: 1 }]}
+        numberOfLines={1}
+        ellipsizeMode="tail"
+        style={[styles.cell, { width: COLUMN_MIN_WIDTHS.struct, flex: 1 }]}
       >
         {item.email}
       </Text>
       <Text style={{ borderLeftWidth: 0.5 }} />
       {/* Loại hợp đồng */}
       <Text
-        style={[styles.cell, { minWidth: COLUMN_MIN_WIDTHS.type, flex: 1 }]}
+        numberOfLines={1}
+        ellipsizeMode="tail"
+        style={[styles.cell, { width: COLUMN_MIN_WIDTHS.type, flex: 1 }]}
       >
         {item.birthDate}
       </Text>
@@ -262,11 +289,7 @@ const Contract = () => {
             <FlatList
               ref={flatListRef}
               data={contract}
-              keyExtractor={item =>
-                item.id?.toString() ||
-                item.employeeCode?.toString() ||
-                Math.random().toString()
-              }
+              keyExtractor={item => item.employeeId}
               style={styles.bodyScroll}
               renderItem={renderItem}
               ListEmptyComponent={

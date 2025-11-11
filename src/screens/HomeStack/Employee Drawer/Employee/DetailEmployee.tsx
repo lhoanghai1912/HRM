@@ -605,15 +605,16 @@ const DetailEmployee = ({ route }) => {
           >
             <TouchableOpacity
               style={styles.section}
-              onPress={() =>
-                parent.typeEditGroup === '2'
-                  ? toggleSection(parent.id)
-                  : navigate(Screen_Name.Group, {
-                      parent,
-                      employeeId,
-                      formData,
-                      customConfigs,
-                    })
+              onPress={
+                () =>
+                  // parent.typeEditGroup === '1'
+                  toggleSection(parent.id)
+                // : navigate(Screen_Name.Group, {
+                //     parent,
+                //     employeeId,
+                //     formData,
+                //     customConfigs,
+                //   })
               }
             >
               <Text style={{ fontWeight: 'bold', fontSize: 16, margin: 8 }}>
@@ -855,22 +856,14 @@ const DetailEmployee = ({ route }) => {
             visible={openPicker}
             data={pickerData}
             selectedValue={formData[pickerField]}
-            onSelect={selected => {
-              console.log('Selected from ModalPicker:', selected);
-
+            onSelect={(selected, labelString) => {
               if (Array.isArray(selected)) {
-                // Multi select
-                const values = selected.map(i => i.value);
-                const labels = selected.map(i => i.label);
-
-                // Cập nhật formData
+                const valuesString = JSON.stringify(selected.map(i => i.id));
                 setFormData(prev => ({
                   ...prev,
-                  [pickerField]: values,
-                  [displayField]: labels,
+                  [pickerField]: valuesString,
+                  [displayField]: labelString, // Chuỗi JSON của mảng object
                 }));
-
-                // Cập nhật changedFields
                 setChangedFields(prev => {
                   const safePrev = Array.isArray(prev) ? prev : [];
                   const filtered = safePrev.filter(
@@ -880,41 +873,24 @@ const DetailEmployee = ({ route }) => {
                   );
                   return [
                     ...filtered,
-                    { fieldName: pickerField, fieldValue: values.join(';') },
-                    { fieldName: displayField, fieldValue: selected },
+                    { fieldName: pickerField, fieldValue: valuesString },
+                    { fieldName: displayField, fieldValue: labelString },
                   ];
                 });
-                console.log('Multi select:', {
-                  field: pickerField,
-                  displayField,
-                  values,
-                  labels,
-                });
-
-                setFormData(prev => ({
-                  ...prev,
-                  [pickerField]: values.join(';'),
-                  [displayField]: selected,
-                }));
-                console.log('Updated formData:', formData);
               } else {
-                // Single select
-                console.log('Single select:', {
-                  field: pickerField,
-                  value: selected.value,
-                  displayField,
-                  label: selected.label,
-                });
+                // Single select giữ nguyên
+                const value = selected.value ?? selected.id;
+                const label =
+                  selected.label ??
+                  selected.pickListValue ??
+                  selected.name ??
+                  '';
 
-                // Cập nhật formData
                 setFormData(prev => ({
                   ...prev,
-                  [pickerField]: selected.value,
-                  [displayField]: selected.label,
+                  [pickerField]: value,
+                  [displayField]: label,
                 }));
-                console.log('Updated formData:', formData);
-
-                // Cập nhật changedFields
                 setChangedFields(prev => {
                   const safePrev = Array.isArray(prev) ? prev : [];
                   const filtered = safePrev.filter(
@@ -924,12 +900,11 @@ const DetailEmployee = ({ route }) => {
                   );
                   return [
                     ...filtered,
-                    { fieldName: pickerField, fieldValue: selected.value },
-                    { fieldName: displayField, fieldValue: selected.label },
+                    { fieldName: pickerField, fieldValue: value }, // Gửi value trực tiếp
+                    { fieldName: displayField, fieldValue: label }, // Gửi label
                   ];
                 });
               }
-
               setOpenPicker(false);
             }}
             onClose={() => setOpenPicker(false)}

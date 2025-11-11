@@ -222,9 +222,9 @@ export const renderField = (
               // Parse value hiện tại thành array id
               let selectedIds = [];
 
-              // Nếu value là string có dạng "10;11;12"
+              // Nếu value là string có dạng "10,11,12"
               if (typeof value === 'string' && value.length > 0) {
-                selectedIds = splitString(value, ';');
+                selectedIds = splitString(value, ',');
               }
               // Nếu value đã là mảng
               else if (Array.isArray(value)) {

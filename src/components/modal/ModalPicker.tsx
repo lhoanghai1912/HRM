@@ -36,24 +36,59 @@ const ModalPicker = ({
 
     // Nếu là array
     if (Array.isArray(value)) {
-      // Nếu là array of objects [{value, label}]
-      if (value.length > 0 && typeof value[0] === 'object') {
-        return value.map(v => String(v.value ?? v.id ?? v));
+      // Nếu là array of objects [{value, label, id, ...}]
+      if (
+        value.length > 0 &&
+        typeof value[0] === 'object' &&
+        value[0] !== null
+      ) {
+        return value
+          .map(v => String(v.value ?? v.id))
+          .filter(v => v && v !== 'null' && v !== 'undefined');
       }
       // Nếu là array of IDs [1, 2, 3]
-      return value.map(v => String(v));
+      return value
+        .filter(v => v !== null && v !== undefined)
+        .map(v => String(v));
     }
 
-    // Nếu là string "10;11;12"
+    // Nếu là string
     if (typeof value === 'string') {
-      return value.split(';').filter(item => item.trim().length > 0);
+      // Thử parse JSON: "[9,10,11]" hoặc "[{...},{...}]"
+      try {
+        const arr = JSON.parse(value);
+        if (Array.isArray(arr)) {
+          // Nếu là array of objects
+          if (arr.length > 0 && typeof arr[0] === 'object' && arr[0] !== null) {
+            return arr
+              .map(v => String(v.value ?? v.id))
+              .filter(v => v && v !== 'null' && v !== 'undefined');
+          }
+          // Nếu là array of IDs
+          return arr
+            .filter(v => v !== null && v !== undefined)
+            .map(v => String(v));
+        }
+      } catch (e) {}
+
+      // Nếu là chuỗi "10,11,12"
+      return value
+        .split(',')
+        .map(v => v.trim())
+        .filter(v => v.length > 0 && v !== 'null' && v !== 'undefined');
     }
 
     // Single value
-    return [String(value)];
+    return value !== null && value !== undefined ? [String(value)] : [];
   };
-
   // Update multiValue khi selectedValue hoặc visible thay đổi
+  useEffect(() => {
+    if (multi && visible) {
+      const selectedIds = parseSelectedIds(selectedValue);
+      console.log('Parsed selected IDs:', selectedIds);
+      setMultiValue(selectedIds);
+    }
+  }, [selectedValue, multi, visible]);
   useEffect(() => {
     if (multi && visible) {
       const selectedIds = parseSelectedIds(selectedValue);
@@ -66,7 +101,6 @@ const ModalPicker = ({
     if (multi === true) {
       const value = item.value ?? item.id;
       const valueStr = String(value);
-
       let newValue = [...multiValue];
 
       // Kiểm tra xem đã chọn chưa
@@ -84,8 +118,8 @@ const ModalPicker = ({
       console.log('Updated multiValue:', newValue);
     } else {
       // Single select
-      const value = item.value ?? item.id;
-      const label = item?.label ?? item?.name ?? item?.pickListValue ?? '';
+      const value = item.id;
+      const label = item?.pickListValue ?? '';
       onSelect({ value, label });
       onClose();
     }
@@ -94,23 +128,23 @@ const ModalPicker = ({
   const handleDone = () => {
     console.log('Final multiValue:', multiValue);
 
-    // Map IDs thành objects với label
+    // Map IDs thành objects với đầy đủ thông tin
     const selectedItems = multiValue
       .map(id => {
         const item = data.pageData?.find(
           i => String(i.value ?? i.id) === String(id),
         );
-        if (!item) return null;
-        return {
-          value: item.value ?? item.id,
-          label: item.label ?? item.name ?? item.pickListValue ?? '',
-          pickListValue: item.pickListValue ?? item.label ?? item.name ?? '',
-        };
+        return item || null;
       })
       .filter(Boolean);
 
+    // Gửi lên cả mảng object (selectedItems) và chuỗi JSON (labelString)
+    const labelString = JSON.stringify(selectedItems);
+
     console.log('Selected items:', selectedItems);
-    onSelect(selectedItems);
+    console.log('Label string:', labelString);
+
+    onSelect(selectedItems, labelString); // Trả về cả mảng object và chuỗi JSON
     onClose();
   };
 
@@ -169,11 +203,6 @@ const ModalPicker = ({
                   // Kiểm tra đã chọn: so sánh với array of IDs
                   const checked = multiValue.includes(valueStr);
 
-                  console.log(
-                    `Item ${valueStr}: checked=${checked}, multiValue=`,
-                    multiValue,
-                  );
-
                   return (
                     <TouchableOpacity
                       key={value ?? idx}
@@ -209,11 +238,13 @@ const ModalPicker = ({
             </View>
           ) : (
             // Single select code giữ nguyên
-            <View style={{ flex: 1 }}>
+            <View style={[styles.multiContainer, { padding: spacing.medium }]}>
               <Text
                 style={[
                   AppStyles.label,
-                  { textAlign: 'center', marginBottom: spacing.medium },
+                  {
+                    textAlign: 'center',
+                  },
                 ]}
               >
                 Chọn {fieldLabel}
@@ -222,15 +253,13 @@ const ModalPicker = ({
               <ScrollView
                 onScroll={handleScroll}
                 scrollEventThrottle={100}
-                contentContainerStyle={{
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
+                style={styles.scrollView}
+                contentContainerStyle={styles.scrollContent}
+                showsVerticalScrollIndicator={true}
               >
                 {data?.pageData?.map((item, idx) => {
-                  const value = item.value ?? item.id;
-                  const label =
-                    item.label ?? item.name ?? item.pickListValue ?? '';
+                  const value = item.id;
+                  const label = item.pickListValue;
                   const isSelected = selectedValue === value;
                   return (
                     <TouchableOpacity
@@ -329,11 +358,10 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: spacing.small,
     paddingHorizontal: spacing.medium,
     marginVertical: spacing.small,
     borderRadius: 8,
-    borderWidth: 0.5,
+    borderWidth: 1,
     borderColor: colors.Gray,
     minHeight: 44, // Đảm bảo chiều cao tối thiểu cho dễ touch
   },
