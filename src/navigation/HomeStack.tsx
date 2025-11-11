@@ -39,7 +39,7 @@ const HomeStack = () => (
       component={EmployeeDrawer}
     />
     <Stack.Screen name={Screen_Name.Check_Drawer} component={CheckDrawer} />
-    <Stack.Screen name={Screen_Name.Test} component={Test} />
+    {/* <Stack.Screen name={Screen_Name.Test} component={Test} /> */}
   </Stack.Navigator>
 );
 

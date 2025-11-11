@@ -3,6 +3,8 @@ import { View, Text, Image, TouchableOpacity } from 'react-native';
 import AppStyles from './AppStyle';
 import icons from '../assets/icons';
 import { mapFieldType, renderField } from '../utils/formField';
+import { navigate } from '../navigation/RootNavigator';
+import { Screen_Name } from '../navigation/ScreenName';
 
 interface RenderFieldsProps {
   field: any;
@@ -24,6 +26,8 @@ interface RenderFieldsProps {
     ) => void;
     handlePickLocation: (fieldName: string, cfg: any) => void;
   };
+  employeeId?: string;
+  isGroupDetail?: boolean;
 }
 
 export const RenderFields: React.FC<RenderFieldsProps> = ({
@@ -34,6 +38,8 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
   toggleSection,
   handleChange,
   handlers,
+  employeeId, // <-- truyền vào đây
+  isGroupDetail, // <-- thêm vào đây
 }) => {
   try {
     if (!field || !field.pageData) return null;
@@ -78,7 +84,21 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
                   alignItems: 'center',
                   paddingHorizontal: 8,
                 }}
-                onPress={() => toggleSection(parent.id)}
+                onPress={() => {
+                  console.log('isgroupdetail', isGroupDetail);
+
+                  if (parent.groupType === 1 || isGroupDetail === true) {
+                    toggleSection(parent.id);
+                  } else {
+                    console.log([employeeId, parent]);
+                    navigate(Screen_Name.Group, {
+                      // screen: Screen_Name.Detail_Group,
+                      employeeId, // <-- lấy từ props của RenderFields
+                      groupLabel: parent.label,
+                      groupConfig: parent,
+                    });
+                  }
+                }}
               >
                 <Text style={{ fontWeight: 'bold', fontSize: 16, margin: 8 }}>
                   {parent.name}

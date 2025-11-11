@@ -4357,3 +4357,27 @@ export const getLocation = async (
     throw error;
   }
 };
+
+export const getContract = async contractId => {
+  try {
+    const response = await apiClient.get(`Contract/${contractId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching contract:', error);
+    throw error;
+  }
+};
+
+export const updateDataGroup = async (data: any) => {
+  try {
+    const response = await apiClient.put(`Dictionary/config/data-group`, data, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error updateDataGroup:', error);
+    throw error;
+  }
+};

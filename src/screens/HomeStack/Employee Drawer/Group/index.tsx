@@ -35,8 +35,10 @@ const Group = ({ route }) => {
   const [loading, setLoading] = React.useState(false);
   const [groupData, setGroupData] = React.useState([]);
   const id = route.params?.employeeId;
-  const groupConfig = route.params?.parent;
+  const groupConfig = route.params?.groupConfig;
   const flatListRef = useRef<FlatList>(null);
+
+  console.log('route', route.params);
 
   const fetchGroupData = async () => {
     if (id && groupConfig) {
@@ -72,10 +74,18 @@ const Group = ({ route }) => {
       key={item.id}
       style={styles.tableRow}
       onPress={() => {
+        console.log(
+          'Navigating to Detail_Group with item:',
+          item,
+          'layout',
+          groupConfig,
+        );
+
         navigate(Screen_Name.Detail_Group, {
           id: item?.id,
-          parent: groupConfig,
+          parent: route?.params?.groupConfig,
           data: item,
+          isGroupDetail: true, // <-- truyền thêm biến này
         });
       }}
     >
@@ -97,11 +107,11 @@ const Group = ({ route }) => {
       <TouchableOpacity
         style={[styles.cell, { minWidth: COLUMN_MIN_WIDTHS.name, flex: 1 }]}
         onPress={() => {
-          navigate(Screen_Name.Details_Employee, {
-            // screen: Screen_Name.Details_Employee,
+          navigate(Screen_Name.Detail_Group, {
             parent: groupConfig,
-            id: item.employeeId,
+            id: item.id,
             data: item,
+            isGroupDetail: true, // <-- truyền thêm biến này
           });
         }}
       >
