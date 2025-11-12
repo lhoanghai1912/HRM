@@ -86,8 +86,11 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
                 }}
                 onPress={() => {
                   console.log('isgroupdetail', isGroupDetail);
+                  console.log('expand', expanded);
 
-                  if (parent.groupType === 1 || isGroupDetail === true) {
+                  if (parent.groupType === 1 || isGroupDetail) {
+                    console.log('Toggle section for parent id:', parent.id);
+
                     toggleSection(parent.id);
                   } else {
                     console.log([employeeId, parent]);

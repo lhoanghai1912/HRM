@@ -42,9 +42,7 @@ const DetailGroup = ({ route }) => {
   const [field, setField] = useState<any>();
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(false);
-  const [expandedSections, setExpandedSections] = useState<{
-    [key: number]: boolean;
-  }>({});
+  const [expandedSections, setExpandedSections] = useState<{}>({});
   const [changedFields, setChangedFields] = useState<
     { fieldName: string; fieldValue: any }[]
   >([]);
@@ -55,10 +53,6 @@ const DetailGroup = ({ route }) => {
     { fieldName: string; config: any }[]
   >([]);
   const [contractData, setGroupData] = useState();
-
-  const childGroups = field?.pageData?.filter(
-    parent => parent.Id === parent?.parentId,
-  );
 
   // Handle change function
   const handleChange = (fieldName: string, value) => {
@@ -117,6 +111,10 @@ const DetailGroup = ({ route }) => {
         parents.forEach(parent => {
           expandedInit[parent.id] = false;
         });
+        console.log('parents', parents);
+        setField(parents);
+        console.log('          field', field);
+
         setExpandedSections(expandedInit);
       }
     } catch (error) {
@@ -125,6 +123,12 @@ const DetailGroup = ({ route }) => {
       setLoading(false);
     }
   };
+  console.log('child', field?.pageData);
+
+  const childGroups = field?.pageData?.filter(
+    item => item.parentId === parent?.id, // hoặc item.fatherId === parentId nếu backend dùng fatherId
+  );
+  console.log('childGroups:', childGroups);
 
   const fetchGroupData = async () => {
     try {
@@ -141,7 +145,9 @@ const DetailGroup = ({ route }) => {
   const fetchAllData = async () => {
     setLoading(true);
     try {
-      const layout = await getData('profile');
+      const layout = await getData('contract');
+      console.log('Layout data:', layout);
+
       if (contractData) {
         const formData = mapGroupToFormData(layout, contractData);
 
@@ -314,7 +320,9 @@ const DetailGroup = ({ route }) => {
 
       <ScrollView style={styles.scrollView}>
         {/* Render các field của group cha */}
+        {/* {childGroups?.map(child => ( */}
         <RenderFields
+          key={parent.id}
           field={{
             pageData: [
               {
@@ -331,12 +339,18 @@ const DetailGroup = ({ route }) => {
           handlers={handlers}
           isGroupDetail={isGroupDetail}
         />
-
         {/* Render các group con nếu có */}
         {childGroups?.map(child => (
           <RenderFields
+            field={{
+              pageData: [
+                {
+                  ...child,
+                  groupFieldConfigs: child?.groupFieldConfigs,
+                },
+              ],
+            }}
             key={child.id}
-            field={{ pageData: [child] }}
             formData={formData}
             expandedSections={expandedSections}
             customConfigs={customConfigs}
