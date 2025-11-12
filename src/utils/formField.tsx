@@ -101,11 +101,6 @@ export const renderField = (
         />
       );
     case 'selectOne':
-      console.log(
-        'customConfig',
-        JSON.parse(data.customConfig).LocationID == true ? ' true ' : ' false ',
-      );
-
       //Check displayFieldSource: LocationName
       if (
         data.customConfig &&

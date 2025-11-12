@@ -32,11 +32,10 @@ import {
   useSelectPicker,
   useLocationPicker,
 } from '../../../../components/hooks/useSelectPicker';
-import { logger } from 'react-native-reanimated/lib/typescript/common';
 
 const DetailGroup = ({ route }) => {
   const navigation = useNavigation<DrawerNavigationProp<any>>();
-  const { id, parent, data, isGroupDetail } = route.params;
+  const { id, employeeId, parent, data, isGroupDetail } = route.params;
 
   // Basic states
   const [field, setField] = useState<any>();
@@ -83,12 +82,22 @@ const DetailGroup = ({ route }) => {
   const selectPicker = useSelectPicker();
   const locationPicker = useLocationPicker(field, formData);
 
+  const filteredField = field
+    ? {
+        ...field,
+        pageData: field.pageData?.filter(
+          item =>
+            item.id === parent?.id ||
+            item.parentId === parent?.id ||
+            item.fatherId === parent?.id,
+        ),
+      }
+    : null;
+
   // Fetch functions
   useFocusEffect(
     useCallback(() => {
       fetchData();
-      console.log('DetailGroup params:', route.params);
-
       fetchGroupData();
     }, [id]),
   );
@@ -120,14 +129,6 @@ const DetailGroup = ({ route }) => {
     }
   };
 
-  // Lấy các group con có parentId hoặc fatherId bằng parent.id
-  const childGroups = field?.pageData?.filter(
-    item => item.parentId === parent?.id || item.fatherId === parent?.id,
-  );
-
-  console.log('Parent group:', parent);
-  console.log('Child groups filtered:', childGroups);
-
   const fetchGroupData = async () => {
     try {
       setLoading(true);
@@ -143,10 +144,7 @@ const DetailGroup = ({ route }) => {
   const fetchAllData = async () => {
     setLoading(true);
     try {
-      const subsystemCode = parent?.subsystemCode || 'profile';
-      const layout = await getData(subsystemCode);
-      console.log('Layout data in fetchAllData:', layout);
-
+      const layout = await getData('profile');
       if (data) {
         // Map data từ route params vào formData
         const formData = mapGroupToFormData(layout, data);
@@ -208,8 +206,6 @@ const DetailGroup = ({ route }) => {
         setField(layout);
         setFormData(formData);
         setCustomConfigs(configs);
-
-        console.log('FormData mapped:', formData);
       }
     } catch (error) {
       console.error('Error in fetchAllData:', error);
@@ -220,9 +216,6 @@ const DetailGroup = ({ route }) => {
 
   const mapGroupToFormData = (layout, groupData) => {
     const formData = {};
-
-    console.log('Mapping group data:', groupData);
-    console.log('With layout:', layout);
 
     // Duyệt qua tất cả các groups trong layout
     layout?.pageData?.forEach(parentGroup => {
@@ -235,7 +228,6 @@ const DetailGroup = ({ route }) => {
         parentGroup.groupFieldConfigs?.forEach(cfg => {
           if (groupData && groupData.hasOwnProperty(cfg.fieldName)) {
             formData[cfg.fieldName] = groupData[cfg.fieldName];
-            console.log(`Mapped ${cfg.fieldName}:`, groupData[cfg.fieldName]);
           } else if (cfg.defaultValue) {
             try {
               const def =
@@ -279,6 +271,8 @@ const DetailGroup = ({ route }) => {
             type: 'Group',
             files: filesToUpload,
           });
+          console.log('Upload result:', uploadResult);
+
           Toast.show({
             type: 'success',
             text1: 'Upload file thành công',
@@ -291,7 +285,14 @@ const DetailGroup = ({ route }) => {
       }
 
       if (changedFields.length > 0) {
-        await updateDataGroup(changedFields);
+        console.log('Data being sent:', {
+          groupConfig: parent,
+          itemId: id,
+          employeeId: employeeId,
+          fields: changedFields,
+        });
+
+        await updateDataGroup(parent, id, employeeId, changedFields);
       }
 
       setChangedFields([]);
@@ -328,10 +329,11 @@ const DetailGroup = ({ route }) => {
     handlePickSelect: selectPicker.handlePickSelect,
     handlePickLocation: locationPicker.handlePickLocation,
   };
+
   return (
     <View style={styles.container}>
       <CustomHeader
-        label={parent?.label || parent?.name || 'Chi tiết nhóm'}
+        label={parent?.name}
         leftIcon={icons.menu}
         leftPress={() => navigation.openDrawer()}
         rightIcon={icons.document_focus}
@@ -339,47 +341,19 @@ const DetailGroup = ({ route }) => {
       />
 
       <ScrollView style={styles.scrollView}>
-        {/* Render các field của group cha */}
-        {/* {childGroups?.map(child => ( */}
+        {/* Render tất cả fields một lần như DetailEmployee */}
+
         <RenderFields
-          key={parent.id}
-          field={{
-            pageData: [
-              {
-                ...parent,
-                groupFieldConfigs: parent?.groupFieldConfigs,
-              },
-            ],
-          }}
+          field={filteredField}
           formData={formData}
           expandedSections={expandedSections}
           customConfigs={customConfigs}
           toggleSection={toggleSection}
           handleChange={handleChange}
           handlers={handlers}
+          employeeId={id}
           isGroupDetail={isGroupDetail}
         />
-        {/* Render các group con nếu có */}
-        {childGroups?.map(child => (
-          <RenderFields
-            field={{
-              pageData: [
-                {
-                  ...child,
-                  groupFieldConfigs: child?.groupFieldConfigs,
-                },
-              ],
-            }}
-            key={child.id}
-            formData={formData}
-            expandedSections={expandedSections}
-            customConfigs={customConfigs}
-            toggleSection={toggleSection}
-            handleChange={handleChange}
-            handlers={handlers}
-            isGroupDetail={isGroupDetail}
-          />
-        ))}
       </ScrollView>
 
       {/* Date Picker */}

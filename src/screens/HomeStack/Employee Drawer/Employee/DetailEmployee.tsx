@@ -33,6 +33,8 @@ import {
 } from '../../../../components/hooks/useSelectPicker';
 
 const DetailEmployee = ({ route }) => {
+  console.log('DetailEmployee route params:', route?.params);
+
   const navigation = useNavigation<DrawerNavigationProp<any>>();
   const employeeId = route?.params?.id;
 
@@ -248,6 +250,8 @@ const DetailEmployee = ({ route }) => {
             type: 'Employee',
             files: filesToUpload,
           });
+          console.log('Upload file result:', uploadResult);
+
           Toast.show({
             type: 'success',
             text1: 'Upload file thành công',

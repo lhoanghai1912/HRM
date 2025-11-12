@@ -313,8 +313,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     borderRadius: 12,
     minWidth: '80%',
-    maxWidth: '90%',
-    maxHeight: '70%',
+    // maxWidth: '90%',
+    // maxHeight: '70%',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
@@ -349,8 +349,8 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flexGrow: 0, // Quan trọng: không để grow, cho phép co theo content
-    maxHeight: '80%', // Giới hạn chiều cao scroll
-    marginVertical: spacing.medium,
+    maxHeight: '90%', // Giới hạn chiều cao scroll
+    // marginVertical: spacing.medium,
   },
   scrollContent: {
     padding: spacing.small,

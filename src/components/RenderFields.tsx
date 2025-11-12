@@ -52,6 +52,7 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
         }
         return (a.columnIndex || 0) - (b.columnIndex || 0);
       });
+    console.log('RenderFields - field.pageData:', field.pageData);
 
     return (
       <>

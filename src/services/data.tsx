@@ -4368,13 +4368,28 @@ export const getContract = async contractId => {
   }
 };
 
-export const updateDataGroup = async (data: any) => {
+export const updateDataGroup = async (
+  groupConfig: any,
+  itemId: string,
+  employeeId: string,
+  fields: any[],
+) => {
   try {
-    const response = await apiClient.put(`Dictionary/config/data-group`, data, {
-      headers: {
-        'Content-Type': 'application/json',
+    const payload = {
+      groupConfig,
+      itemId,
+      employeeId,
+      fields,
+    };
+    const response = await apiClient.post(
+      `Dictionary/config/data-group/save`,
+      payload,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
       },
-    });
+    );
     return response.data;
   } catch (error) {
     console.error('Error updateDataGroup:', error);

@@ -21,6 +21,7 @@ import { Screen_Name } from '../../../../navigation/ScreenName';
 import { ms, spacing } from '../../../../utils/spacing';
 import AppStyles from '../../../../components/AppStyle';
 import { ScrollView } from 'react-native-gesture-handler';
+import { colors } from '../../../../utils/color';
 const COLUMN_MIN_WIDTHS = {
   checkbox: ms(40),
   rela: ms(120),
@@ -34,23 +35,23 @@ const Group = ({ route }) => {
   const navigation = useNavigation<DrawerNavigationProp<any>>();
   const [loading, setLoading] = React.useState(false);
   const [groupData, setGroupData] = React.useState([]);
-  const id = route.params?.employeeId;
+  const employeeId = route.params?.employeeId;
   const groupConfig = route.params?.groupConfig;
   const flatListRef = useRef<FlatList>(null);
 
   console.log('route', route.params);
 
   const fetchGroupData = async () => {
-    if (id && groupConfig) {
+    if (employeeId && groupConfig) {
       try {
         setLoading(true);
         console.log('data to fetch', {
-          employeeId: id,
+          employeeId: employeeId,
           groupConfig: groupConfig,
         });
 
         const response = await getData_Group({
-          employeeId: id,
+          employeeId: employeeId,
           groupConfig: groupConfig,
         });
         console.log('Fetched group data:', response);
@@ -67,7 +68,7 @@ const Group = ({ route }) => {
 
   useEffect(() => {
     fetchGroupData();
-  }, [id, groupConfig]);
+  }, [employeeId, groupConfig]);
 
   const renderItem = ({ item, index }) => (
     <TouchableOpacity
@@ -83,6 +84,7 @@ const Group = ({ route }) => {
 
         navigate(Screen_Name.Detail_Group, {
           id: item?.id,
+          employeeId: employeeId,
           parent: route?.params?.groupConfig,
           data: item,
           isGroupDetail: true, // <-- truyền thêm biến này
@@ -91,32 +93,43 @@ const Group = ({ route }) => {
     >
       {/* STT */}
       <View
-        style={[styles.checkboxCell, { minWidth: COLUMN_MIN_WIDTHS.checkbox }]}
+        style={[styles.checkboxCell, { width: COLUMN_MIN_WIDTHS.checkbox }]}
       >
         <Text>{index + 1}</Text>
       </View>
       <Text style={{ borderLeftWidth: 0.5 }} />
       {/* Mối quan hệ*/}
       <Text
-        style={[styles.cell, { minWidth: COLUMN_MIN_WIDTHS.rela, flex: 2 }]}
+        numberOfLines={1}
+        ellipsizeMode="tail"
+        style={[styles.cell, { width: COLUMN_MIN_WIDTHS.rela, flex: 2 }]}
       >
         {item.relationshipName}
       </Text>
       <Text style={{ borderLeftWidth: 0.5 }} />
       {/* Tên */}
       <TouchableOpacity
-        style={[styles.cell, { minWidth: COLUMN_MIN_WIDTHS.name, flex: 1 }]}
+        style={[styles.cell, { width: COLUMN_MIN_WIDTHS.name, flex: 1 }]}
         onPress={() => {
-          navigate(Screen_Name.Detail_Group, {
-            parent: groupConfig,
-            id: item.id,
-            data: item,
-            isGroupDetail: true, // <-- truyền thêm biến này
+          navigate(Screen_Name.Details_Employee, {
+            // parent: groupConfig,
+            // id: item.id,
+            // data: item,
+            // isGroupDetail: true, // <-- truyền thêm biến này
+            id: employeeId,
           });
         }}
       >
         <Text
-          style={[styles.cell, { minWidth: COLUMN_MIN_WIDTHS.gender, flex: 1 }]}
+          style={[
+            styles.cell,
+            {
+              flex: 1,
+              color: colors.primary,
+              textDecorationLine: 'underline',
+              textDecorationColor: colors.red,
+            },
+          ]}
         >
           {item.fullName}
         </Text>
@@ -125,27 +138,37 @@ const Group = ({ route }) => {
 
       {/* Giới tính */}
       <Text
-        style={[styles.cell, { minWidth: COLUMN_MIN_WIDTHS.gender, flex: 1 }]}
+        numberOfLines={1}
+        ellipsizeMode="tail"
+        style={[styles.cell, { width: COLUMN_MIN_WIDTHS.gender, flex: 1 }]}
       >
         {item.genderName || ''}
       </Text>
       <Text style={{ borderLeftWidth: 0.5 }} />
 
       {/* Ngày sinh */}
-      <Text style={[styles.cell, { minWidth: COLUMN_MIN_WIDTHS.dob, flex: 1 }]}>
+      <Text
+        numberOfLines={1}
+        ellipsizeMode="tail"
+        style={[styles.cell, { width: COLUMN_MIN_WIDTHS.dob, flex: 1 }]}
+      >
         {item.birthday}
       </Text>
       <Text style={{ borderLeftWidth: 0.5 }} />
       {/* SĐT */}
       <Text
-        style={[styles.cell, { minWidth: COLUMN_MIN_WIDTHS.phone, flex: 1 }]}
+        numberOfLines={1}
+        ellipsizeMode="tail"
+        style={[styles.cell, { width: COLUMN_MIN_WIDTHS.phone, flex: 1 }]}
       >
         {item.mobile}
       </Text>
       <Text style={{ borderLeftWidth: 0.5 }} />
       {/* Email */}
       <Text
-        style={[styles.cell, { minWidth: COLUMN_MIN_WIDTHS.email, flex: 1 }]}
+        numberOfLines={1}
+        ellipsizeMode="tail"
+        style={[styles.cell, { width: COLUMN_MIN_WIDTHS.email, flex: 1 }]}
       >
         {item.email}
       </Text>
@@ -208,7 +231,7 @@ const Group = ({ route }) => {
               <View
                 style={[
                   styles.checkboxCell,
-                  { minWidth: COLUMN_MIN_WIDTHS.checkbox },
+                  { width: COLUMN_MIN_WIDTHS.checkbox },
                 ]}
               >
                 <View>
@@ -219,7 +242,7 @@ const Group = ({ route }) => {
               <Text
                 style={[
                   styles.headerCell,
-                  { minWidth: COLUMN_MIN_WIDTHS.rela, flex: 2 },
+                  { width: COLUMN_MIN_WIDTHS.rela, flex: 2 },
                 ]}
               >
                 Quan hệ
@@ -229,7 +252,7 @@ const Group = ({ route }) => {
               <Text
                 style={[
                   styles.headerCell,
-                  { minWidth: COLUMN_MIN_WIDTHS.name, flex: 1 },
+                  { width: COLUMN_MIN_WIDTHS.name, flex: 1 },
                 ]}
               >
                 Họ và tên
@@ -238,7 +261,7 @@ const Group = ({ route }) => {
               <Text
                 style={[
                   styles.headerCell,
-                  { minWidth: COLUMN_MIN_WIDTHS.gender, flex: 1 },
+                  { width: COLUMN_MIN_WIDTHS.gender, flex: 1 },
                 ]}
               >
                 Giới tính
@@ -247,7 +270,7 @@ const Group = ({ route }) => {
               <Text
                 style={[
                   styles.headerCell,
-                  { minWidth: COLUMN_MIN_WIDTHS.dob, flex: 1 },
+                  { width: COLUMN_MIN_WIDTHS.dob, flex: 1 },
                 ]}
               >
                 Ngày sinh
@@ -256,7 +279,7 @@ const Group = ({ route }) => {
               <Text
                 style={[
                   styles.headerCell,
-                  { minWidth: COLUMN_MIN_WIDTHS.phone, flex: 1 },
+                  { width: COLUMN_MIN_WIDTHS.phone, flex: 1 },
                 ]}
               >
                 SDT
@@ -265,7 +288,7 @@ const Group = ({ route }) => {
               <Text
                 style={[
                   styles.headerCell,
-                  { minWidth: COLUMN_MIN_WIDTHS.email, flex: 1 },
+                  { width: COLUMN_MIN_WIDTHS.email, flex: 1 },
                 ]}
               >
                 Email
@@ -299,36 +322,6 @@ const Group = ({ route }) => {
                 ) : null
               }
               ListFooterComponent={renderFooter}
-              // refreshControl={
-              //   <RefreshControl
-              //     refreshing={refreshing}
-              //     onRefresh={handleRefresh}
-              //   />
-              // }
-              // onEndReached={() => {
-              //   if (
-              //     !onEndReachedCalledDuringMomentum.current &&
-              //     !loadingMore &&
-              //     !noMoreData &&
-              //     !loading &&
-              //     groupData.length > 0 // Đảm bảo có dữ liệu trước khi load more
-              //   ) {
-              //     console.log('Load more triggered');
-              //     handleLoadMore();
-              //     onEndReachedCalledDuringMomentum.current = true;
-              //   }
-              // }}
-              // onScroll={({ nativeEvent }) => {
-              //   const currentScrollY = nativeEvent.contentOffset.y;
-              //   // Reset flag khi scroll xuống (chỉ cho phép load more khi scroll xuống)
-              //   if (currentScrollY > scrollY.current) {
-              //     onEndReachedCalledDuringMomentum.current = false;
-              //   }
-              //   scrollY.current = currentScrollY;
-              // }}
-              // onMomentumScrollBegin={() => {
-              //   onEndReachedCalledDuringMomentum.current = false;
-              // }}
               onEndReachedThreshold={0.01} // Chỉ load khi rất gần cuối (1% cuối)
               showsVerticalScrollIndicator={false}
             />
