@@ -108,13 +108,9 @@ const DetailGroup = ({ route }) => {
       if (data && data.pageData) {
         const parents = data.pageData.filter(item => item.parentId === null);
         const expandedInit = {};
-        parents.forEach(parent => {
-          expandedInit[parent.id] = false;
+        parents.forEach(p => {
+          expandedInit[p.id] = true; // Mở tất cả sections
         });
-        console.log('parents', parents);
-        setField(parents);
-        console.log('          field', field);
-
         setExpandedSections(expandedInit);
       }
     } catch (error) {
@@ -123,12 +119,14 @@ const DetailGroup = ({ route }) => {
       setLoading(false);
     }
   };
-  console.log('child', field?.pageData);
 
+  // Lấy các group con có parentId hoặc fatherId bằng parent.id
   const childGroups = field?.pageData?.filter(
-    item => item.parentId === parent?.id, // hoặc item.fatherId === parentId nếu backend dùng fatherId
+    item => item.parentId === parent?.id || item.fatherId === parent?.id,
   );
-  console.log('childGroups:', childGroups);
+
+  console.log('Parent group:', parent);
+  console.log('Child groups filtered:', childGroups);
 
   const fetchGroupData = async () => {
     try {
@@ -145,15 +143,17 @@ const DetailGroup = ({ route }) => {
   const fetchAllData = async () => {
     setLoading(true);
     try {
-      const layout = await getData('contract');
-      console.log('Layout data:', layout);
+      const subsystemCode = parent?.subsystemCode || 'profile';
+      const layout = await getData(subsystemCode);
+      console.log('Layout data in fetchAllData:', layout);
 
-      if (contractData) {
-        const formData = mapGroupToFormData(layout, contractData);
+      if (data) {
+        // Map data từ route params vào formData
+        const formData = mapGroupToFormData(layout, data);
 
         // Fetch display values cho các field select
-        for (const parent of layout?.pageData || []) {
-          for (const cfg of parent.groupFieldConfigs || []) {
+        for (const parentGroup of layout?.pageData || []) {
+          for (const cfg of parentGroup.groupFieldConfigs || []) {
             if (cfg.displayField && cfg.tableNameSource === 'PickList') {
               const fieldValue = formData[cfg.fieldName];
 
@@ -189,8 +189,8 @@ const DetailGroup = ({ route }) => {
 
         // Parse customConfig
         const configs: { fieldName: string; config: any }[] = [];
-        layout?.pageData?.forEach(parent => {
-          parent.groupFieldConfigs?.forEach(cfg => {
+        layout?.pageData?.forEach(parentGroup => {
+          parentGroup.groupFieldConfigs?.forEach(cfg => {
             if (cfg.customConfig && typeof cfg.customConfig === 'string') {
               try {
                 const parsedConfig = JSON.parse(cfg.customConfig);
@@ -208,41 +208,61 @@ const DetailGroup = ({ route }) => {
         setField(layout);
         setFormData(formData);
         setCustomConfigs(configs);
+
+        console.log('FormData mapped:', formData);
       }
     } catch (error) {
-      console.error(error);
+      console.error('Error in fetchAllData:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  const mapGroupToFormData = (layout, contractData) => {
+  const mapGroupToFormData = (layout, groupData) => {
     const formData = {};
 
-    layout?.pageData?.forEach(parent => {
-      parent.groupFieldConfigs?.forEach(cfg => {
-        if (contractData.hasOwnProperty(cfg.fieldName)) {
-          formData[cfg.fieldName] = contractData[cfg.fieldName];
-        } else if (cfg.defaultValue) {
-          try {
-            const def =
-              typeof cfg.defaultValue === 'string'
-                ? JSON.parse(cfg.defaultValue)
-                : cfg.defaultValue;
-            formData[cfg.fieldName] = def.id ?? def;
-          } catch (e) {
-            formData[cfg.fieldName] = cfg.defaultValue;
-          }
-        } else {
-          formData[cfg.fieldName] = '';
-        }
+    console.log('Mapping group data:', groupData);
+    console.log('With layout:', layout);
 
-        if (cfg.displayField && contractData.hasOwnProperty(cfg.displayField)) {
-          formData[cfg.displayField] = contractData[cfg.displayField];
-        }
-      });
+    // Duyệt qua tất cả các groups trong layout
+    layout?.pageData?.forEach(parentGroup => {
+      // Chỉ xử lý các group liên quan (parent và children của parent)
+      if (
+        parentGroup.id === parent?.id ||
+        parentGroup.parentId === parent?.id ||
+        parentGroup.fatherId === parent?.id
+      ) {
+        parentGroup.groupFieldConfigs?.forEach(cfg => {
+          if (groupData && groupData.hasOwnProperty(cfg.fieldName)) {
+            formData[cfg.fieldName] = groupData[cfg.fieldName];
+            console.log(`Mapped ${cfg.fieldName}:`, groupData[cfg.fieldName]);
+          } else if (cfg.defaultValue) {
+            try {
+              const def =
+                typeof cfg.defaultValue === 'string'
+                  ? JSON.parse(cfg.defaultValue)
+                  : cfg.defaultValue;
+              formData[cfg.fieldName] = def.id ?? def;
+            } catch (e) {
+              formData[cfg.fieldName] = cfg.defaultValue;
+            }
+          } else {
+            formData[cfg.fieldName] = '';
+          }
+
+          // Map displayField nếu có
+          if (
+            cfg.displayField &&
+            groupData &&
+            groupData.hasOwnProperty(cfg.displayField)
+          ) {
+            formData[cfg.displayField] = groupData[cfg.displayField];
+          }
+        });
+      }
     });
 
+    console.log('Final mapped formData:', formData);
     return formData;
   };
 
