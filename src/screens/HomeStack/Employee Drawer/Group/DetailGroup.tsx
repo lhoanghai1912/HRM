@@ -351,7 +351,7 @@ const DetailGroup = ({ route }) => {
           toggleSection={toggleSection}
           handleChange={handleChange}
           handlers={handlers}
-          employeeId={id}
+          id={id}
           isGroupDetail={isGroupDetail}
         />
       </ScrollView>

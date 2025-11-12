@@ -161,6 +161,8 @@ export const ContractStack = () => (
       name={Screen_Name.Details_Contract}
       component={DetailContract}
     />
+    <Stack.Screen name={Screen_Name.Detail_Group} component={GroupDetail} />
+    <Stack.Screen name={Screen_Name.Group} component={Group} />
   </Stack.Navigator>
 );
 

@@ -33,8 +33,6 @@ import {
 } from '../../../../components/hooks/useSelectPicker';
 
 const DetailEmployee = ({ route }) => {
-  console.log('DetailEmployee route params:', route?.params);
-
   const navigation = useNavigation<DrawerNavigationProp<any>>();
   const employeeId = route?.params?.id;
 
@@ -238,12 +236,21 @@ const DetailEmployee = ({ route }) => {
   };
 
   const handleSave = async () => {
+    if (changedFields.length === 0 && pickedFiles.length === 0) {
+      Toast.show({
+        type: 'info',
+        text1: 'Không có thay đổi để lưu',
+      });
+      return;
+    }
     try {
       setLoading(true);
 
       const filesToUpload = [...pickedFiles];
 
       if (filesToUpload.length > 0) {
+        console.log('Files to upload:', filesToUpload);
+
         try {
           const uploadResult = await uploadFile({
             id: employeeId,
@@ -264,6 +271,8 @@ const DetailEmployee = ({ route }) => {
       }
 
       if (changedFields.length > 0) {
+        console.log('Files to upload:', changedFields);
+
         await updateEmployee(employeeId, changedFields);
       }
 
@@ -321,7 +330,7 @@ const DetailEmployee = ({ route }) => {
           toggleSection={toggleSection}
           handleChange={handleChange}
           handlers={handlers}
-          employeeId={employeeId} // <-- truyền vào đây
+          id={employeeId} // <-- truyền vào đây
         />
       </ScrollView>
 

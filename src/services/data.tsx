@@ -4172,7 +4172,6 @@ import apiClient from './apiClient';
 
 export const getData = async (layout: string) => {
   try {
-    const layout = 'profile';
     // Giả sử bạn có một API endpoint để lấy dữ liệu dựa trên layout
     const response = await apiClient.post(
       `ConfigLayout/setting-layout?layout=${layout}`,

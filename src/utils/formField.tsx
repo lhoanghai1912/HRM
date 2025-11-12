@@ -102,9 +102,10 @@ export const renderField = (
       );
     case 'selectOne':
       //Check displayFieldSource: LocationName
+
       if (
         data.customConfig &&
-        JSON.parse(data.customConfig).LocationID === true
+        JSON.parse(data.customConfig)?.LocationID === true
       ) {
         return (
           <TouchableOpacity

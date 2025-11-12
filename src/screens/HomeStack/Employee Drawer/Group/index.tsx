@@ -196,7 +196,7 @@ const Group = ({ route }) => {
   return (
     <View style={styles.container}>
       <CustomHeader
-        label="Contract"
+        label={groupConfig?.name}
         leftPress={() => {
           navigation.openDrawer();
         }}

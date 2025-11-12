@@ -26,7 +26,7 @@ interface RenderFieldsProps {
     ) => void;
     handlePickLocation: (fieldName: string, cfg: any) => void;
   };
-  employeeId?: string;
+  id?: string;
   isGroupDetail?: boolean;
 }
 
@@ -38,7 +38,7 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
   toggleSection,
   handleChange,
   handlers,
-  employeeId, // <-- truyền vào đây
+  id, // <-- truyền vào đây
   isGroupDetail, // <-- thêm vào đây
 }) => {
   try {
@@ -89,15 +89,15 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
                   console.log('isgroupdetail', isGroupDetail);
                   console.log('expand', expanded);
 
-                  if (parent.groupType === 1 || isGroupDetail) {
+                  if (parent.groupType !== 2 || isGroupDetail) {
                     console.log('Toggle section for parent id:', parent.id);
 
                     toggleSection(parent.id);
                   } else {
-                    console.log([employeeId, parent]);
+                    console.log([id, parent]);
                     navigate(Screen_Name.Group, {
                       // screen: Screen_Name.Detail_Group,
-                      employeeId, // <-- lấy từ props của RenderFields
+                      id, // <-- lấy từ props của RenderFields
                       groupLabel: parent.label,
                       groupConfig: parent,
                     });
@@ -154,10 +154,20 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
                                 onPickDate: handlers.handlePickDate,
                                 onPickMonth: handlers.handlePickMonth,
                                 onPickSelectOne: (fieldName: string) => {
-                                  const locationID = JSON.parse(
-                                    cfg.customConfig,
-                                  ).LocationID;
-                                  if (locationID === true) {
+                                  let locationID = false;
+                                  try {
+                                    if (cfg.customConfig) {
+                                      const parsedConfig =
+                                        typeof cfg.customConfig === 'string'
+                                          ? JSON.parse(cfg.customConfig)
+                                          : cfg.customConfig;
+                                      locationID =
+                                        parsedConfig?.LocationID === true;
+                                    }
+                                  } catch (e) {
+                                    locationID = false;
+                                  }
+                                  if (locationID) {
                                     handlers.handlePickLocation(fieldName, cfg);
                                   } else {
                                     handlers.handlePickSelect(fieldName, cfg);
@@ -232,10 +242,20 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
                                 onPickDate: handlers.handlePickDate,
                                 onPickMonth: handlers.handlePickMonth,
                                 onPickSelectOne: (fieldName: string) => {
-                                  const locationID = JSON.parse(
-                                    cfg.customConfig,
-                                  ).LocationID;
-                                  if (locationID === true) {
+                                  let locationID = false;
+                                  try {
+                                    if (cfg.customConfig) {
+                                      const parsedConfig =
+                                        typeof cfg.customConfig === 'string'
+                                          ? JSON.parse(cfg.customConfig)
+                                          : cfg.customConfig;
+                                      locationID =
+                                        parsedConfig?.LocationID === true;
+                                    }
+                                  } catch (e) {
+                                    locationID = false;
+                                  }
+                                  if (locationID) {
                                     handlers.handlePickLocation(fieldName, cfg);
                                   } else {
                                     handlers.handlePickSelect(fieldName, cfg);
