@@ -1,6 +1,10 @@
 import { useState } from 'react';
 import { Alert } from 'react-native';
-import { getPickerData, getLocation, getOrganizationTree } from '../../services/data';
+import {
+  getPickerData,
+  getLocation,
+  getOrganizationTree,
+} from '../../services/data';
 
 export const useSelectPicker = () => {
   const [pickerField, setPickerField] = useState<string | null>(null);
@@ -178,7 +182,7 @@ export const useOrganizationPicker = () => {
   const handlePickOrganization = async (fieldName: string, cfg: any) => {
     setOrgFieldName(fieldName);
     setOrgDisplayField(cfg?.displayField || '');
-    
+
     try {
       // Fetch organization tree data từ API
       const data = await getOrganizationTree();

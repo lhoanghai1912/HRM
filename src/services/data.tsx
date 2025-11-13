@@ -4411,10 +4411,14 @@ export const getOrganizationTree = async () => {
         children: [
           { id: 2, name: 'Phòng Nhân sự', children: [] },
           { id: 3, name: 'Phòng Kế toán', children: [] },
-          { id: 4, name: 'Phòng IT', children: [
-            { id: 5, name: 'Team Frontend', children: [] },
-            { id: 6, name: 'Team Backend', children: [] },
-          ]},
+          {
+            id: 4,
+            name: 'Phòng IT',
+            children: [
+              { id: 5, name: 'Team Frontend', children: [] },
+              { id: 6, name: 'Team Backend', children: [] },
+            ],
+          },
         ],
       },
     ];

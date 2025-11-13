@@ -444,7 +444,9 @@ export const renderField = (
       return (
         <>
           <TouchableOpacity
-            onPress={() => extraProps.onPickOrganization?.(data.fieldName, data)}
+            onPress={() =>
+              extraProps.onPickOrganization?.(data.fieldName, data)
+            }
             style={{
               borderWidth: 1,
               borderRadius: 10,

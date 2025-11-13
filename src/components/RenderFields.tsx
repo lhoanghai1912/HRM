@@ -305,8 +305,8 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
             </View>
           );
         })}
-    </>
-  );
+      </>
+    );
   } catch (error) {
     console.error('Error rendering fields:', error);
     return null;

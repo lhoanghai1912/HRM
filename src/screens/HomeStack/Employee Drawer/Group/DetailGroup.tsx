@@ -492,7 +492,7 @@ const DetailGroup = ({ route }) => {
         onSelect={node => {
           const fieldName = organizationPicker.orgFieldName;
           const displayField = organizationPicker.orgDisplayField;
-          
+
           setFormData(prev => ({
             ...prev,
             [fieldName]: node.id,
