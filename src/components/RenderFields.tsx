@@ -25,7 +25,7 @@ interface RenderFieldsProps {
       selectedIds?: any[],
     ) => void;
     handlePickLocation: (fieldName: string, cfg: any) => void;
-    handlePickOrganization: (fieldName: string, cfg: any) => void;
+    handlePickOrganization: (fieldName: string, displayField: any) => void;
   };
   id?: string;
   isGroupDetail?: boolean;
@@ -191,11 +191,11 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
                                 onClearFile: handlers.handleClearFile,
                                 onPickOrganization: (
                                   fieldName: string,
-                                  fieldCfg: any,
+                                  displayField: any,
                                 ) => {
                                   handlers.handlePickOrganization(
                                     fieldName,
-                                    fieldCfg,
+                                    displayField,
                                   );
                                 },
                               },
@@ -288,11 +288,11 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
                                 onClearFile: handlers.handleClearFile,
                                 onPickOrganization: (
                                   fieldName: string,
-                                  fieldCfg: any,
+                                  displayField: any,
                                 ) => {
                                   handlers.handlePickOrganization(
                                     fieldName,
-                                    fieldCfg,
+                                    displayField,
                                   );
                                 },
                               },

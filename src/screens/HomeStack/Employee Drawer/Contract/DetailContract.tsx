@@ -29,6 +29,7 @@ import {
 import {
   useSelectPicker,
   useLocationPicker,
+  useOrganizationPicker,
 } from '../../../../components/hooks/useSelectPicker';
 
 const DetailContract = ({ route }) => {
@@ -83,6 +84,7 @@ const DetailContract = ({ route }) => {
   const imagePicker = useImagePicker(setFormData);
   const selectPicker = useSelectPicker();
   const locationPicker = useLocationPicker(field, formData);
+  const organizationPicker = useOrganizationPicker();
 
   // Fetch functions
   useFocusEffect(
@@ -301,7 +303,7 @@ const DetailContract = ({ route }) => {
     handleClearFile: filePicker.handleClearFile,
     handlePickSelect: selectPicker.handlePickSelect,
     handlePickLocation: locationPicker.handlePickLocation,
-    handleOrganizationSelect: () => {},
+    handlePickOrganization: organizationPicker.handlePickOrganization,
   };
 
   return (

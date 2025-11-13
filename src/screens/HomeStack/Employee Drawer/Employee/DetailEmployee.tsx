@@ -31,6 +31,7 @@ import {
   useSelectPicker,
   useLocationPicker,
   useOrganizationPicker,
+  useEmployeePicker,
 } from '../../../../components/hooks/useSelectPicker';
 import ModalTreeView from '../../../../components/modal/ModalTreeView';
 
@@ -235,6 +236,35 @@ const DetailEmployee = ({ route }) => {
     });
 
     return formData;
+  };
+
+  const handleSelectOrganization = node => {
+    console.log('node', node);
+    console.log('organizationPicker', organizationPicker);
+
+    const fieldName = organizationPicker.orgFieldName;
+    const displayField = organizationPicker.orgDisplayField;
+
+    setFormData(prev => ({
+      ...prev,
+      [fieldName]: node, // Lưu cả object
+      [displayField]: node.orgStructName || node.name,
+    }));
+    setChangedFields(prev => {
+      const safePrev = Array.isArray(prev) ? prev : [];
+      const filtered = safePrev.filter(
+        f => f.fieldName !== fieldName && f.fieldName !== displayField,
+      );
+      return [
+        ...filtered,
+        { fieldName: fieldName, fieldValue: node.id }, // Khi lưu chỉ gửi id
+        {
+          fieldName: displayField,
+          fieldValue: node.orgStructName || node.name,
+        },
+      ];
+    });
+    organizationPicker.setShowOrgTree(false);
   };
 
   const handleSave = async () => {
@@ -464,31 +494,11 @@ const DetailEmployee = ({ route }) => {
         visible={organizationPicker.showOrgTree}
         data={organizationPicker.orgTreeData}
         selectedId={formData[organizationPicker.orgFieldName]}
-        onSelect={node => {
-          const fieldName = organizationPicker.orgFieldName;
-          const displayField = organizationPicker.orgDisplayField;
-
-          setFormData(prev => ({
-            ...prev,
-            [fieldName]: node.id,
-            [displayField]: node.name,
-          }));
-          setChangedFields(prev => {
-            const safePrev = Array.isArray(prev) ? prev : [];
-            const filtered = safePrev.filter(
-              f => f.fieldName !== fieldName && f.fieldName !== displayField,
-            );
-            return [
-              ...filtered,
-              { fieldName: fieldName, fieldValue: node.id },
-              { fieldName: displayField, fieldValue: node.name },
-            ];
-          });
-          organizationPicker.setShowOrgTree(false);
-        }}
+        onSelect={handleSelectOrganization}
         onClose={() => organizationPicker.setShowOrgTree(false)}
         onSearch={keyword => organizationPicker.handleSearch(keyword)}
       />
+
       {/* Loading Overlay */}
       {loading && (
         <View

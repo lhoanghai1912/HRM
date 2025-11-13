@@ -108,7 +108,7 @@ const Employee = ({}) => {
         ellipsizeMode="tail"
         style={[styles.cell, { width: COLUMN_MIN_WIDTHS.time, flex: 1 }]}
       >
-        {item.gender}
+        {item.genderName}
       </Text>
       <Text style={{ borderLeftWidth: 0.5 }} />
       {/* Số điện thoại */}
@@ -117,7 +117,7 @@ const Employee = ({}) => {
         ellipsizeMode="tail"
         style={[styles.cell, { width: COLUMN_MIN_WIDTHS.unit, flex: 1 }]}
       >
-        {item.phoneNumber}
+        {item.mobile}
       </Text>
       <Text style={{ borderLeftWidth: 0.5 }} />
       {/* Email */}
@@ -126,7 +126,7 @@ const Employee = ({}) => {
         ellipsizeMode="tail"
         style={[styles.cell, { width: COLUMN_MIN_WIDTHS.object, flex: 1 }]}
       >
-        {item.email}
+        {item.officeEmail}
       </Text>
       <Text style={{ borderLeftWidth: 0.5 }} />
       {/* Ngày sinh */}
@@ -135,7 +135,7 @@ const Employee = ({}) => {
         ellipsizeMode="tail"
         style={[styles.cell, { width: COLUMN_MIN_WIDTHS.location, flex: 1 }]}
       >
-        {item.birthDate}
+        {item.birthDay}
       </Text>
     </TouchableOpacity>
   );

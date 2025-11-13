@@ -25,7 +25,12 @@ type RenderFieldExtraProps = {
   onPickFile?: (fieldName: string) => void;
   onPickImage?: (fieldName: string) => void;
   onClearFile?: (fieldName: string, displayField: string) => void; // Thêm dòng này
-  onPickOrganization?: (fieldName: string, cfg: any) => void;
+  onPickOrganization?: (
+    fieldName: string,
+    displayField: string,
+    cfg: any,
+  ) => void;
+  onPickEmployee?: (fieldName: string, displayField: string, cfg: any) => void;
 };
 
 // Ánh xạ DataType hoặc TypeControl từ API sang loại trường đã định nghĩa
@@ -445,7 +450,11 @@ export const renderField = (
         <>
           <TouchableOpacity
             onPress={() =>
-              extraProps.onPickOrganization?.(data.fieldName, data)
+              extraProps.onPickOrganization?.(
+                data.fieldName,
+                data.displayField,
+                data,
+              )
             }
             style={{
               borderWidth: 1,
@@ -456,22 +465,61 @@ export const renderField = (
             }}
             disabled={mode === 'view' || data.IsReadOnly}
           >
-            <Text>{value?.name || value || 'Chọn tổ chức'}</Text>
+            <Text>
+              {(() => {
+                // 1. Nếu value là object có orgStructName
+                if (value && typeof value === 'object' && value.orgStructName) {
+                  return value.orgStructName;
+                }
+
+                // 3. Nếu formData có displayField (thường là tên)
+                if (
+                  extraProps.formData &&
+                  extraProps.formData[data.displayField]
+                ) {
+                  return extraProps.formData[data.displayField];
+                }
+                // 4. Nếu value là string (id), không hiển thị id
+                // 5. Fallback
+                return 'Chọn tổ chức';
+              })()}
+            </Text>
           </TouchableOpacity>
           {/* TreePicker sẽ được show ở component cha khi onPickOrganization được gọi */}
         </>
       );
     case 'employee':
       return (
-        <AppInput
-          value={value ?? ''}
-          onChangeText={val => onChange(data.fieldName, val)}
-          placeholder={`${data.fieldName} - ${fieldType} `}
-          editable={mode !== 'view' && !data.IsReadOnly}
-          numberOfLines={1}
-          multiline={false}
-          scrollEnabled={true}
-        />
+        <TouchableOpacity
+          onPress={() =>
+            extraProps.onPickEmployee?.(data.fieldName, data.displayField, data)
+          }
+          style={{
+            borderWidth: 1,
+            borderRadius: 10,
+            padding: 8,
+            marginBottom: 8,
+            backgroundColor: '#e6f7ff',
+          }}
+          disabled={mode === 'view' || data.IsReadOnly}
+        >
+          <Text>
+            {(() => {
+              // Nếu value là object có name
+              if (value && typeof value === 'object' && value.name) {
+                return value.name;
+              }
+              // Nếu formData có displayField
+              if (
+                extraProps.formData &&
+                extraProps.formData[data.displayField]
+              ) {
+                return extraProps.formData[data.displayField];
+              }
+              return 'Chọn nhân viên';
+            })()}
+          </Text>
+        </TouchableOpacity>
       );
     // Các kiểu khác có thể bổ sung thêm
     default:

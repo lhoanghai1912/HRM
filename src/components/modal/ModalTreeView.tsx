@@ -71,7 +71,9 @@ const TreePicker = ({
             <View style={[AppStyles.icon, { marginRight: spacing.small }]} />
           )}
           <TouchableOpacity
-            onPress={() => onSelect(node)}
+            onPress={() => {
+              onSelect(node), console.log('Selected node:', node);
+            }}
             style={{
               backgroundColor:
                 node.id === selectedId ? colors.primary : undefined,
@@ -162,8 +164,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
     borderRadius: 16,
     width: '90%',
-    maxHeight: 500,
-    minHeight: 200,
+    maxHeight: '75%',
+    minHeight: '10%',
     padding: spacing.medium,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -183,7 +185,7 @@ const styles = StyleSheet.create({
   },
   wrapContent: { borderWidth: 0.5, borderRadius: 10, borderColor: colors.Gray },
   mainContent: {
-    flex: 1,
+    // flex: 1,
     backgroundColor: colors.white,
     padding: spacing.small,
   },
@@ -194,7 +196,6 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     flex: 1,
-    // paddingHorizontal: spacing.medium,
     borderRadius: 6,
   },
 });

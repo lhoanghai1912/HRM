@@ -5,6 +5,7 @@ import {
   getLocation,
   getOrganizationTree,
 } from '../../services/data';
+import { employee_GetAll } from '../../services/hr';
 
 export const useSelectPicker = () => {
   const [pickerField, setPickerField] = useState<string | null>(null);
@@ -175,9 +176,14 @@ export const useOrganizationPicker = () => {
   const [orgFieldName, setOrgFieldName] = useState('');
   const [orgDisplayField, setOrgDisplayField] = useState('');
 
-  const handlePickOrganization = async (fieldName: string, cfg: any) => {
+  const handlePickOrganization = async (
+    fieldName: string,
+    displayField: any,
+  ) => {
     setOrgFieldName(fieldName);
-    setOrgDisplayField(cfg?.displayField || '');
+
+    setOrgDisplayField(displayField);
+    console.log('Organization picker config:', displayField);
 
     try {
       // Fetch organization tree data từ API
@@ -542,5 +548,49 @@ export const useOrganizationPicker = () => {
     handlePickOrganization,
     handleSearch,
     setShowOrgTree,
+  };
+};
+
+export const useEmployeePicker = () => {
+  const [showEmployeePicker, setShowEmployeePicker] = useState(false);
+  const [employeeData, setEmployeeData] = useState([]);
+  const [searchText, setSearchText] = useState('');
+  const [pickerField, setPickerField] = useState('');
+  const [displayField, setDisplayField] = useState('');
+
+  // Mở modal và load danh sách nhân viên
+  const handlePickEmployee = async (fieldName, displayFieldName, cfg) => {
+    setPickerField(fieldName);
+    setDisplayField(displayFieldName);
+    setShowEmployeePicker(true);
+    await fetchEmployees('');
+  };
+
+  // Tìm kiếm nhân viên
+  const handleSearch = async keyword => {
+    setSearchText(keyword);
+    await fetchEmployees(keyword);
+  };
+
+  // Hàm lấy danh sách nhân viên từ API
+  const fetchEmployees = async keyword => {
+    try {
+      const res = await employee_GetAll(keyword); // API trả về mảng nhân viên
+      setEmployeeData(res?.data || res || []);
+    } catch (error) {
+      setEmployeeData([]);
+    }
+  };
+
+  return {
+    showEmployeePicker,
+    setShowEmployeePicker,
+    employeeData,
+    pickerField,
+    displayField,
+    handlePickEmployee,
+    handleSearch,
+    searchText,
+    setSearchText,
   };
 };
