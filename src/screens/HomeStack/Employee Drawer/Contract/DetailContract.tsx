@@ -301,6 +301,7 @@ const DetailContract = ({ route }) => {
     handleClearFile: filePicker.handleClearFile,
     handlePickSelect: selectPicker.handlePickSelect,
     handlePickLocation: locationPicker.handlePickLocation,
+    handleOrganizationSelect: () => {},
   };
 
   return (

@@ -15,6 +15,9 @@ export const useSelectPicker = () => {
   const [pickerConfig, setPickerConfig] = useState(null);
   const [pickerPage, setPickerPage] = useState(1);
 
+  const [showOrgTree, setShowOrgTree] = useState(false);
+  const [orgTreeData, setOrgTreeData] = useState([]);
+  const [orgFieldName, setOrgFieldName] = useState('');
   const handlePickSelect = async (
     fieldName: string,
     cfg: any,

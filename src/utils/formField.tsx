@@ -25,6 +25,7 @@ type RenderFieldExtraProps = {
   onPickFile?: (fieldName: string) => void;
   onPickImage?: (fieldName: string) => void;
   onClearFile?: (fieldName: string, displayField: string) => void; // Thêm dòng này
+  onPickOrganization?: (fieldName: string) => void;
 };
 
 // Ánh xạ DataType hoặc TypeControl từ API sang loại trường đã định nghĩa
@@ -60,8 +61,11 @@ export const mapFieldType = TypeControl => {
       return 'link'; // Đường dẫn
     case 'FileUpload':
       return 'file'; // File
-    case 'Formula':
-      return 'formula';
+    case 'Organization':
+      return 'organization';
+    case 'Employee':
+      return 'employee';
+
     default:
       return 'singleLine';
   }
@@ -434,6 +438,38 @@ export const renderField = (
               : 'Chọn ảnh'}
           </Text>
         </TouchableOpacity>
+      );
+
+    case 'organization':
+      return (
+        <>
+          <TouchableOpacity
+            onPress={() => extraProps.onPickOrganization?.(data.fieldName)}
+            style={{
+              borderWidth: 1,
+              borderRadius: 10,
+              padding: 8,
+              marginBottom: 8,
+              backgroundColor: '#e6f7ff',
+            }}
+            disabled={mode === 'view' || data.IsReadOnly}
+          >
+            <Text>{value?.name || value || 'Chọn tổ chức'}</Text>
+          </TouchableOpacity>
+          {/* TreePicker sẽ được show ở component cha khi onPickOrganization được gọi */}
+        </>
+      );
+    case 'employee':
+      return (
+        <AppInput
+          value={value ?? ''}
+          onChangeText={val => onChange(data.fieldName, val)}
+          placeholder={`${data.fieldName} - ${fieldType} `}
+          editable={mode !== 'view' && !data.IsReadOnly}
+          numberOfLines={1}
+          multiline={false}
+          scrollEnabled={true}
+        />
       );
     // Các kiểu khác có thể bổ sung thêm
     default:

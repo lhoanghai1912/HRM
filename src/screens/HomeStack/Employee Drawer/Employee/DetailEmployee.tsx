@@ -31,6 +31,7 @@ import {
   useSelectPicker,
   useLocationPicker,
 } from '../../../../components/hooks/useSelectPicker';
+import ModalTreeView from '../../../../components/modal/ModalTreeView';
 
 const DetailEmployee = ({ route }) => {
   const navigation = useNavigation<DrawerNavigationProp<any>>();
@@ -82,7 +83,9 @@ const DetailEmployee = ({ route }) => {
   const imagePicker = useImagePicker(setFormData);
   const selectPicker = useSelectPicker();
   const locationPicker = useLocationPicker(field, formData);
-
+  const [showOrgTree, setShowOrgTree] = useState(false);
+  const [orgTreeData, setOrgTreeData] = useState([]);
+  const [orgFieldName, setOrgFieldName] = useState('');
   // Fetch functions
   useFocusEffect(
     useCallback(() => {
@@ -309,6 +312,7 @@ const DetailEmployee = ({ route }) => {
     handleClearFile: filePicker.handleClearFile,
     handlePickSelect: selectPicker.handlePickSelect,
     handlePickLocation: locationPicker.handlePickLocation,
+    handlePickOrganization: handlers.handlePickOrganization,
   };
 
   return (
@@ -457,7 +461,29 @@ const DetailEmployee = ({ route }) => {
           title="Chọn địa điểm"
         />
       )}
-
+      <ModalTreeView
+        visible={showOrgTree}
+        data={orgTreeData}
+        selectedId={formData[orgFieldName]}
+        onSelect={node => {
+          setFormData(prev => ({
+            ...prev,
+            [orgFieldName]: node,
+          }));
+          setChangedFields(prev => {
+            const safePrev = Array.isArray(prev) ? prev : [];
+            const idx = safePrev.findIndex(f => f.fieldName === orgFieldName);
+            if (idx !== -1) {
+              const updated = [...safePrev];
+              updated[idx] = { fieldName: orgFieldName, fieldValue: node };
+              return updated;
+            }
+            return [...safePrev, { fieldName: orgFieldName, fieldValue: node }];
+          });
+          setShowOrgTree(false);
+        }}
+        onClose={() => setShowOrgTree(false)}
+      />
       {/* Loading Overlay */}
       {loading && (
         <View
