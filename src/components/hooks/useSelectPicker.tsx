@@ -18,10 +18,6 @@ export const useSelectPicker = () => {
   const [hasMore, setHasMore] = useState(false);
   const [pickerConfig, setPickerConfig] = useState(null);
   const [pickerPage, setPickerPage] = useState(1);
-
-  const [showOrgTree, setShowOrgTree] = useState(false);
-  const [orgTreeData, setOrgTreeData] = useState([]);
-  const [orgFieldName, setOrgFieldName] = useState('');
   const handlePickSelect = async (
     fieldName: string,
     cfg: any,
@@ -185,8 +181,159 @@ export const useOrganizationPicker = () => {
 
     try {
       // Fetch organization tree data từ API
-      const data = await getOrganizationTree();
-      setOrgTreeData(data);
+      const res = await getOrganizationTree();
+      console.log('Organization tree data:', res);
+
+      const testData = [
+        {
+          id: 6,
+          orgStructCode: '',
+          orgStructName: 'test',
+          orgLevelId: 2,
+          parentId: null,
+          orgLevel: {
+            id: 2,
+            orgLevelName: 'test1',
+            orgLevelDesc: 'test',
+            isActive: false,
+          },
+          childrent: [
+            {
+              id: 8,
+              orgStructCode: '',
+              orgStructName: 'test 1',
+              orgLevelId: 1,
+              parentId: 6,
+              orgLevel: {
+                id: 1,
+                orgLevelName: 'string1',
+                orgLevelDesc: 'string2',
+                isActive: true,
+              },
+              childrent: [],
+            },
+            {
+              id: 9,
+              orgStructCode: '',
+              orgStructName: 'cctc con',
+              orgLevelId: 1,
+              parentId: 6,
+              orgLevel: {
+                id: 1,
+                orgLevelName: 'string1',
+                orgLevelDesc: 'string2',
+                isActive: true,
+              },
+              childrent: [
+                {
+                  id: 13,
+                  orgStructCode: '',
+                  orgStructName: 'child child 1',
+                  orgLevelId: 1,
+                  parentId: 9,
+                  orgLevel: {
+                    id: 1,
+                    orgLevelName: 'Công ty con child child 1',
+                    orgLevelDesc: '',
+                    isActive: true,
+                  },
+                  childrent: [],
+                },
+                {
+                  id: 14,
+                  orgStructCode: '',
+                  orgStructName: 'child child 2',
+                  orgLevelId: 1,
+                  parentId: 9,
+                  orgLevel: {
+                    id: 1,
+                    orgLevelName: 'Công ty con child child 2',
+                    orgLevelDesc: '',
+                    isActive: true,
+                  },
+                  childrent: [],
+                },
+                {
+                  id: 15,
+                  orgStructCode: '',
+                  orgStructName: 'child child 3',
+                  orgLevelId: 1,
+                  parentId: 9,
+                  orgLevel: {
+                    id: 1,
+                    orgLevelName: 'Công ty con child child 3',
+                    orgLevelDesc: '',
+                    isActive: true,
+                  },
+                  childrent: [],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: 7,
+          orgStructCode: '',
+          orgStructName: 'test2',
+          orgLevelId: 1,
+          parentId: null,
+          orgLevel: {
+            id: 1,
+            orgLevelName: 'string1',
+            orgLevelDesc: 'string2',
+            isActive: true,
+          },
+          childrent: [],
+        },
+        {
+          id: 10,
+          orgStructCode: '',
+          orgStructName: 'Công ty TNHH FOXAI ',
+          orgLevelId: 4,
+          parentId: null,
+          orgLevel: {
+            id: 4,
+            orgLevelName: 'Tổng công ty',
+            orgLevelDesc: '',
+            isActive: true,
+          },
+          childrent: [
+            {
+              id: 11,
+              orgStructCode: '',
+              orgStructName: 'FOXAI 1',
+              orgLevelId: 6,
+              parentId: 10,
+              orgLevel: {
+                id: 6,
+                orgLevelName: 'Công ty con',
+                orgLevelDesc: '',
+                isActive: true,
+              },
+              childrent: [],
+            },
+          ],
+        },
+        {
+          id: 12,
+          orgStructCode: '',
+          orgStructName: 'FOXAI 2',
+          orgLevelId: 6,
+          parentId: null,
+          orgLevel: {
+            id: 6,
+            orgLevelName: 'Công ty con',
+            orgLevelDesc: '',
+            isActive: true,
+          },
+          childrent: [],
+        },
+      ];
+
+      // setOrgTreeData(res.data);
+      setOrgTreeData(testData);
+      console.log('Set organization tree data:', testData);
+
       setShowOrgTree(true);
     } catch (error) {
       console.error('Error loading organization tree:', error);

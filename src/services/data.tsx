@@ -4399,7 +4399,9 @@ export const updateDataGroup = async (
 export const getOrganizationTree = async () => {
   try {
     // TODO: Replace with actual API endpoint
-    const response = await apiClient.get('Organization/tree');
+    const response = await apiClient.get('OrgStruct');
+    console.log('Organization tree response:', response.data);
+
     return response.data;
   } catch (error) {
     console.error('Error fetching organization tree:', error);
