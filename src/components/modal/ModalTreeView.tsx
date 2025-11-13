@@ -25,17 +25,27 @@ const TreePicker = ({
 }) => {
   const [expandedSections, setExpandedSections] = useState({});
   const [searchText, setSearchText] = useState('');
-  const [searchValue, setSearchValue] = useState('');
+
   const toggleSection = id => {
     setExpandedSections(prev => ({
       ...prev,
       [id]: !prev[id],
     }));
   };
+
   // Hàm xử lý khi ấn nút search
   const handleSearch = () => {
-    setSearchValue(searchText);
-    onSearch(searchValue);
+    if (onSearch) {
+      onSearch(searchText);
+    }
+  };
+
+  // Xử lý khi clear search
+  const handleClearSearch = () => {
+    setSearchText('');
+    if (onSearch) {
+      onSearch(''); // Gọi API với search rỗng để reset
+    }
   };
 
   const renderNode = (node, level = 0) => {
@@ -107,8 +117,10 @@ const TreePicker = ({
               style={styles.searchInput}
               value={searchText}
               onChangeText={setSearchText}
+              onSubmitEditing={handleSearch}
+              returnKeyType="search"
             />
-            <TouchableOpacity onPress={() => setSearchText('')}>
+            <TouchableOpacity onPress={handleClearSearch}>
               <Image
                 source={icons.clear}
                 style={[

@@ -520,11 +520,18 @@ export const useOrganizationPicker = () => {
     }
   };
 
-  const handleSearch = async keyword => {
-    // Nếu API hỗ trợ search, gọi lại API lấy tree theo keyword
-    // Nếu không, filter tree tại client
-    const treeData = await getOrganizationTree(keyword); // hoặc filter tại client
-    setOrgTreeData(treeData);
+  const handleSearch = async (keyword: string) => {
+    try {
+      // Gọi API với param search
+      const res = await getOrganizationTree(keyword);
+      console.log('Search organization tree with keyword:', keyword, res);
+
+      // Update tree data với kết quả search
+      setOrgTreeData(res.data || res);
+    } catch (error) {
+      console.error('Error searching organization tree:', error);
+      Alert.alert('Lỗi', 'Không thể tìm kiếm tổ chức');
+    }
   };
 
   return {
