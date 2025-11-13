@@ -25,7 +25,7 @@ type RenderFieldExtraProps = {
   onPickFile?: (fieldName: string) => void;
   onPickImage?: (fieldName: string) => void;
   onClearFile?: (fieldName: string, displayField: string) => void; // Thêm dòng này
-  onPickOrganization?: (fieldName: string) => void;
+  onPickOrganization?: (fieldName: string, cfg: any) => void;
 };
 
 // Ánh xạ DataType hoặc TypeControl từ API sang loại trường đã định nghĩa
@@ -444,7 +444,7 @@ export const renderField = (
       return (
         <>
           <TouchableOpacity
-            onPress={() => extraProps.onPickOrganization?.(data.fieldName)}
+            onPress={() => extraProps.onPickOrganization?.(data.fieldName, data)}
             style={{
               borderWidth: 1,
               borderRadius: 10,

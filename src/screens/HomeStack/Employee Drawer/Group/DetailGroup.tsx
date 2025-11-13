@@ -31,7 +31,9 @@ import {
 import {
   useSelectPicker,
   useLocationPicker,
+  useOrganizationPicker,
 } from '../../../../components/hooks/useSelectPicker';
+import ModalTreeView from '../../../../components/modal/ModalTreeView';
 
 const DetailGroup = ({ route }) => {
   const navigation = useNavigation<DrawerNavigationProp<any>>();
@@ -81,6 +83,7 @@ const DetailGroup = ({ route }) => {
   const imagePicker = useImagePicker(setFormData);
   const selectPicker = useSelectPicker();
   const locationPicker = useLocationPicker(field, formData);
+  const organizationPicker = useOrganizationPicker();
 
   const filteredField = field
     ? {
@@ -328,6 +331,7 @@ const DetailGroup = ({ route }) => {
     handleClearFile: filePicker.handleClearFile,
     handlePickSelect: selectPicker.handlePickSelect,
     handlePickLocation: locationPicker.handlePickLocation,
+    handlePickOrganization: organizationPicker.handlePickOrganization,
   };
 
   return (
@@ -479,6 +483,36 @@ const DetailGroup = ({ route }) => {
           title="Chọn địa điểm"
         />
       )}
+
+      {/* Organization Tree Modal */}
+      <ModalTreeView
+        visible={organizationPicker.showOrgTree}
+        data={organizationPicker.orgTreeData}
+        selectedId={formData[organizationPicker.orgFieldName]}
+        onSelect={node => {
+          const fieldName = organizationPicker.orgFieldName;
+          const displayField = organizationPicker.orgDisplayField;
+          
+          setFormData(prev => ({
+            ...prev,
+            [fieldName]: node.id,
+            [displayField]: node.name,
+          }));
+          setChangedFields(prev => {
+            const safePrev = Array.isArray(prev) ? prev : [];
+            const filtered = safePrev.filter(
+              f => f.fieldName !== fieldName && f.fieldName !== displayField,
+            );
+            return [
+              ...filtered,
+              { fieldName: fieldName, fieldValue: node.id },
+              { fieldName: displayField, fieldValue: node.name },
+            ];
+          });
+          organizationPicker.setShowOrgTree(false);
+        }}
+        onClose={() => organizationPicker.setShowOrgTree(false)}
+      />
 
       {/* Loading Overlay */}
       {loading && (

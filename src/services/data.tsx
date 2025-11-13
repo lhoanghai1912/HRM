@@ -4395,3 +4395,28 @@ export const updateDataGroup = async (
     throw error;
   }
 };
+
+export const getOrganizationTree = async () => {
+  try {
+    // TODO: Replace with actual API endpoint
+    const response = await apiClient.get('Organization/tree');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching organization tree:', error);
+    // Return mock data if API fails
+    return [
+      {
+        id: 1,
+        name: 'Công ty TNHH ABC',
+        children: [
+          { id: 2, name: 'Phòng Nhân sự', children: [] },
+          { id: 3, name: 'Phòng Kế toán', children: [] },
+          { id: 4, name: 'Phòng IT', children: [
+            { id: 5, name: 'Team Frontend', children: [] },
+            { id: 6, name: 'Team Backend', children: [] },
+          ]},
+        ],
+      },
+    ];
+  }
+};

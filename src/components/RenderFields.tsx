@@ -25,7 +25,7 @@ interface RenderFieldsProps {
       selectedIds?: any[],
     ) => void;
     handlePickLocation: (fieldName: string, cfg: any) => void;
-    handlePickOrganization: (fieldName: string) => void;
+    handlePickOrganization: (fieldName: string, cfg: any) => void;
   };
   id?: string;
   isGroupDetail?: boolean;
@@ -189,8 +189,15 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
                                 onPickFile: handlers.handlePickFile,
                                 onPickImage: handlers.handlePickImage,
                                 onClearFile: handlers.handleClearFile,
-                                onPickOrganization:
-                                  handlers.handlePickOrganization,
+                                onPickOrganization: (
+                                  fieldName: string,
+                                  fieldCfg: any,
+                                ) => {
+                                  handlers.handlePickOrganization(
+                                    fieldName,
+                                    fieldCfg,
+                                  );
+                                },
                               },
                             )}
                           </View>
@@ -279,8 +286,15 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
                                 onPickFile: handlers.handlePickFile,
                                 onPickImage: handlers.handlePickImage,
                                 onClearFile: handlers.handleClearFile,
-                                onPickOrganization:
-                                  handlers.handlePickOrganization,
+                                onPickOrganization: (
+                                  fieldName: string,
+                                  fieldCfg: any,
+                                ) => {
+                                  handlers.handlePickOrganization(
+                                    fieldName,
+                                    fieldCfg,
+                                  );
+                                },
                               },
                             )}
                           </View>
@@ -291,8 +305,8 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
             </View>
           );
         })}
-      </>
-    );
+    </>
+  );
   } catch (error) {
     console.error('Error rendering fields:', error);
     return null;

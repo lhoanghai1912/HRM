@@ -30,6 +30,7 @@ import {
 import {
   useSelectPicker,
   useLocationPicker,
+  useOrganizationPicker,
 } from '../../../../components/hooks/useSelectPicker';
 import ModalTreeView from '../../../../components/modal/ModalTreeView';
 
@@ -83,9 +84,7 @@ const DetailEmployee = ({ route }) => {
   const imagePicker = useImagePicker(setFormData);
   const selectPicker = useSelectPicker();
   const locationPicker = useLocationPicker(field, formData);
-  const [showOrgTree, setShowOrgTree] = useState(false);
-  const [orgTreeData, setOrgTreeData] = useState([]);
-  const [orgFieldName, setOrgFieldName] = useState('');
+  const organizationPicker = useOrganizationPicker();
   // Fetch functions
   useFocusEffect(
     useCallback(() => {
@@ -312,7 +311,7 @@ const DetailEmployee = ({ route }) => {
     handleClearFile: filePicker.handleClearFile,
     handlePickSelect: selectPicker.handlePickSelect,
     handlePickLocation: locationPicker.handlePickLocation,
-    handlePickOrganization: handlers.handlePickOrganization,
+    handlePickOrganization: organizationPicker.handlePickOrganization,
   };
 
   return (
@@ -462,27 +461,32 @@ const DetailEmployee = ({ route }) => {
         />
       )}
       <ModalTreeView
-        visible={showOrgTree}
-        data={orgTreeData}
-        selectedId={formData[orgFieldName]}
+        visible={organizationPicker.showOrgTree}
+        data={organizationPicker.orgTreeData}
+        selectedId={formData[organizationPicker.orgFieldName]}
         onSelect={node => {
+          const fieldName = organizationPicker.orgFieldName;
+          const displayField = organizationPicker.orgDisplayField;
+          
           setFormData(prev => ({
             ...prev,
-            [orgFieldName]: node,
+            [fieldName]: node.id,
+            [displayField]: node.name,
           }));
           setChangedFields(prev => {
             const safePrev = Array.isArray(prev) ? prev : [];
-            const idx = safePrev.findIndex(f => f.fieldName === orgFieldName);
-            if (idx !== -1) {
-              const updated = [...safePrev];
-              updated[idx] = { fieldName: orgFieldName, fieldValue: node };
-              return updated;
-            }
-            return [...safePrev, { fieldName: orgFieldName, fieldValue: node }];
+            const filtered = safePrev.filter(
+              f => f.fieldName !== fieldName && f.fieldName !== displayField,
+            );
+            return [
+              ...filtered,
+              { fieldName: fieldName, fieldValue: node.id },
+              { fieldName: displayField, fieldValue: node.name },
+            ];
           });
-          setShowOrgTree(false);
+          organizationPicker.setShowOrgTree(false);
         }}
-        onClose={() => setShowOrgTree(false)}
+        onClose={() => organizationPicker.setShowOrgTree(false)}
       />
       {/* Loading Overlay */}
       {loading && (

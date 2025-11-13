@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Alert } from 'react-native';
-import { getPickerData, getLocation } from '../../services/data';
+import { getPickerData, getLocation, getOrganizationTree } from '../../services/data';
 
 export const useSelectPicker = () => {
   const [pickerField, setPickerField] = useState<string | null>(null);
@@ -166,5 +166,36 @@ export const useLocationPicker = (field: any, formData: any) => {
     pickerConfig,
     handlePickLocation,
     setOpenLocationModal,
+  };
+};
+
+export const useOrganizationPicker = () => {
+  const [showOrgTree, setShowOrgTree] = useState(false);
+  const [orgTreeData, setOrgTreeData] = useState([]);
+  const [orgFieldName, setOrgFieldName] = useState('');
+  const [orgDisplayField, setOrgDisplayField] = useState('');
+
+  const handlePickOrganization = async (fieldName: string, cfg: any) => {
+    setOrgFieldName(fieldName);
+    setOrgDisplayField(cfg?.displayField || '');
+    
+    try {
+      // Fetch organization tree data từ API
+      const data = await getOrganizationTree();
+      setOrgTreeData(data);
+      setShowOrgTree(true);
+    } catch (error) {
+      console.error('Error loading organization tree:', error);
+      Alert.alert('Lỗi', 'Không thể tải danh sách tổ chức');
+    }
+  };
+
+  return {
+    showOrgTree,
+    orgTreeData,
+    orgFieldName,
+    orgDisplayField,
+    handlePickOrganization,
+    setShowOrgTree,
   };
 };
