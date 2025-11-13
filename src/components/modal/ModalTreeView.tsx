@@ -1,13 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Modal,
   View,
   Text,
   TouchableOpacity,
-  FlatList,
   Image,
   StyleSheet,
-  Dimensions,
 } from 'react-native';
 import { colors } from '../../utils/color';
 import { ms, spacing } from '../../utils/spacing';
@@ -15,36 +13,8 @@ import icons from '../../assets/icons';
 import AppStyles from '../AppStyle';
 import { ScrollView } from 'react-native';
 
-const { height: SCREEN_HEIGHT } = Dimensions.get('window');
-const MIN_HEIGHT_PERCENT = 0.5; // 50%
-const MAX_HEIGHT_PERCENT = 0.75; // 75%
-
 const TreePicker = ({ visible, data, onSelect, onClose, selectedId }) => {
   const [expandedSections, setExpandedSections] = useState({});
-  const [contentHeight, setContentHeight] = useState(SCREEN_HEIGHT * MIN_HEIGHT_PERCENT);
-
-  // Tính toán chiều cao dựa trên số lượng items được expand
-  useEffect(() => {
-    const countVisibleNodes = (nodes, level = 0) => {
-      let count = 0;
-      nodes?.forEach(node => {
-        count++; // Đếm node hiện tại
-        if (node.childrent && expandedSections[node.id]) {
-          count += countVisibleNodes(node.childrent, level + 1);
-        }
-      });
-      return count;
-    };
-
-    const visibleCount = countVisibleNodes(data);
-    // Mỗi item cao khoảng 50px, thêm padding
-    const estimatedHeight = Math.min(
-      Math.max(visibleCount * 50 + 100, SCREEN_HEIGHT * MIN_HEIGHT_PERCENT),
-      SCREEN_HEIGHT * MAX_HEIGHT_PERCENT,
-    );
-    
-    setContentHeight(estimatedHeight);
-  }, [expandedSections, data]);
 
   const toggleSection = id => {
     setExpandedSections(prev => ({
@@ -118,7 +88,7 @@ const TreePicker = ({ visible, data, onSelect, onClose, selectedId }) => {
       onRequestClose={onClose}
     >
       <View style={styles.overlay}>
-        <View style={[styles.container, { height: contentHeight }]}>
+        <View style={styles.container}>
           <View style={styles.mainContent}>
             <ScrollView style={{ flex: 1 }}>
               {Array.isArray(data) && data.map(item => renderNode(item))}
@@ -144,7 +114,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.blue,
     borderRadius: 16,
     width: '90%',
-    // height được set dynamic từ contentHeight
+    minHeight: '50%', // Chiều cao tối thiểu 50%
+    maxHeight: '75%', // Chiều cao tối đa 75%
     padding: spacing.medium,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
