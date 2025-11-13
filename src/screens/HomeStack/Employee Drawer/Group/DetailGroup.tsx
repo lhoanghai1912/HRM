@@ -512,6 +512,7 @@ const DetailGroup = ({ route }) => {
           organizationPicker.setShowOrgTree(false);
         }}
         onClose={() => organizationPicker.setShowOrgTree(false)}
+        onSearch={keyword => organizationPicker.handleSearch(keyword)}
       />
 
       {/* Loading Overlay */}
