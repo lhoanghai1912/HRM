@@ -25,7 +25,8 @@ interface RenderFieldsProps {
       selectedIds?: any[],
     ) => void;
     handlePickLocation: (fieldName: string, cfg: any) => void;
-    handlePickOrganization: (fieldName: string, displayField: any) => void;
+    handlePickOrganization: (fieldName: string, cfg: any) => void;
+    handlePickEmployee: (fieldName: string, displayField: string, cfg: any) => void;
   };
   id?: string;
   isGroupDetail?: boolean;
@@ -198,6 +199,17 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
                                     displayField,
                                   );
                                 },
+                                onPickEmployee: (
+                                  fieldName: string,
+                                  displayField: string,
+                                  cfg: any,
+                                ) => {
+                                  handlers.handlePickEmployee(
+                                    fieldName,
+                                    displayField,
+                                    cfg,
+                                  );
+                                },
                               },
                             )}
                           </View>
@@ -293,6 +305,17 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
                                   handlers.handlePickOrganization(
                                     fieldName,
                                     displayField,
+                                  );
+                                },
+                                onPickEmployee: (
+                                  fieldName: string,
+                                  displayField: string,
+                                  cfg: any,
+                                ) => {
+                                  handlers.handlePickEmployee(
+                                    fieldName,
+                                    displayField,
+                                    cfg,
                                   );
                                 },
                               },

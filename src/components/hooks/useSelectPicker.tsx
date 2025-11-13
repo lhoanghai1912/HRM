@@ -554,31 +554,71 @@ export const useOrganizationPicker = () => {
 export const useEmployeePicker = () => {
   const [showEmployeePicker, setShowEmployeePicker] = useState(false);
   const [employeeData, setEmployeeData] = useState([]);
-  const [searchText, setSearchText] = useState('');
   const [pickerField, setPickerField] = useState('');
   const [displayField, setDisplayField] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
 
   // Mở modal và load danh sách nhân viên
   const handlePickEmployee = async (fieldName, displayFieldName, cfg) => {
     setPickerField(fieldName);
     setDisplayField(displayFieldName);
+    setPage(1);
     setShowEmployeePicker(true);
-    await fetchEmployees('');
+    await fetchEmployees('', 1, true);
   };
 
   // Tìm kiếm nhân viên
-  const handleSearch = async keyword => {
-    setSearchText(keyword);
-    await fetchEmployees(keyword);
+  const handleSearch = async (keyword: string) => {
+    setPage(1);
+    await fetchEmployees(keyword, 1, true);
   };
 
   // Hàm lấy danh sách nhân viên từ API
-  const fetchEmployees = async keyword => {
+  const fetchEmployees = async (keyword: string, pageNum: number = 1, reset: boolean = false) => {
     try {
-      const res = await employee_GetAll(keyword); // API trả về mảng nhân viên
-      setEmployeeData(res?.data || res || []);
+      setLoading(true);
+      const response = await employee_GetAll({
+        paramQuery: {
+          page: pageNum,
+          pageSize: 20,
+          search: keyword,
+          filter: '',
+          orderBy: '',
+          sortOrder: '',
+        },
+      });
+      
+      const newData = response?.data?.pageData || response?.pageData || [];
+      
+      if (reset) {
+        setEmployeeData(newData);
+      } else {
+        setEmployeeData(prev => [...prev, ...newData]);
+      }
+      
+      // Check if has more data
+      const totalCount = response?.data?.totalCount || response?.totalCount || 0;
+      setHasMore(pageNum * 20 < totalCount);
+      
     } catch (error) {
-      setEmployeeData([]);
+      console.error('Error fetching employees:', error);
+      if (reset) {
+        setEmployeeData([]);
+      }
+      setHasMore(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Load more khi scroll đến cuối
+  const handleLoadMore = () => {
+    if (!loading && hasMore) {
+      const nextPage = page + 1;
+      setPage(nextPage);
+      fetchEmployees('', nextPage, false);
     }
   };
 
@@ -590,7 +630,8 @@ export const useEmployeePicker = () => {
     displayField,
     handlePickEmployee,
     handleSearch,
-    searchText,
-    setSearchText,
+    loading,
+    hasMore,
+    handleLoadMore,
   };
 };

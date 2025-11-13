@@ -34,6 +34,7 @@ import {
   useEmployeePicker,
 } from '../../../../components/hooks/useSelectPicker';
 import ModalTreeView from '../../../../components/modal/ModalTreeView';
+import ModalEmployeePicker from '../../../../components/modal/ModalEmployeePicker';
 
 const DetailEmployee = ({ route }) => {
   const navigation = useNavigation<DrawerNavigationProp<any>>();
@@ -86,6 +87,8 @@ const DetailEmployee = ({ route }) => {
   const selectPicker = useSelectPicker();
   const locationPicker = useLocationPicker(field, formData);
   const organizationPicker = useOrganizationPicker();
+  const employeePicker = useEmployeePicker();
+  
   // Fetch functions
   useFocusEffect(
     useCallback(() => {
