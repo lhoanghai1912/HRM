@@ -26,7 +26,11 @@ interface RenderFieldsProps {
     ) => void;
     handlePickLocation: (fieldName: string, cfg: any) => void;
     handlePickOrganization: (fieldName: string, cfg: any) => void;
-    handlePickEmployee: (fieldName: string, displayField: string, cfg: any) => void;
+    handlePickEmployee: (
+      fieldName: string,
+      displayField: string,
+      cfg: any,
+    ) => void;
   };
   id?: string;
   isGroupDetail?: boolean;

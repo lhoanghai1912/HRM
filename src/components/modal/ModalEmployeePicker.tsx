@@ -66,14 +66,16 @@ const ModalEmployeePicker: React.FC<ModalEmployeePickerProps> = ({
     const isSelected = item.id === selectedId;
     const displayName = item.fullName || item.employeeName || 'N/A';
     const employeeCode = item.employeeCode || '';
-    
+
     return (
       <TouchableOpacity
         style={[styles.employeeItem, isSelected && styles.selectedItem]}
         onPress={() => onSelect(item)}
       >
         <View style={styles.employeeInfo}>
-          <Text style={[styles.employeeName, isSelected && styles.selectedText]}>
+          <Text
+            style={[styles.employeeName, isSelected && styles.selectedText]}
+          >
             {displayName}
           </Text>
           {employeeCode && (

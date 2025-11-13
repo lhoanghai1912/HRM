@@ -88,7 +88,7 @@ const DetailEmployee = ({ route }) => {
   const locationPicker = useLocationPicker(field, formData);
   const organizationPicker = useOrganizationPicker();
   const employeePicker = useEmployeePicker();
-  
+
   // Fetch functions
   useFocusEffect(
     useCallback(() => {
