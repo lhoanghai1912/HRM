@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Modal,
   View,
@@ -14,29 +14,10 @@ import { colors } from '../../utils/color';
 import { ms, spacing } from '../../utils/spacing';
 import icons from '../../assets/icons';
 import AppStyles from '../AppStyle';
+import images from '../../assets/images';
+import { fonts } from '../../utils/fontSize';
 
-interface Employee {
-  id: string | number;
-  employeeCode?: string;
-  fullName?: string;
-  employeeName?: string;
-  departmentName?: string;
-  positionName?: string;
-}
-
-interface ModalEmployeePickerProps {
-  visible: boolean;
-  data: Employee[];
-  onSelect: (employee: Employee) => void;
-  onClose: () => void;
-  selectedId?: string | number;
-  onSearch?: (keyword: string) => void;
-  loading?: boolean;
-  onLoadMore?: () => void;
-  hasMore?: boolean;
-}
-
-const ModalEmployeePicker: React.FC<ModalEmployeePickerProps> = ({
+const ModalEmployeePicker = ({
   visible,
   data,
   onSelect,
@@ -48,6 +29,10 @@ const ModalEmployeePicker: React.FC<ModalEmployeePickerProps> = ({
   hasMore = false,
 }) => {
   const [searchText, setSearchText] = useState('');
+
+  useEffect(() => {
+    if (!visible) setSearchText('');
+  }, [visible]);
 
   const handleSearch = () => {
     if (onSearch) {
@@ -62,39 +47,25 @@ const ModalEmployeePicker: React.FC<ModalEmployeePickerProps> = ({
     }
   };
 
-  const renderEmployee = ({ item }: { item: Employee }) => {
-    const isSelected = item.id === selectedId;
-    const displayName = item.fullName || item.employeeName || 'N/A';
-    const employeeCode = item.employeeCode || '';
-
+  const renderEmployee = ({ item }) => {
+    const isSelected = item.EmployeeID === selectedId;
     return (
       <TouchableOpacity
-        style={[styles.employeeItem, isSelected && styles.selectedItem]}
+        style={[isSelected && styles.selectedItem]}
         onPress={() => onSelect(item)}
       >
-        <View style={styles.employeeInfo}>
-          <Text
-            style={[styles.employeeName, isSelected && styles.selectedText]}
-          >
-            {displayName}
-          </Text>
-          {employeeCode && (
-            <Text style={styles.employeeCode}>Mã NV: {employeeCode}</Text>
-          )}
-          {item.departmentName && (
-            <Text style={styles.employeeDetail}>
-              Phòng ban: {item.departmentName}
-            </Text>
-          )}
-          {item.positionName && (
-            <Text style={styles.employeeDetail}>
-              Chức vụ: {item.positionName}
-            </Text>
-          )}
+        <View style={styles.employeeItem}>
+          <Image source={images.avt_default} style={AppStyles.avartar} />
+          <View style={{ marginLeft: spacing.medium }}>
+            <View style={styles.employeeInfo}>
+              <Text>{item.fullName}</Text>
+              <Text style={[AppStyles.text, { marginLeft: spacing.small }]}>
+                ({item.employeeCode})
+              </Text>
+            </View>
+            <Text>{item.jobPositionName}</Text>
+          </View>
         </View>
-        {isSelected && (
-          <Image source={icons.checkedRadio} style={AppStyles.icon} />
-        )}
       </TouchableOpacity>
     );
   };
@@ -149,7 +120,7 @@ const ModalEmployeePicker: React.FC<ModalEmployeePickerProps> = ({
           <FlatList
             data={data}
             renderItem={renderEmployee}
-            keyExtractor={item => item.id.toString()}
+            keyExtractor={item => item.EmployeeID?.toString()}
             style={styles.listContent}
             ListEmptyComponent={
               <View style={styles.emptyContainer}>
@@ -179,6 +150,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: spacing.medium,
+  },
+  text: {
+    fontSize: fonts.normal,
+    color: colors.black,
   },
   container: {
     backgroundColor: colors.white,
@@ -224,8 +199,8 @@ const styles = StyleSheet.create({
   },
   employeeItem: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    // justifyContent: 'space-between',
+    alignItems: 'flex-start',
     padding: spacing.medium,
     borderRadius: 8,
     borderWidth: 1,
@@ -234,11 +209,14 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
   },
   selectedItem: {
-    backgroundColor: colors.primary,
+    // backgroundColor: colors.primary,
     borderColor: colors.primary,
   },
   employeeInfo: {
     flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   employeeName: {
     fontSize: 16,

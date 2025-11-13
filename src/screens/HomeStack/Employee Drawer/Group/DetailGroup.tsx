@@ -32,6 +32,7 @@ import {
   useSelectPicker,
   useLocationPicker,
   useOrganizationPicker,
+  useEmployeePicker,
 } from '../../../../components/hooks/useSelectPicker';
 import ModalTreeView from '../../../../components/modal/ModalTreeView';
 
@@ -84,7 +85,7 @@ const DetailGroup = ({ route }) => {
   const selectPicker = useSelectPicker();
   const locationPicker = useLocationPicker(field, formData);
   const organizationPicker = useOrganizationPicker();
-
+  const employeePicker = useEmployeePicker();
   const filteredField = field
     ? {
         ...field,
@@ -331,6 +332,7 @@ const DetailGroup = ({ route }) => {
     handleClearFile: filePicker.handleClearFile,
     handlePickSelect: selectPicker.handlePickSelect,
     handlePickLocation: locationPicker.handlePickLocation,
+    handlePickEmployee: employeePicker.handlePickEmployee,
     handlePickOrganization: organizationPicker.handlePickOrganization,
   };
 

@@ -20,7 +20,7 @@ import { navigate } from '../../../../navigation/RootNavigator';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import styles from '../styles';
 import AppStyles from '../../../../components/AppStyle';
-import { contract_GetAll, employee_GetAll } from '../../../../services/hr';
+import { contract_GetAll } from '../../../../services/hr';
 import { colors } from '../../../../utils/color';
 
 const PAGE_SIZE = 15;

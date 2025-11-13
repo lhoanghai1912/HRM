@@ -270,6 +270,32 @@ const DetailEmployee = ({ route }) => {
     organizationPicker.setShowOrgTree(false);
   };
 
+  const handleSelectEmployee = employee => {
+    const fieldName = employeePicker.pickerField;
+    const displayField = employeePicker.displayField;
+
+    setFormData(prev => ({
+      ...prev,
+      [fieldName]: employee.id,
+      [displayField]: employee.fullName || employee.employeeName,
+    }));
+    setChangedFields(prev => {
+      const safePrev = Array.isArray(prev) ? prev : [];
+      const filtered = safePrev.filter(
+        f => f.fieldName !== fieldName && f.fieldName !== displayField,
+      );
+      return [
+        ...filtered,
+        { fieldName: fieldName, fieldValue: employee.id },
+        {
+          fieldName: displayField,
+          fieldValue: employee.fullName || employee.employeeName,
+        },
+      ];
+    });
+    employeePicker.setShowEmployeePicker(false);
+  };
+
   const handleSave = async () => {
     if (changedFields.length === 0 && pickedFiles.length === 0) {
       Toast.show({
@@ -345,6 +371,7 @@ const DetailEmployee = ({ route }) => {
     handlePickSelect: selectPicker.handlePickSelect,
     handlePickLocation: locationPicker.handlePickLocation,
     handlePickOrganization: organizationPicker.handlePickOrganization,
+    handlePickEmployee: employeePicker.handlePickEmployee,
   };
 
   return (
@@ -500,6 +527,19 @@ const DetailEmployee = ({ route }) => {
         onSelect={handleSelectOrganization}
         onClose={() => organizationPicker.setShowOrgTree(false)}
         onSearch={keyword => organizationPicker.handleSearch(keyword)}
+      />
+
+      {/* Employee Picker Modal */}
+      <ModalEmployeePicker
+        visible={employeePicker.showEmployeePicker}
+        data={employeePicker.employeeData}
+        loading={employeePicker.loading}
+        hasMore={employeePicker.hasMore}
+        onLoadMore={employeePicker.handleLoadMore}
+        onSearch={employeePicker.handleSearch}
+        onSelect={handleSelectEmployee}
+        onClose={() => employeePicker.setShowEmployeePicker(false)}
+        selectedId={formData[employeePicker.pickerField]?.EmployeeID}
       />
 
       {/* Loading Overlay */}

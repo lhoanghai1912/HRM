@@ -25,7 +25,11 @@ interface RenderFieldsProps {
       selectedIds?: any[],
     ) => void;
     handlePickLocation: (fieldName: string, cfg: any) => void;
-    handlePickOrganization: (fieldName: string, cfg: any) => void;
+    handlePickOrganization: (
+      fieldName: string,
+      displayField: string,
+      cfg: any,
+    ) => void;
     handlePickEmployee: (
       fieldName: string,
       displayField: string,
@@ -201,6 +205,7 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
                                   handlers.handlePickOrganization(
                                     fieldName,
                                     displayField,
+                                    cfg,
                                   );
                                 },
                                 onPickEmployee: (
@@ -309,6 +314,7 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
                                   handlers.handlePickOrganization(
                                     fieldName,
                                     displayField,
+                                    cfg,
                                   );
                                 },
                                 onPickEmployee: (

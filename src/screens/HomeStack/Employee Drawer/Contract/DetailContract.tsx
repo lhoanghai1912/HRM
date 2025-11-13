@@ -30,6 +30,7 @@ import {
   useSelectPicker,
   useLocationPicker,
   useOrganizationPicker,
+  useEmployeePicker,
 } from '../../../../components/hooks/useSelectPicker';
 
 const DetailContract = ({ route }) => {
@@ -85,7 +86,7 @@ const DetailContract = ({ route }) => {
   const selectPicker = useSelectPicker();
   const locationPicker = useLocationPicker(field, formData);
   const organizationPicker = useOrganizationPicker();
-
+  const employeePicker = useEmployeePicker();
   // Fetch functions
   useFocusEffect(
     useCallback(() => {
@@ -304,6 +305,7 @@ const DetailContract = ({ route }) => {
     handlePickSelect: selectPicker.handlePickSelect,
     handlePickLocation: locationPicker.handlePickLocation,
     handlePickOrganization: organizationPicker.handlePickOrganization,
+    handlePickEmployee: employeePicker.handlePickEmployee,
   };
 
   return (

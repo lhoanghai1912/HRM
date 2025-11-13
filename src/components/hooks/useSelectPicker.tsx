@@ -576,47 +576,46 @@ export const useEmployeePicker = () => {
   };
 
   // Hàm lấy danh sách nhân viên từ API
+  const PAGE_SIZE = 20;
+
   const fetchEmployees = async (
     keyword: string,
     pageNum: number = 1,
     reset: boolean = false,
+    fieldColumns: string = 'EmployeeCode,FullName,JobPositionID',
   ) => {
     try {
       setLoading(true);
       const response = await employee_GetAll({
         paramQuery: {
           page: pageNum,
-          pageSize: 20,
+          pageSize: PAGE_SIZE,
+          filter: '', // để rỗng hoặc truyền filter nếu có
           search: keyword,
-          filter: '',
-          orderBy: '',
-          sortOrder: '',
+          orderBy: '', // để rỗng hoặc truyền orderBy nếu có
+          sortOrder: '', // để rỗng hoặc truyền sortOrder nếu có
         },
+        fieldColumns,
       });
 
       const newData = response?.data?.pageData || response?.pageData || [];
-
       if (reset) {
         setEmployeeData(newData);
       } else {
         setEmployeeData(prev => [...prev, ...newData]);
       }
 
-      // Check if has more data
       const totalCount =
         response?.data?.totalCount || response?.totalCount || 0;
-      setHasMore(pageNum * 20 < totalCount);
+      setHasMore(pageNum * PAGE_SIZE < totalCount);
     } catch (error) {
       console.error('Error fetching employees:', error);
-      if (reset) {
-        setEmployeeData([]);
-      }
+      if (reset) setEmployeeData([]);
       setHasMore(false);
     } finally {
       setLoading(false);
     }
   };
-
   // Load more khi scroll đến cuối
   const handleLoadMore = () => {
     if (!loading && hasMore) {
