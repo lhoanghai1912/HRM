@@ -25,6 +25,7 @@ const ModalEmployeePicker = ({
   selectedId,
   onSearch,
   loading = false,
+  loadingMore = false, // Thêm loadingMore prop
   onLoadMore,
   hasMore = false,
 }) => {
@@ -71,7 +72,7 @@ const ModalEmployeePicker = ({
   };
 
   const renderFooter = () => {
-    if (!loading) return null;
+    if (!loadingMore) return null; // Chỉ hiện khi đang load more
     return (
       <View style={styles.footerLoader}>
         <ActivityIndicator size="small" color={colors.primary} />
@@ -130,11 +131,11 @@ const ModalEmployeePicker = ({
               </View>
             }
             onEndReached={() => {
-              if (hasMore && !loading && onLoadMore) {
+              if (hasMore && !loading && !loadingMore && onLoadMore) {
                 onLoadMore();
               }
             }}
-            onEndReachedThreshold={0.5}
+            onEndReachedThreshold={0.3}
             ListFooterComponent={renderFooter}
           />
         </View>

@@ -557,20 +557,24 @@ export const useEmployeePicker = () => {
   const [pickerField, setPickerField] = useState('');
   const [displayField, setDisplayField] = useState('');
   const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false); // Loading khi load more
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
+  const [currentKeyword, setCurrentKeyword] = useState(''); // Lưu keyword hiện tại
 
   // Mở modal và load danh sách nhân viên
   const handlePickEmployee = async (fieldName, displayFieldName, cfg) => {
     setPickerField(fieldName);
     setDisplayField(displayFieldName);
     setPage(1);
+    setCurrentKeyword(''); // Reset keyword
     setShowEmployeePicker(true);
     await fetchEmployees('', 1, true);
   };
 
   // Tìm kiếm nhân viên
   const handleSearch = async (keyword: string) => {
+    setCurrentKeyword(keyword); // Lưu keyword
     setPage(1);
     await fetchEmployees(keyword, 1, true);
   };
@@ -585,7 +589,13 @@ export const useEmployeePicker = () => {
     fieldColumns: string = 'EmployeeCode,FullName,JobPositionID',
   ) => {
     try {
-      setLoading(true);
+      // Nếu reset = true thì là load mới, ngược lại là load more
+      if (reset) {
+        setLoading(true);
+      } else {
+        setLoadingMore(true);
+      }
+
       const response = await employee_GetAll({
         paramQuery: {
           page: pageNum,
@@ -614,14 +624,15 @@ export const useEmployeePicker = () => {
       setHasMore(false);
     } finally {
       setLoading(false);
+      setLoadingMore(false);
     }
   };
   // Load more khi scroll đến cuối
   const handleLoadMore = () => {
-    if (!loading && hasMore) {
+    if (!loading && !loadingMore && hasMore) {
       const nextPage = page + 1;
       setPage(nextPage);
-      fetchEmployees('', nextPage, false);
+      fetchEmployees(currentKeyword, nextPage, false); // Truyền keyword hiện tại
     }
   };
 
@@ -634,6 +645,7 @@ export const useEmployeePicker = () => {
     handlePickEmployee,
     handleSearch,
     loading,
+    loadingMore,
     hasMore,
     handleLoadMore,
   };

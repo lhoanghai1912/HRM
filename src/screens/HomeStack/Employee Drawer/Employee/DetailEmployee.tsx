@@ -534,6 +534,7 @@ const DetailEmployee = ({ route }) => {
         visible={employeePicker.showEmployeePicker}
         data={employeePicker.employeeData}
         loading={employeePicker.loading}
+        loadingMore={employeePicker.loadingMore}
         hasMore={employeePicker.hasMore}
         onLoadMore={employeePicker.handleLoadMore}
         onSearch={employeePicker.handleSearch}
