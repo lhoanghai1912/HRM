@@ -5,7 +5,7 @@ import DatePicker from 'react-native-date-picker';
 import MonthPicker from 'react-native-month-year-picker';
 import {
   dataTest,
-  getData,
+  getSettingLayout,
   getEmployee,
   updateEmployee,
   uploadFile,
@@ -106,7 +106,7 @@ const DetailEmployee = ({ route }) => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const data = await getData('profile');
+      const data = await getSettingLayout('profile');
       setField(data);
 
       if (data && data.pageData) {
@@ -139,7 +139,7 @@ const DetailEmployee = ({ route }) => {
   const fetchAllData = async () => {
     setLoading(true);
     try {
-      const layout = await getData('profile');
+      const layout = await getSettingLayout('profile');
 
       if (employeeData) {
         const formData = mapEmployeeToFormData(layout, employeeData);
@@ -271,13 +271,16 @@ const DetailEmployee = ({ route }) => {
   };
 
   const handleSelectEmployee = employee => {
+    console.log('employeePicker', employeePicker);
+    console.log('employee', employee);
+
     const fieldName = employeePicker.pickerField;
     const displayField = employeePicker.displayField;
 
     setFormData(prev => ({
       ...prev,
-      [fieldName]: employee.id,
-      [displayField]: employee.fullName || employee.employeeName,
+      [fieldName]: employee.EmployeeID,
+      [displayField]: employee.fullName,
     }));
     setChangedFields(prev => {
       const safePrev = Array.isArray(prev) ? prev : [];
@@ -286,10 +289,10 @@ const DetailEmployee = ({ route }) => {
       );
       return [
         ...filtered,
-        { fieldName: fieldName, fieldValue: employee.id },
+        { fieldName: fieldName, fieldValue: employee.EmployeeID },
         {
           fieldName: displayField,
-          fieldValue: employee.fullName || employee.employeeName,
+          fieldValue: employee.fullName,
         },
       ];
     });

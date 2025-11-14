@@ -4170,7 +4170,21 @@ export const dataTest = {
 
 import apiClient from './apiClient';
 
-export const getData = async (layout: string) => {
+export const getLayout = async (layout: string) => {
+  try {
+    // Giả sử bạn có một API endpoint để lấy dữ liệu dựa trên layout
+    const response = await apiClient.post(
+      `ConfigLayout/layout-field-config?layout=${layout}`,
+    );
+    const data = await response.data;
+    return data;
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    throw error;
+  }
+};
+
+export const getSettingLayout = async (layout: string) => {
   try {
     // Giả sử bạn có một API endpoint để lấy dữ liệu dựa trên layout
     const response = await apiClient.post(

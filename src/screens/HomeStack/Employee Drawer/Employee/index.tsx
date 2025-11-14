@@ -280,6 +280,7 @@ const Employee = ({}) => {
               keyExtractor={item => item.EmployeeID}
               style={styles.bodyScroll}
               renderItem={renderItem}
+              refreshing={loading}
               ListEmptyComponent={
                 !loading && employee.length === 0 ? (
                   <Text
@@ -327,7 +328,7 @@ const Employee = ({}) => {
               onMomentumScrollBegin={() => {
                 onEndReachedCalledDuringMomentum.current = false;
               }}
-              onEndReachedThreshold={0.01} // Chỉ load khi rất gần cuối (1% cuối)
+              onEndReachedThreshold={0.0001} // Chỉ load khi rất gần cuối (1% cuối)
               showsVerticalScrollIndicator={false}
             />
           </View>

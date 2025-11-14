@@ -5,7 +5,7 @@ import DatePicker from 'react-native-date-picker';
 import MonthPicker from 'react-native-month-year-picker';
 import {
   dataTest,
-  getData,
+  getSettingLayout,
   // getGroup,
   // updateGroup,
   uploadFile,
@@ -115,7 +115,7 @@ const DetailGroup = ({ route }) => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const data = await getData('contract');
+      const data = await getSettingLayout('contract');
       setField(data);
 
       if (data && data.pageData) {
@@ -148,7 +148,7 @@ const DetailGroup = ({ route }) => {
   const fetchAllData = async () => {
     setLoading(true);
     try {
-      const layout = await getData('profile');
+      const layout = await getSettingLayout('profile');
       if (data) {
         // Map data từ route params vào formData
         const formData = mapGroupToFormData(layout, data);

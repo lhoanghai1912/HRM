@@ -5,7 +5,7 @@ import DatePicker from 'react-native-date-picker';
 import MonthPicker from 'react-native-month-year-picker';
 import {
   dataTest,
-  getData,
+  getSettingLayout,
   getContract,
   uploadFile,
   getPickerData,
@@ -104,7 +104,7 @@ const DetailContract = ({ route }) => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const data = await getData('contract');
+      const data = await getSettingLayout('contract');
       console.log('Fetched field data:', data);
 
       setField(data);
@@ -139,7 +139,7 @@ const DetailContract = ({ route }) => {
   const fetchAllData = async () => {
     setLoading(true);
     try {
-      const layout = await getData('contract');
+      const layout = await getSettingLayout('contract');
 
       if (contractData) {
         const formData = mapContractToFormData(layout, contractData);

@@ -53,7 +53,10 @@ const ModalEmployeePicker = ({
     return (
       <TouchableOpacity
         style={[isSelected && styles.selectedItem]}
-        onPress={() => onSelect(item)}
+        onPress={() => {
+          console.log('Selected employee:', item);
+          onSelect(item);
+        }}
       >
         <View style={styles.employeeItem}>
           <Image source={images.avt_default} style={AppStyles.avartar} />
@@ -121,7 +124,9 @@ const ModalEmployeePicker = ({
           <FlatList
             data={data}
             renderItem={renderEmployee}
-            keyExtractor={item => item.EmployeeID?.toString()}
+            keyExtractor={(item, index) =>
+              item.EmployeeID?.toString() || index.toString()
+            }
             style={styles.listContent}
             ListEmptyComponent={
               <View style={styles.emptyContainer}>
@@ -130,13 +135,26 @@ const ModalEmployeePicker = ({
                 </Text>
               </View>
             }
+            refreshing={loading}
+            onRefresh={() => {
+              if (onSearch) {
+                onSearch(searchText);
+              }
+            }}
             onEndReached={() => {
+              console.log('onEndReached triggered', {
+                hasMore,
+                loading,
+                loadingMore,
+              });
               if (hasMore && !loading && !loadingMore && onLoadMore) {
+                console.log('Calling onLoadMore');
                 onLoadMore();
               }
             }}
-            onEndReachedThreshold={0.3}
+            onEndReachedThreshold={0.1}
             ListFooterComponent={renderFooter}
+            removeClippedSubviews={false}
           />
         </View>
       </View>

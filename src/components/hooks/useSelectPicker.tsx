@@ -607,17 +607,36 @@ export const useEmployeePicker = () => {
         },
         fieldColumns,
       });
+      console.log('res', response);
 
-      const newData = response?.data?.pageData || response?.pageData || [];
+      console.log('Employee API response:', {
+        page: pageNum,
+        dataLength: response?.pageData?.length,
+        totalCount: response?.total,
+      });
+
+      const newData = response?.pageData || [];
+      const totalCount = response?.total;
+
+      let totalLoadedItems = 0;
       if (reset) {
         setEmployeeData(newData);
+        totalLoadedItems = newData.length;
       } else {
-        setEmployeeData(prev => [...prev, ...newData]);
+        setEmployeeData(prev => {
+          const combined = [...prev, ...newData];
+          totalLoadedItems = combined.length;
+          return combined;
+        });
       }
 
-      const totalCount =
-        response?.data?.totalCount || response?.totalCount || 0;
-      setHasMore(pageNum * PAGE_SIZE < totalCount);
+      const hasMoreData = totalLoadedItems < totalCount;
+      console.log(
+        'Has more data:',
+        hasMoreData,
+        `(${totalLoadedItems} loaded < ${totalCount} total)`,
+      );
+      setHasMore(hasMoreData);
     } catch (error) {
       console.error('Error fetching employees:', error);
       if (reset) setEmployeeData([]);
@@ -629,8 +648,15 @@ export const useEmployeePicker = () => {
   };
   // Load more khi scroll đến cuối
   const handleLoadMore = () => {
+    console.log('handleLoadMore called', {
+      loading,
+      loadingMore,
+      hasMore,
+      page,
+    });
     if (!loading && !loadingMore && hasMore) {
       const nextPage = page + 1;
+      console.log('Loading page:', nextPage);
       setPage(nextPage);
       fetchEmployees(currentKeyword, nextPage, false); // Truyền keyword hiện tại
     }
