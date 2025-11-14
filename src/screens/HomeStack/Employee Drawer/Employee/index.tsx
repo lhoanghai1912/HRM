@@ -13,6 +13,8 @@ import CustomHeader from '../../../../components/CustomHeader';
 import icons from '../../../../assets/icons';
 import { usePaginatedList } from '../../../../components/Paginated';
 import { employee_GetAll } from '../../../../services/hr';
+import { getLayout } from '../../../../services/data';
+import { mapFieldType } from '../../../../utils/formField';
 import { ms, spacing } from '../../../../utils/spacing';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import AppStyles from '../../../../components/AppStyle';
@@ -46,10 +48,38 @@ const Employee = ({}) => {
 
   const flatListRef = useRef<FlatList>(null);
   const scrollY = useRef(0);
-  const [searchInput, setSearchInput] = useState(''); // Input tạm thời
-  const [searchQuery, setSearchQuery] = useState(''); // Query thực tế để gọi API
+  const [searchInput, setSearchInput] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [layoutConfig, setLayoutConfig] = useState<any[]>([]);
 
-  // Sử dụng hook phân trang
+  // Lấy layout động khi mount
+  React.useEffect(() => {
+    const fetchLayout = async () => {
+      try {
+        const layoutRes = await getLayout('profile');
+        const layout = layoutRes?.pageData || layoutRes;
+        setLayoutConfig(layout);
+      } catch (e) {
+        setLayoutConfig([]);
+      }
+    };
+    fetchLayout();
+  }, []);
+
+  // Build fieldColumns từ layout
+  const fieldNames = React.useMemo(() => {
+    const fields: string[] = [];
+    layoutConfig.forEach(group => {
+      (group.groupFieldConfigs || []).forEach(field => {
+        if (field.fieldName) fields.push(field.fieldName);
+        if (field.displayField && field.displayField !== field.fieldName)
+          fields.push(field.displayField);
+      });
+    });
+    return [...new Set(fields)].join(',');
+  }, [layoutConfig]);
+
+  // Sử dụng hook phân trang với fieldColumns động
   const {
     data: employee,
     loading,
@@ -62,82 +92,117 @@ const Employee = ({}) => {
     orderBy: 'employeeId',
     sortOrder: ' desc',
     search: searchQuery,
-    fieldColumns:
-      'EmployeeCode,FullName,genderID,maritalStatusID,personalTaxCode,birthDay,mobile,homeLand,ethnicID,religionID,nationalityID,identifyNumber,officeEmail,,currentProvinceID,currentWardID',
+    fieldColumns: fieldNames,
   });
   const onEndReachedCalledDuringMomentum = useRef(false);
 
-  console.log('Employee data:', employee);
+  // Lấy các field hiển thị (isVisible)
+  const visibleFields = React.useMemo(() => {
+    return layoutConfig
+      .flatMap(group => group.groupFieldConfigs || [])
+      .filter(field => field.isVisible !== false)
+      .sort((a, b) => a.sortOrder - b.sortOrder);
+  }, [layoutConfig]);
 
-  const renderItem = ({ item, index }) => (
-    <TouchableOpacity
-      key={item.EmployeeID}
-      style={styles.tableRow}
-      onPress={() => {
-        navigate(Screen_Name.Details_Employee, { id: item.EmployeeID });
-      }}
-    >
-      {/* STT */}
-      <View
-        style={[styles.checkboxCell, { width: COLUMN_MIN_WIDTHS.checkbox }]}
-      >
-        <Text>{index + 1}</Text>
+  // Format value theo typeControl
+  const formatValue = (fieldConfig, value, item) => {
+    if (value === null || value === undefined || value === '') return '-';
+    const fieldType = mapFieldType(fieldConfig.typeControl);
+    switch (fieldType) {
+      case 'date':
+      case 'month': {
+        if (typeof value === 'string') {
+          const date = new Date(value);
+          if (!isNaN(date.getTime())) {
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+          }
+        }
+        return value;
+      }
+      case 'int':
+      case 'decimal': {
+        const num = parseFloat(value);
+        if (!isNaN(num)) return num.toLocaleString('vi-VN');
+        return value;
+      }
+      case 'currency': {
+        const amount = parseFloat(value);
+        if (!isNaN(amount)) return amount.toLocaleString('vi-VN') + ' VNĐ';
+        return value;
+      }
+      case 'percent': {
+        const percent = parseFloat(value);
+        if (!isNaN(percent)) return percent + '%';
+        return value;
+      }
+      case 'selectOne':
+      case 'selectMulti':
+      case 'organization':
+      case 'employee': {
+        if (fieldConfig.displayField && item[fieldConfig.displayField])
+          return item[fieldConfig.displayField];
+        return value;
+      }
+      case 'checkbox':
+        return value ? 'Có' : 'Không';
+      default:
+        return value?.toString() || '-';
+    }
+  };
+
+  // Render header động
+  const renderHeader = () => (
+    <View style={styles.tableRowHeader}>
+      <View style={[styles.checkboxCell, { minWidth: ms(40) }]}>
+        {' '}
+        <Text>#</Text>{' '}
       </View>
-      <Text style={{ borderLeftWidth: 0.5 }} />
-      {/* Mã nhân viên */}
-      <Text
-        numberOfLines={1}
-        ellipsizeMode="tail"
-        style={[styles.cell, { width: COLUMN_MIN_WIDTHS.name, flex: 2 }]}
+      {visibleFields.map(field => (
+        <Text
+          key={field.fieldName}
+          style={[styles.headerCell, { minWidth: ms(120), flex: 1 }]}
+        >
+          {field.label || field.fieldName}
+        </Text>
+      ))}
+      <Text style={{ minWidth: ms(80), textAlign: 'center' }}>Chi tiết</Text>
+    </View>
+  );
+
+  // Render item động
+  const renderItem = ({ item, index }) => (
+    <View key={item.EmployeeID} style={styles.tableRow}>
+      <View style={[styles.checkboxCell, { width: ms(40) }]}>
+        {' '}
+        <Text>{index + 1}</Text>{' '}
+      </View>
+      {visibleFields.map(field => (
+        <Text
+          key={field.fieldName}
+          numberOfLines={1}
+          ellipsizeMode="tail"
+          style={[styles.cell, { minWidth: ms(120), flex: 1 }]}
+        >
+          {formatValue(field, item[field.fieldName], item)}
+        </Text>
+      ))}
+      <TouchableOpacity
+        style={{
+          marginLeft: 8,
+          padding: 6,
+          backgroundColor: '#1976D2',
+          borderRadius: 6,
+        }}
+        onPress={() =>
+          navigate(Screen_Name.Details_Employee, { id: item.EmployeeID })
+        }
       >
-        {item.employeeCode}
-      </Text>
-      <Text style={{ borderLeftWidth: 0.5 }} />
-      {/* Tên nhân viên */}
-      <Text
-        numberOfLines={1}
-        ellipsizeMode="tail"
-        style={[styles.cell, { width: COLUMN_MIN_WIDTHS.work, flex: 1 }]}
-      >
-        {item.fullName}
-      </Text>
-      <Text style={{ borderLeftWidth: 0.5 }} />
-      {/* Giới tính */}
-      <Text
-        numberOfLines={1}
-        ellipsizeMode="tail"
-        style={[styles.cell, { width: COLUMN_MIN_WIDTHS.time, flex: 1 }]}
-      >
-        {item.genderName}
-      </Text>
-      <Text style={{ borderLeftWidth: 0.5 }} />
-      {/* Số điện thoại */}
-      <Text
-        numberOfLines={1}
-        ellipsizeMode="tail"
-        style={[styles.cell, { width: COLUMN_MIN_WIDTHS.unit, flex: 1 }]}
-      >
-        {item.mobile}
-      </Text>
-      <Text style={{ borderLeftWidth: 0.5 }} />
-      {/* Email */}
-      <Text
-        numberOfLines={1}
-        ellipsizeMode="tail"
-        style={[styles.cell, { width: COLUMN_MIN_WIDTHS.object, flex: 1 }]}
-      >
-        {item.officeEmail}
-      </Text>
-      <Text style={{ borderLeftWidth: 0.5 }} />
-      {/* Ngày sinh */}
-      <Text
-        numberOfLines={1}
-        ellipsizeMode="tail"
-        style={[styles.cell, { width: COLUMN_MIN_WIDTHS.location, flex: 1 }]}
-      >
-        {item.birthDay}
-      </Text>
-    </TouchableOpacity>
+        <Text style={{ color: 'white', fontWeight: 'bold' }}>Chi tiết</Text>
+      </TouchableOpacity>
+    </View>
   );
 
   const renderFooter = () => {

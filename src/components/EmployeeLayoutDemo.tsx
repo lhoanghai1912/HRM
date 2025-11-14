@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { TouchableOpacity } from 'react-native';
 import {
   View,
   Text,
@@ -18,6 +19,7 @@ const EmployeeLayoutDemo = ({ employeeId }: { employeeId: number }) => {
   const [layoutConfig, setLayoutConfig] = useState<any>(null);
   const [employeeData, setEmployeeData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -201,44 +203,61 @@ const EmployeeLayoutDemo = ({ employeeId }: { employeeId: number }) => {
     );
   };
 
-  if (loading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={colors.primary} />
-        <Text style={styles.loadingText}>Đang tải...</Text>
-      </View>
-    );
-  }
-
-  if (!layoutConfig || !employeeData) {
-    return (
-      <View style={styles.emptyContainer}>
-        <Text style={styles.emptyText}>Không có dữ liệu</Text>
-      </View>
-    );
-  }
-
   return (
-    <ScrollView style={styles.container}>
-      {Array.isArray(layoutConfig) &&
-        layoutConfig
-          .filter((group: any) => group.parentId === null)
-          .sort((a: any, b: any) => a.sortOrder - b.sortOrder)
-          .map((parentGroup: any) => (
-            <View key={parentGroup.id}>
-              {renderGroup(parentGroup)}
-              {/* Render child groups */}
-              {layoutConfig
-                .filter((g: any) => g.parentId === parentGroup.id)
+    <View style={{ flex: 1 }}>
+      <TouchableOpacity
+        style={styles.openButton}
+        onPress={() => setVisible(v => !v)}
+      >
+        <Text style={styles.openButtonText}>
+          {visible ? 'Đóng thông tin nhân viên' : 'Xem thông tin nhân viên'}
+        </Text>
+      </TouchableOpacity>
+      {visible &&
+        (loading ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color={colors.primary} />
+            <Text style={styles.loadingText}>Đang tải...</Text>
+          </View>
+        ) : !layoutConfig || !employeeData ? (
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>Không có dữ liệu</Text>
+          </View>
+        ) : (
+          <ScrollView style={styles.container}>
+            {Array.isArray(layoutConfig) &&
+              layoutConfig
+                .filter((group: any) => group.parentId === null)
                 .sort((a: any, b: any) => a.sortOrder - b.sortOrder)
-                .map((childGroup: any) => renderGroup(childGroup))}
-            </View>
-          ))}
-    </ScrollView>
+                .map((parentGroup: any) => (
+                  <View key={parentGroup.id}>
+                    {renderGroup(parentGroup)}
+                    {/* Render child groups */}
+                    {layoutConfig
+                      .filter((g: any) => g.parentId === parentGroup.id)
+                      .sort((a: any, b: any) => a.sortOrder - b.sortOrder)
+                      .map((childGroup: any) => renderGroup(childGroup))}
+                  </View>
+                ))}
+          </ScrollView>
+        ))}
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  openButton: {
+    backgroundColor: colors.primary,
+    padding: spacing.medium,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginBottom: spacing.medium,
+  },
+  openButtonText: {
+    color: colors.white,
+    fontSize: fonts.large,
+    fontWeight: 'bold',
+  },
   container: {
     flex: 1,
     backgroundColor: colors.white,
