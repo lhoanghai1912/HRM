@@ -136,26 +136,19 @@ export const renderField = (
             if (found && (found.label || found.name)) {
               return found.label ?? found.name;
             }
-            if (
-              extraProps.formData &&
-              extraProps.formData[data.displayField]
-            ) {
+            if (extraProps.formData && extraProps.formData[data.displayField]) {
               return extraProps.formData[data.displayField];
             }
             return value || '-';
           })();
-          
+
           return (
-            <Text 
-              numberOfLines={1} 
-              ellipsizeMode="tail"
-              style={{ flex: 1 }}
-            >
+            <Text numberOfLines={1} ellipsizeMode="tail" style={{ flex: 1 }}>
               {displayText}
             </Text>
           );
         }
-        
+
         return (
           <TouchableOpacity
             disabled={mode === 'view'}
@@ -216,26 +209,19 @@ export const renderField = (
             if (found && (found.label || found.name)) {
               return found.label ?? found.name;
             }
-            if (
-              extraProps.formData &&
-              extraProps.formData[data.displayField]
-            ) {
+            if (extraProps.formData && extraProps.formData[data.displayField]) {
               return extraProps.formData[data.displayField];
             }
             return value || '-';
           })();
-          
+
           return (
-            <Text 
-              numberOfLines={1} 
-              ellipsizeMode="tail"
-              style={{ flex: 1 }}
-            >
+            <Text numberOfLines={1} ellipsizeMode="tail" style={{ flex: 1 }}>
               {displayText}
             </Text>
           );
         }
-        
+
         return (
           <>
             <TouchableOpacity
