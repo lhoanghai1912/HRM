@@ -24,6 +24,7 @@ const ProfileView: React.FC<ProfileViewProps> = ({
 
     switch (fieldType) {
       case 'date':
+      case 'month':
         // Format date
         if (typeof value === 'string') {
           const date = new Date(value);
