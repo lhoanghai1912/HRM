@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -21,6 +21,8 @@ import { Screen_Name } from '../../../../navigation/ScreenName';
 import { useNavigation } from '@react-navigation/native';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 import styles from '../styles';
+import { getLayout } from '../../../../services/data';
+import { renderField } from '../../../../utils/formField';
 
 // checkbox: ms(40),
 // id: ms(120),
@@ -43,11 +45,16 @@ const COLUMN_MIN_WIDTHS = {
 
 const Employee = ({}) => {
   const navigation = useNavigation<DrawerNavigationProp<any>>();
+  const FIELD_COLUMNS = 'employeeCode,fullName,genderID,birthDay,mobile,email';
 
   const flatListRef = useRef<FlatList>(null);
   const scrollY = useRef(0);
   const [searchInput, setSearchInput] = useState(''); // Input tạm thời
   const [searchQuery, setSearchQuery] = useState(''); // Query thực tế để gọi API
+  const [layoutFields, setLayoutFields] = useState([]);
+  const fieldColumnsArr = FIELD_COLUMNS.split(',')
+    .map(s => s.trim())
+    .filter(Boolean);
 
   // Sử dụng hook phân trang
   const {
@@ -60,15 +67,62 @@ const Employee = ({}) => {
     handleRefresh,
   } = usePaginatedList(employee_GetAll, PAGE_SIZE, {
     orderBy: 'employeeId',
-    sortOrder: ' desc',
+    sortOrder: ' asc',
     search: searchQuery,
-    fieldColumns:
-      'EmployeeCode,FullName,genderID,maritalStatusID,personalTaxCode,birthDay,mobile,homeLand,ethnicID,religionID,nationalityID,identifyNumber,officeEmail,,currentProvinceID,currentWardID',
+    fieldColumns: FIELD_COLUMNS,
   });
   const onEndReachedCalledDuringMomentum = useRef(false);
 
-  console.log('Employee data:', employee);
+  const fetchLayoutData = async () => {
+    try {
+      const data = await getLayout('profile');
+      console.log('layout', data);
+      const filteredFields = (data.pageData || []).filter(field =>
+        fieldColumnsArr.includes(field.fieldName),
+      );
+      setLayoutFields(filteredFields);
+      console.log('fieldColumnsArr', filteredFields);
+    } catch (error) {
+      console.log('Error fetching layout data:', error);
+      setLayoutFields([]);
+    }
+  };
 
+  useEffect(() => {
+    fetchLayoutData();
+  }, []);
+
+  const renderHeader = () => (
+    <View style={styles.tableRowHeader}>
+      {/* Cột STT */}
+      <View style={[styles.checkboxCell, { minWidth: ms(40) }]}>
+        <Text>#</Text>
+      </View>
+      <Text style={{ borderLeftWidth: 0.5 }} />
+      {/* Render các cột theo layout */}
+      {Array.isArray(layoutFields) && layoutFields.length > 0 ? (
+        layoutFields.map((field, index) => (
+          <React.Fragment key={field.fieldName}>
+            <Text
+              style={[
+                styles.headerCell,
+                { minWidth: field.minWidth || ms(120), flex: 1 },
+              ]}
+            >
+              {field.label}
+            </Text>
+            {index < layoutFields.length - 1 && (
+              <Text style={{ borderLeftWidth: 0.5 }} />
+            )}
+          </React.Fragment>
+        ))
+      ) : (
+        <Text style={{ marginLeft: 8, color: '#888' }}>
+          Đang tải cấu hình bảng...
+        </Text>
+      )}
+    </View>
+  );
   const renderItem = ({ item, index }) => (
     <TouchableOpacity
       key={item.EmployeeID}
@@ -78,67 +132,41 @@ const Employee = ({}) => {
       }}
     >
       {/* STT */}
-      <View
-        style={[styles.checkboxCell, { width: COLUMN_MIN_WIDTHS.checkbox }]}
-      >
+      <View style={[styles.checkboxCell, { width: ms(40) }]}>
         <Text>{index + 1}</Text>
       </View>
       <Text style={{ borderLeftWidth: 0.5 }} />
-      {/* Mã nhân viên */}
-      <Text
-        numberOfLines={1}
-        ellipsizeMode="tail"
-        style={[styles.cell, { width: COLUMN_MIN_WIDTHS.name, flex: 2 }]}
-      >
-        {item.employeeCode}
-      </Text>
-      <Text style={{ borderLeftWidth: 0.5 }} />
-      {/* Tên nhân viên */}
-      <Text
-        numberOfLines={1}
-        ellipsizeMode="tail"
-        style={[styles.cell, { width: COLUMN_MIN_WIDTHS.work, flex: 1 }]}
-      >
-        {item.fullName}
-      </Text>
-      <Text style={{ borderLeftWidth: 0.5 }} />
-      {/* Giới tính */}
-      <Text
-        numberOfLines={1}
-        ellipsizeMode="tail"
-        style={[styles.cell, { width: COLUMN_MIN_WIDTHS.time, flex: 1 }]}
-      >
-        {item.genderName}
-      </Text>
-      <Text style={{ borderLeftWidth: 0.5 }} />
-      {/* Số điện thoại */}
-      <Text
-        numberOfLines={1}
-        ellipsizeMode="tail"
-        style={[styles.cell, { width: COLUMN_MIN_WIDTHS.unit, flex: 1 }]}
-      >
-        {item.mobile}
-      </Text>
-      <Text style={{ borderLeftWidth: 0.5 }} />
-      {/* Email */}
-      <Text
-        numberOfLines={1}
-        ellipsizeMode="tail"
-        style={[styles.cell, { width: COLUMN_MIN_WIDTHS.object, flex: 1 }]}
-      >
-        {item.officeEmail}
-      </Text>
-      <Text style={{ borderLeftWidth: 0.5 }} />
-      {/* Ngày sinh */}
-      <Text
-        numberOfLines={1}
-        ellipsizeMode="tail"
-        style={[styles.cell, { width: COLUMN_MIN_WIDTHS.location, flex: 1 }]}
-      >
-        {item.birthDay}
-      </Text>
+
+      {/* Render các cell theo layout */}
+      {layoutFields.map((field, idx) => (
+        <React.Fragment key={field.fieldName}>
+          <View
+            style={[
+              styles.cell,
+              { minWidth: field.minWidth || ms(120), flex: 1 },
+            ]}
+          >
+            {renderField(
+              {
+                ...field,
+                fieldName: field.fieldName,
+                typeControl: field.typeControl,
+                label: field.label,
+              },
+              item[field.fieldName],
+              () => {}, // onChange không cần trong chế độ view
+              'view', // mode = 'view' để chỉ hiển thị, không cho edit
+              {}, // extraProps rỗng
+            )}
+          </View>
+          {idx < layoutFields.length - 1 && (
+            <Text style={{ borderLeftWidth: 0.5 }} />
+          )}
+        </React.Fragment>
+      ))}
     </TouchableOpacity>
   );
+  console.log('item render:', employee);
 
   const renderFooter = () => {
     if (loadingMore) {
@@ -203,7 +231,7 @@ const Employee = ({}) => {
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           <View style={styles.table}>
             {/* Table Header */}
-            <View style={styles.tableRowHeader}>
+            {/* <View style={styles.tableRowHeader}>
               <View
                 style={[
                   styles.checkboxCell,
@@ -272,25 +300,20 @@ const Employee = ({}) => {
               >
                 Ngày sinh
               </Text>
-            </View>
-
+            </View> */}
             <FlatList
               ref={flatListRef}
               data={employee}
-              keyExtractor={item => item.EmployeeID}
+              keyExtractor={item => item.EmployeeID?.toString()}
               style={styles.bodyScroll}
               renderItem={renderItem}
-              refreshing={loading}
+              ListHeaderComponent={renderHeader}
               ListEmptyComponent={
                 !loading && employee.length === 0 ? (
                   <Text
                     style={[
                       AppStyles.label,
-                      {
-                        flex: 1,
-                        textAlign: 'center',
-                        marginTop: spacing.medium,
-                      },
+                      { textAlign: 'center', marginTop: spacing.medium },
                     ]}
                   >
                     Không có dữ liệu
@@ -310,25 +333,16 @@ const Employee = ({}) => {
                   !loadingMore &&
                   !noMoreData &&
                   !loading &&
-                  employee.length > 0 // Đảm bảo có dữ liệu trước khi load more
+                  employee.length > 0
                 ) {
-                  console.log('Load more triggered');
                   handleLoadMore();
                   onEndReachedCalledDuringMomentum.current = true;
                 }
               }}
-              onScroll={({ nativeEvent }) => {
-                const currentScrollY = nativeEvent.contentOffset.y;
-                // Reset flag khi scroll xuống (chỉ cho phép load more khi scroll xuống)
-                if (currentScrollY > scrollY.current) {
-                  onEndReachedCalledDuringMomentum.current = false;
-                }
-                scrollY.current = currentScrollY;
-              }}
               onMomentumScrollBegin={() => {
                 onEndReachedCalledDuringMomentum.current = false;
               }}
-              onEndReachedThreshold={0.0001} // Chỉ load khi rất gần cuối (1% cuối)
+              onEndReachedThreshold={0.3}
               showsVerticalScrollIndicator={false}
             />
           </View>
