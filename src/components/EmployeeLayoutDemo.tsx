@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  ActivityIndicator,
+} from 'react-native';
 import { getLayout } from '../services/data';
 import { employee_GetAll } from '../services/hr';
 import { mapFieldType } from '../utils/formField';
@@ -32,12 +38,18 @@ const EmployeeLayoutDemo = ({ employeeId }: { employeeId: number }) => {
       const fieldNames: string[] = [];
       if (Array.isArray(layout)) {
         layout.forEach((group: any) => {
-          if (group.groupFieldConfigs && Array.isArray(group.groupFieldConfigs)) {
+          if (
+            group.groupFieldConfigs &&
+            Array.isArray(group.groupFieldConfigs)
+          ) {
             group.groupFieldConfigs.forEach((field: any) => {
               if (field.fieldName) {
                 fieldNames.push(field.fieldName);
                 // Thêm displayField nếu có
-                if (field.displayField && field.displayField !== field.fieldName) {
+                if (
+                  field.displayField &&
+                  field.displayField !== field.fieldName
+                ) {
                   fieldNames.push(field.displayField);
                 }
               }
@@ -64,7 +76,8 @@ const EmployeeLayoutDemo = ({ employeeId }: { employeeId: number }) => {
         fieldColumns,
       });
 
-      const data = employeeResponse?.data?.pageData || employeeResponse?.pageData || [];
+      const data =
+        employeeResponse?.data?.pageData || employeeResponse?.pageData || [];
       if (data.length > 0) {
         setEmployeeData(data[0]);
         console.log('Employee data:', data[0]);
@@ -127,7 +140,10 @@ const EmployeeLayoutDemo = ({ employeeId }: { employeeId: number }) => {
       case 'selectOne':
       case 'selectMulti':
         // Hiển thị displayField nếu có
-        if (fieldConfig.displayField && employeeData[fieldConfig.displayField]) {
+        if (
+          fieldConfig.displayField &&
+          employeeData[fieldConfig.displayField]
+        ) {
           return employeeData[fieldConfig.displayField];
         }
         return value;
@@ -138,7 +154,10 @@ const EmployeeLayoutDemo = ({ employeeId }: { employeeId: number }) => {
       case 'organization':
       case 'employee':
         // Hiển thị displayField
-        if (fieldConfig.displayField && employeeData[fieldConfig.displayField]) {
+        if (
+          fieldConfig.displayField &&
+          employeeData[fieldConfig.displayField]
+        ) {
           return employeeData[fieldConfig.displayField];
         }
         return value;
