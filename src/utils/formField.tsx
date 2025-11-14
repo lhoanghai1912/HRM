@@ -124,6 +124,38 @@ export const renderField = (
         data.customConfig &&
         JSON.parse(data.customConfig)?.LocationID === true
       ) {
+        if (mode === 'view') {
+          // Mode view: chỉ hiển thị text gọn gàng
+          const displayText = (() => {
+            if (value && typeof value === 'object' && value.label) {
+              return value.label;
+            }
+            const found = (extraProps.pickerData || []).find(
+              item => item.value === value || item.id === value,
+            );
+            if (found && (found.label || found.name)) {
+              return found.label ?? found.name;
+            }
+            if (
+              extraProps.formData &&
+              extraProps.formData[data.displayField]
+            ) {
+              return extraProps.formData[data.displayField];
+            }
+            return value || '-';
+          })();
+          
+          return (
+            <Text 
+              numberOfLines={1} 
+              ellipsizeMode="tail"
+              style={{ flex: 1 }}
+            >
+              {displayText}
+            </Text>
+          );
+        }
+        
         return (
           <TouchableOpacity
             disabled={mode === 'view'}
@@ -172,6 +204,38 @@ export const renderField = (
           </TouchableOpacity>
         );
       } else {
+        if (mode === 'view') {
+          // Mode view: chỉ hiển thị text gọn gàng
+          const displayText = (() => {
+            if (value && typeof value === 'object' && value.label) {
+              return value.label;
+            }
+            const found = (extraProps.pickerData || []).find(
+              item => item.value === value || item.id === value,
+            );
+            if (found && (found.label || found.name)) {
+              return found.label ?? found.name;
+            }
+            if (
+              extraProps.formData &&
+              extraProps.formData[data.displayField]
+            ) {
+              return extraProps.formData[data.displayField];
+            }
+            return value || '-';
+          })();
+          
+          return (
+            <Text 
+              numberOfLines={1} 
+              ellipsizeMode="tail"
+              style={{ flex: 1 }}
+            >
+              {displayText}
+            </Text>
+          );
+        }
+        
         return (
           <>
             <TouchableOpacity

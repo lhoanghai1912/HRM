@@ -152,11 +152,15 @@ const Employee = ({}) => {
                 fieldName: field.fieldName,
                 typeControl: field.typeControl,
                 label: field.label,
+                displayField: field.displayField,
               },
               item[field.fieldName],
               () => {}, // onChange không cần trong chế độ view
               'view', // mode = 'view' để chỉ hiển thị, không cho edit
-              {}, // extraProps rỗng
+              {
+                formData: item, // Pass item để có thể lấy displayField
+                pickerData: field.pickerData || [],
+              },
             )}
           </View>
           {idx < layoutFields.length - 1 && (
