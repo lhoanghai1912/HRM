@@ -24,31 +24,13 @@ import styles from '../styles';
 import { getLayout } from '../../../../services/data';
 import { renderField } from '../../../../utils/formField';
 
-// checkbox: ms(40),
-// id: ms(120),
-// start: ms(120),
-// name: ms(180),
-// position: ms(120),
-// struct: ms(150),
-// type: ms(120),
-
 const PAGE_SIZE = 15;
-const COLUMN_MIN_WIDTHS = {
-  checkbox: ms(40),
-  name: ms(180),
-  work: ms(160),
-  time: ms(180),
-  unit: ms(150),
-  object: ms(150),
-  location: ms(120),
-};
 
 const Employee = ({}) => {
   const navigation = useNavigation<DrawerNavigationProp<any>>();
   const FIELD_COLUMNS = 'employeeCode,fullName,genderID,birthDay,mobile,email';
 
   const flatListRef = useRef<FlatList>(null);
-  const scrollY = useRef(0);
   const [searchInput, setSearchInput] = useState(''); // Input tạm thời
   const [searchQuery, setSearchQuery] = useState(''); // Query thực tế để gọi API
   const [layoutFields, setLayoutFields] = useState([]);
@@ -143,7 +125,12 @@ const Employee = ({}) => {
           <View
             style={[
               styles.cell,
-              { minWidth: field.minWidth || ms(120), flex: 1 },
+              {
+                width: ms(150),
+                minWidth: field.minWidth || ms(120),
+                maxWidth: ms(200),
+                flex: 1,
+              },
             ]}
           >
             {renderField(

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TouchableOpacity, Text, Image } from 'react-native';
+import { View, TouchableOpacity, Text, Image, StyleSheet } from 'react-native';
 import AppInput from '../components/AppInput';
 import icons from '../assets/icons';
 import AppStyles from '../components/AppStyle';
@@ -90,7 +90,9 @@ export const renderField = (
       return (
         <>
           {mode === 'view' ? (
-            <Text>{value}</Text>
+            <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
+              {value}
+            </Text>
           ) : (
             <AppInput
               value={value ?? ''}
@@ -106,7 +108,9 @@ export const renderField = (
       );
     case 'multiLine':
       return mode === 'view' ? (
-        <Text>{value}</Text>
+        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
+          {value}
+        </Text>
       ) : (
         <AppInput
           value={value ?? ''}
@@ -170,7 +174,7 @@ export const renderField = (
               console.log('extraProps123123213213213123', extraProps.formData);
             }}
           >
-            <Text>
+            <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
               {(() => {
                 // 1. Nếu value là object có label
                 if (value && typeof value === 'object' && value.label) {
@@ -242,7 +246,7 @@ export const renderField = (
                 console.log('extraProps', extraProps.formData);
               }}
             >
-              <Text>
+              <Text numberOfLines={1} ellipsizeMode="tail">
                 {(() => {
                   // 1. Nếu value là object có label
                   if (value && typeof value === 'object' && value.label) {
@@ -272,7 +276,9 @@ export const renderField = (
       }
     case 'selectMulti':
       return mode === 'view' ? (
-        <Text>{value}</Text>
+        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
+          {value}
+        </Text>
       ) : (
         <TouchableOpacity
           disabled={mode === 'view'}
@@ -284,27 +290,89 @@ export const renderField = (
           }}
           onPress={() => {
             if (extraProps.onPickSelectMulti) {
+              // Parse value hiện tại thành array id
               let selectedIds = [];
+
+              // Nếu value là string có dạng "10,11,12"
               if (typeof value === 'string' && value.length > 0) {
                 selectedIds = splitString(value, ',');
-              } else if (Array.isArray(value)) {
+              }
+              // Nếu value đã là mảng
+              else if (Array.isArray(value)) {
                 selectedIds = value.map(v => v.value ?? v.id ?? v);
               }
+
+              console.log('Selected IDs for multiSelect:', selectedIds);
+
               extraProps.onPickSelectMulti(
                 data.fieldName,
                 data.displayField,
                 extraProps.pickerData,
-                selectedIds,
+                selectedIds, // Truyền mảng id
               );
             }
           }}
         >
-          <Text>{/* ...hiển thị label như cũ... */}</Text>
+          <Text>
+            {(() => {
+              if (
+                !value ||
+                (typeof value === 'string' && value.trim().length === 0) ||
+                (Array.isArray(value) && value.length === 0)
+              ) {
+                return 'Chọn...';
+              }
+              if (Array.isArray(value) && typeof value[0] === 'object') {
+                console.log('value', value);
+
+                const labels = value
+                  .map(
+                    v =>
+                      v.pickListValue ||
+                      v.label ||
+                      v.name ||
+                      (typeof v === 'string' ? v : ''),
+                  )
+                  .filter(Boolean);
+                if (labels.length > 0) return joinString(labels, ', ');
+              }
+
+              // Nếu formData có displayField
+              if (
+                extraProps.formData &&
+                extraProps.formData[data.displayField]
+              ) {
+                const displayValue = extraProps.formData[data.displayField];
+                if (typeof displayValue === 'string') {
+                  const toArray = JSON.parse(displayValue);
+                  const mapValue = toArray.map(d => {
+                    return d.pickListValue;
+                  });
+                  const labels = joinString(mapValue, ', ');
+
+                  // console.log('mang sau khi chuyen', labels);
+                  // console.log('value',labels.pickListValue);
+
+                  return labels;
+                }
+                if (Array.isArray(displayValue)) {
+                  console.log('defg', displayValue);
+
+                  const labels = joinString(
+                    displayValue.map(d => d.pickListValue),
+                    ', ',
+                  );
+                  return labels;
+                }
+              }
+              return 'Chọn...';
+            })()}
+          </Text>
         </TouchableOpacity>
       );
     case 'date':
       return mode === 'view' ? (
-        <Text>
+        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
           {value
             ? typeof value === 'string'
               ? new Date(value).toLocaleDateString('vi-VN')
@@ -332,7 +400,7 @@ export const renderField = (
       );
     case 'month':
       return mode === 'view' ? (
-        <Text>
+        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
           {value && value.month && value.year
             ? `${value.month}/${value.year}`
             : value || ''}
@@ -345,12 +413,16 @@ export const renderField = (
             if (extraProps.onPickMonth) extraProps.onPickMonth(data.fieldName);
           }}
         >
-          <Text>{value ? `${value.month}/${value.year}` : data.fieldName}</Text>
+          <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
+            {value ? `${value.month}/${value.year}` : data.fieldName}
+          </Text>
         </TouchableOpacity>
       );
     case 'int':
       return mode === 'view' ? (
-        <Text>{value}</Text>
+        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
+          {value}
+        </Text>
       ) : (
         <AppInput
           value={value?.toString() ?? ''}
@@ -365,7 +437,9 @@ export const renderField = (
       );
     case 'decimal':
       return mode === 'view' ? (
-        <Text>{value}</Text>
+        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
+          {value}
+        </Text>
       ) : (
         <AppInput
           value={value?.toString() ?? ''}
@@ -380,7 +454,7 @@ export const renderField = (
       );
     case 'file':
       return mode === 'view' ? (
-        <Text>
+        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
           {value && (value.name || value.uri || typeof value === 'string')
             ? value.name || value.uri || value
             : ''}
@@ -444,7 +518,7 @@ export const renderField = (
       );
     case 'image':
       return mode === 'view' ? (
-        <Text>
+        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
           {value && value.uri
             ? value.uri
             : value && typeof value === 'string'
@@ -459,7 +533,7 @@ export const renderField = (
             if (extraProps.onPickImage) extraProps.onPickImage(data.fieldName);
           }}
         >
-          <Text>
+          <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
             {value && value.uri
               ? 'Đã chọn ảnh'
               : value && typeof value === 'string'
@@ -470,7 +544,7 @@ export const renderField = (
       );
     case 'organization':
       return mode === 'view' ? (
-        <Text>
+        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
           {value && typeof value === 'object' && value.orgStructName
             ? value.orgStructName
             : value || ''}
@@ -494,7 +568,7 @@ export const renderField = (
             }}
             disabled={mode === 'view' || data.IsReadOnly}
           >
-            <Text>
+            <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
               {(() => {
                 // 1. Nếu value là object có orgStructName
                 if (value && typeof value === 'object' && value.orgStructName) {
@@ -519,7 +593,7 @@ export const renderField = (
       );
     case 'employee':
       return mode === 'view' ? (
-        <Text>
+        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
           {value && typeof value === 'object' && value.name
             ? value.name
             : value || ''}
@@ -538,7 +612,7 @@ export const renderField = (
           }}
           disabled={mode === 'view' || data.IsReadOnly}
         >
-          <Text>
+          <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
             {(() => {
               // Nếu value là object có name
               if (value && typeof value === 'object' && value.name) {
@@ -559,7 +633,9 @@ export const renderField = (
     // Các kiểu khác có thể bổ sung thêm
     default:
       return mode === 'view' ? (
-        <Text>{value}</Text>
+        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
+          {value}
+        </Text>
       ) : (
         <AppInput
           value={value ?? ''}
@@ -573,3 +649,14 @@ export const renderField = (
       );
   }
 };
+const styles = StyleSheet.create({
+  cell: {
+    padding: 8,
+    borderWidth: 0.5,
+    borderColor: '#ccc',
+    justifyContent: 'center',
+  },
+  text: {
+    textAlign: 'center',
+  },
+});

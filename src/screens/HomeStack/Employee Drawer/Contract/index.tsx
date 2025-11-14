@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -21,26 +21,23 @@ import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import styles from '../styles';
 import AppStyles from '../../../../components/AppStyle';
 import { contract_GetAll } from '../../../../services/hr';
-import { colors } from '../../../../utils/color';
+import { getLayout } from '../../../../services/data';
+import { renderField } from '../../../../utils/formField';
 
 const PAGE_SIZE = 15;
-const COLUMN_MIN_WIDTHS = {
-  checkbox: ms(40),
-  id: ms(120),
-  start: ms(120),
-  name: ms(180),
-  position: ms(120),
-  struct: ms(150),
-  type: ms(120),
-};
 
 const Contract = () => {
   const navigation = useNavigation<DrawerNavigationProp<any>>();
+  const FIELD_COLUMNS =
+    'ContractStatusID,ContractNo,StartDate,EndDate,SyncDocumentID';
 
   const flatListRef = useRef<FlatList>(null);
-  const scrollY = useRef(0);
   const [searchInput, setSearchInput] = useState(''); // Input tạm thời
   const [searchQuery, setSearchQuery] = useState(''); // Query thực tế để gọi API
+  const [layoutFields, setLayoutFields] = useState([]);
+  const fieldColumnsArr = FIELD_COLUMNS.split(',')
+    .map(s => s.trim())
+    .filter(Boolean);
 
   // Sử dụng hook phân trang
   const {
@@ -52,107 +49,119 @@ const Contract = () => {
     handleLoadMore,
     handleRefresh,
   } = usePaginatedList(contract_GetAll, PAGE_SIZE, {
-    orderBy: 'contractNo',
-    sortOrder: 'desc',
+    orderBy: 'Id',
+    sortOrder: ' desc',
     search: searchQuery,
-    fieldColumns:
-      'employeeID, organizationUnitID, contractNo, contractSubject, contractPeriodID, startDate, salaryBasic, salaryRate, jobTitleID',
+    fieldColumns: FIELD_COLUMNS,
   });
-  console.log('    Contract render with data:', contract);
-
   const onEndReachedCalledDuringMomentum = useRef(false);
 
   console.log('Contract data:', contract);
 
+  const fetchLayoutData = async () => {
+    try {
+      const data = await getLayout('contract');
+      console.log('layout', data);
+      const filteredFields = (data.pageData || []).filter(field =>
+        fieldColumnsArr.includes(field.fieldName),
+      );
+      setLayoutFields(filteredFields);
+      console.log('fieldColumnsArr', filteredFields);
+    } catch (error) {
+      console.log('Error fetching layout data:', error);
+      setLayoutFields([]);
+    }
+  };
+
+  useEffect(() => {
+    fetchLayoutData();
+    console.log('fetch layout data', layoutFields);
+  }, []);
+
+  const renderHeader = () => (
+    <View style={styles.tableRowHeader}>
+      {/* Cột STT */}
+      <View style={[styles.checkboxCell, { minWidth: ms(40) }]}>
+        <Text>#</Text>
+      </View>
+      <Text style={{ borderLeftWidth: 0.5 }} />
+      {/* Render các cột theo layout */}
+      {Array.isArray(layoutFields) && layoutFields.length > 0 ? (
+        layoutFields.map((field, index) => (
+          <React.Fragment key={field.fieldName}>
+            <Text
+              style={[
+                styles.headerCell,
+                { minWidth: field.minWidth || ms(120), flex: 1 },
+              ]}
+            >
+              {field.label}
+            </Text>
+            {index < layoutFields.length - 1 && (
+              <Text style={{ borderLeftWidth: 0.5 }} />
+            )}
+          </React.Fragment>
+        ))
+      ) : (
+        <Text style={{ marginLeft: 8, color: '#888' }}>
+          Đang tải cấu hình bảng...
+        </Text>
+      )}
+    </View>
+  );
   const renderItem = ({ item, index }) => (
     <TouchableOpacity
-      key={item.id}
+      key={item.EmployeeID}
       style={styles.tableRow}
       onPress={() => {
-        navigate(Screen_Name.Details_Contract, { id: item.employeeId });
+        navigate(Screen_Name.Details_Employee, { id: item.EmployeeID });
       }}
     >
       {/* STT */}
-      <View
-        style={[styles.checkboxCell, { width: COLUMN_MIN_WIDTHS.checkbox }]}
-      >
+      <View style={[styles.checkboxCell, { width: ms(40) }]}>
         <Text>{index + 1}</Text>
       </View>
       <Text style={{ borderLeftWidth: 0.5 }} />
-      {/* Mã hợp đồng*/}
-      <Text
-        numberOfLines={1}
-        ellipsizeMode="tail"
-        style={[styles.cell, { width: COLUMN_MIN_WIDTHS.id, flex: 2 }]}
-      >
-        {item.employeeCode}
-      </Text>
-      <Text style={{ borderLeftWidth: 0.5 }} />
-      {/* Tên nhân viên */}
-      <TouchableOpacity
-        style={[styles.cell, { width: COLUMN_MIN_WIDTHS.name, flex: 1 }]}
-        onPress={() => {
-          navigate(Screen_Name.Employee, {
-            screen: Screen_Name.Details_Employee,
-            params: { id: item.id },
-          });
-        }}
-      >
-        <Text
-          style={[
-            styles.cell,
-            {
-              width: COLUMN_MIN_WIDTHS.name,
-              flex: 1,
-              textDecorationLine: 'underline',
-            },
-          ]}
-          numberOfLines={1}
-          ellipsizeMode="tail"
-        >
-          {item.fullName}
-        </Text>
-      </TouchableOpacity>
-      <Text style={{ borderLeftWidth: 0.5 }} />
 
-      {/* Ngày kí hợp đồng */}
-      <Text
-        numberOfLines={1}
-        ellipsizeMode="tail"
-        style={[styles.cell, { width: COLUMN_MIN_WIDTHS.start, flex: 1 }]}
-      >
-        {item.gender}
-      </Text>
-      <Text style={{ borderLeftWidth: 0.5 }} />
-
-      {/* Vị trí */}
-      <Text
-        numberOfLines={1}
-        ellipsizeMode="tail"
-        style={[styles.cell, { width: COLUMN_MIN_WIDTHS.position, flex: 1 }]}
-      >
-        {item.phoneNumber}
-      </Text>
-      <Text style={{ borderLeftWidth: 0.5 }} />
-      {/* Phòng ban */}
-      <Text
-        numberOfLines={1}
-        ellipsizeMode="tail"
-        style={[styles.cell, { width: COLUMN_MIN_WIDTHS.struct, flex: 1 }]}
-      >
-        {item.email}
-      </Text>
-      <Text style={{ borderLeftWidth: 0.5 }} />
-      {/* Loại hợp đồng */}
-      <Text
-        numberOfLines={1}
-        ellipsizeMode="tail"
-        style={[styles.cell, { width: COLUMN_MIN_WIDTHS.type, flex: 1 }]}
-      >
-        {item.birthDate}
-      </Text>
+      {/* Render các cell theo layout */}
+      {layoutFields.map((field, idx) => (
+        <React.Fragment key={field.fieldName}>
+          <View
+            style={[
+              styles.cell,
+              {
+                width: ms(150),
+                minWidth: field.minWidth || ms(120),
+                maxWidth: ms(200),
+                flex: 1,
+              },
+            ]}
+          >
+            {renderField(
+              {
+                ...field,
+                fieldName: field.fieldName,
+                typeControl: field.typeControl,
+                label: field.label,
+                displayField: field.displayField,
+              },
+              item[field.fieldName],
+              () => {}, // onChange không cần trong chế độ view
+              'view', // mode = 'view' để chỉ hiển thị, không cho edit
+              {
+                formData: item, // Pass item để có thể lấy displayField
+                pickerData: field.pickerData || [],
+              },
+            )}
+          </View>
+          {idx < layoutFields.length - 1 && (
+            <Text style={{ borderLeftWidth: 0.5 }} />
+          )}
+        </React.Fragment>
+      ))}
     </TouchableOpacity>
   );
+  console.log('item render:', contract);
 
   const renderFooter = () => {
     if (loadingMore) {
@@ -187,12 +196,11 @@ const Contract = () => {
   return (
     <View style={styles.container}>
       <CustomHeader
-        label="Contract"
-        leftPress={() => {
-          navigation.openDrawer();
-        }}
+        label="Employee Application"
         leftIcon={icons.menu}
+        leftPress={() => navigation.openDrawer()}
       />
+
       <View style={styles.toolbar}>
         <TextInput
           placeholder="Tìm kiếm"
@@ -217,91 +225,19 @@ const Contract = () => {
       <View style={{ flex: 1 }}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           <View style={styles.table}>
-            {/* Table Header */}
-            <View style={styles.tableRowHeader}>
-              <View
-                style={[
-                  styles.checkboxCell,
-                  { minWidth: COLUMN_MIN_WIDTHS.checkbox },
-                ]}
-              >
-                <View>
-                  <Text>#</Text>
-                </View>
-              </View>
-              <Text style={{ borderLeftWidth: 0.5 }} />
-              <Text
-                style={[
-                  styles.headerCell,
-                  { minWidth: COLUMN_MIN_WIDTHS.id, flex: 2 },
-                ]}
-              >
-                Mã hợp đồng
-              </Text>
-              <Text style={{ borderLeftWidth: 0.5 }} />
-
-              <Text
-                style={[
-                  styles.headerCell,
-                  { minWidth: COLUMN_MIN_WIDTHS.name, flex: 1 },
-                ]}
-              >
-                Tên nhân viên
-              </Text>
-              <Text style={{ borderLeftWidth: 0.5 }} />
-              <Text
-                style={[
-                  styles.headerCell,
-                  { minWidth: COLUMN_MIN_WIDTHS.start, flex: 1 },
-                ]}
-              >
-                Ngày ký
-              </Text>
-              <Text style={{ borderLeftWidth: 0.5 }} />
-              <Text
-                style={[
-                  styles.headerCell,
-                  { minWidth: COLUMN_MIN_WIDTHS.position, flex: 1 },
-                ]}
-              >
-                Vị trí
-              </Text>
-              <Text style={{ borderLeftWidth: 0.5 }} />
-              <Text
-                style={[
-                  styles.headerCell,
-                  { minWidth: COLUMN_MIN_WIDTHS.struct, flex: 1 },
-                ]}
-              >
-                Phòng ban
-              </Text>
-              <Text style={{ borderLeftWidth: 0.5 }} />
-              <Text
-                style={[
-                  styles.headerCell,
-                  { minWidth: COLUMN_MIN_WIDTHS.type, flex: 1 },
-                ]}
-              >
-                Loại hợp đồng
-              </Text>
-            </View>
-
             <FlatList
               ref={flatListRef}
               data={contract}
-              keyExtractor={item => item.employeeId}
+              keyExtractor={item => item.EmployeeID?.toString()}
               style={styles.bodyScroll}
               renderItem={renderItem}
+              ListHeaderComponent={renderHeader}
               ListEmptyComponent={
                 !loading && contract.length === 0 ? (
                   <Text
                     style={[
                       AppStyles.label,
-                      {
-                        flex: 1,
-                        textAlign: 'center',
-                        marginTop: spacing.medium,
-                      },
+                      { textAlign: 'center', marginTop: spacing.medium },
                     ]}
                   >
                     Không có dữ liệu
@@ -321,30 +257,22 @@ const Contract = () => {
                   !loadingMore &&
                   !noMoreData &&
                   !loading &&
-                  contract.length > 0 // Đảm bảo có dữ liệu trước khi load more
+                  contract.length > 0
                 ) {
-                  console.log('Load more triggered');
                   handleLoadMore();
                   onEndReachedCalledDuringMomentum.current = true;
                 }
               }}
-              onScroll={({ nativeEvent }) => {
-                const currentScrollY = nativeEvent.contentOffset.y;
-                // Reset flag khi scroll xuống (chỉ cho phép load more khi scroll xuống)
-                if (currentScrollY > scrollY.current) {
-                  onEndReachedCalledDuringMomentum.current = false;
-                }
-                scrollY.current = currentScrollY;
-              }}
               onMomentumScrollBegin={() => {
                 onEndReachedCalledDuringMomentum.current = false;
               }}
-              onEndReachedThreshold={0.01} // Chỉ load khi rất gần cuối (1% cuối)
+              onEndReachedThreshold={0.3}
               showsVerticalScrollIndicator={false}
             />
           </View>
         </ScrollView>
       </View>
+
       {/* Footer */}
 
       {(loading || refreshing) && (
