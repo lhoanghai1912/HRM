@@ -21,7 +21,6 @@ import { Screen_Name } from '../../../../navigation/ScreenName';
 import { useNavigation } from '@react-navigation/native';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 import styles from '../styles';
-import EmployeeProfileModal from '../../../../components/modal/EmployeeProfileModal';
 
 // checkbox: ms(40),
 // id: ms(120),
@@ -50,12 +49,6 @@ const Employee = ({}) => {
   const [searchInput, setSearchInput] = useState(''); // Input tạm thời
   const [searchQuery, setSearchQuery] = useState(''); // Query thực tế để gọi API
 
-  // State cho profile modal
-  const [showProfileModal, setShowProfileModal] = useState(false);
-  const [selectedEmployeeId, setSelectedEmployeeId] = useState<number | null>(
-    null,
-  );
-
   // Sử dụng hook phân trang
   const {
     data: employee,
@@ -82,11 +75,6 @@ const Employee = ({}) => {
       style={styles.tableRow}
       onPress={() => {
         navigate(Screen_Name.Details_Employee, { id: item.EmployeeID });
-      }}
-      onLongPress={() => {
-        // Long press để mở profile modal với layout
-        setSelectedEmployeeId(item.EmployeeID);
-        setShowProfileModal(true);
       }}
     >
       {/* STT */}
@@ -362,16 +350,6 @@ const Employee = ({}) => {
           <ActivityIndicator size="large" color="#E53935" />
         </View>
       )}
-
-      {/* Employee Profile Modal */}
-      <EmployeeProfileModal
-        visible={showProfileModal}
-        employeeId={selectedEmployeeId}
-        onClose={() => {
-          setShowProfileModal(false);
-          setSelectedEmployeeId(null);
-        }}
-      />
     </View>
   );
 };
