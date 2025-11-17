@@ -3,8 +3,6 @@ import {
   View,
   Text,
   StyleSheet,
-  FlatList,
-  RefreshControl,
   ActivityIndicator,
   TouchableOpacity,
   Image,
@@ -13,8 +11,8 @@ import CustomHeader from '../../../../components/CustomHeader';
 import icons from '../../../../assets/icons';
 import { usePaginatedList } from '../../../../components/Paginated';
 import { employee_GetAll } from '../../../../services/hr';
-import { ms, spacing } from '../../../../utils/spacing';
-import { ScrollView, TextInput } from 'react-native-gesture-handler';
+import { spacing } from '../../../../utils/spacing';
+import { TextInput } from 'react-native-gesture-handler';
 import AppStyles from '../../../../components/AppStyle';
 import { navigate } from '../../../../navigation/RootNavigator';
 import { Screen_Name } from '../../../../navigation/ScreenName';
@@ -22,7 +20,7 @@ import { useNavigation } from '@react-navigation/native';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 import styles from '../styles';
 import { getLayout } from '../../../../services/data';
-import { renderField } from '../../../../utils/formField';
+import RenderTable from '../../../../components/renderTable';
 
 const PAGE_SIZE = 15;
 
@@ -30,9 +28,8 @@ const Employee = ({}) => {
   const navigation = useNavigation<DrawerNavigationProp<any>>();
   const FIELD_COLUMNS = 'employeeCode,fullName,genderID,birthDay,mobile,email';
 
-  const flatListRef = useRef<FlatList>(null);
-  const [searchInput, setSearchInput] = useState(''); // Input tạm thời
-  const [searchQuery, setSearchQuery] = useState(''); // Query thực tế để gọi API
+  const [searchInput, setSearchInput] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [layoutFields, setLayoutFields] = useState([]);
   const fieldColumnsArr = FIELD_COLUMNS.split(',')
     .map(s => s.trim())
@@ -53,7 +50,6 @@ const Employee = ({}) => {
     search: searchQuery,
     fieldColumns: FIELD_COLUMNS,
   });
-  const onEndReachedCalledDuringMomentum = useRef(false);
 
   const fetchLayoutData = async () => {
     try {
@@ -73,121 +69,6 @@ const Employee = ({}) => {
   useEffect(() => {
     fetchLayoutData();
   }, []);
-
-  const renderHeader = () => (
-    <View style={styles.tableRowHeader}>
-      {/* Cột STT */}
-      <View style={[styles.checkboxCell, { minWidth: ms(40) }]}>
-        <Text>#</Text>
-      </View>
-      <Text style={{ borderLeftWidth: 0.5 }} />
-      {/* Render các cột theo layout */}
-      {Array.isArray(layoutFields) && layoutFields.length > 0 ? (
-        layoutFields.map((field, index) => (
-          <React.Fragment key={field.fieldName}>
-            <Text
-              style={[
-                styles.headerCell,
-                { minWidth: field.minWidth || ms(120), flex: 1 },
-              ]}
-            >
-              {field.label}
-            </Text>
-            {index < layoutFields.length - 1 && (
-              <Text style={{ borderLeftWidth: 0.5 }} />
-            )}
-          </React.Fragment>
-        ))
-      ) : (
-        <Text style={{ marginLeft: 8, color: '#888' }}>
-          Đang tải cấu hình bảng...
-        </Text>
-      )}
-    </View>
-  );
-  const renderItem = ({ item, index }) => (
-    <TouchableOpacity
-      key={item.EmployeeID}
-      style={styles.tableRow}
-      onPress={() => {
-        navigate(Screen_Name.Details_Employee, { id: item.EmployeeID });
-      }}
-    >
-      {/* STT */}
-      <View style={[styles.checkboxCell, { width: ms(40) }]}>
-        <Text>{index + 1}</Text>
-      </View>
-      <Text style={{ borderLeftWidth: 0.5 }} />
-
-      {/* Render các cell theo layout */}
-      {layoutFields.map((field, idx) => (
-        <React.Fragment key={field.fieldName}>
-          <View
-            style={[
-              styles.cell,
-              {
-                width: ms(150),
-                minWidth: field.minWidth || ms(120),
-                maxWidth: ms(200),
-                flex: 1,
-              },
-            ]}
-          >
-            {renderField(
-              {
-                ...field,
-                fieldName: field.fieldName,
-                typeControl: field.typeControl,
-                label: field.label,
-                displayField: field.displayField,
-              },
-              item[field.fieldName],
-              () => {}, // onChange không cần trong chế độ view
-              'view', // mode = 'view' để chỉ hiển thị, không cho edit
-              {
-                formData: item, // Pass item để có thể lấy displayField
-                pickerData: field.pickerData || [],
-              },
-            )}
-          </View>
-          {idx < layoutFields.length - 1 && (
-            <Text style={{ borderLeftWidth: 0.5 }} />
-          )}
-        </React.Fragment>
-      ))}
-    </TouchableOpacity>
-  );
-  console.log('item render:', employee);
-
-  const renderFooter = () => {
-    if (loadingMore) {
-      return (
-        <View
-          style={{
-            paddingTop: spacing.medium,
-            paddingBottom: spacing.small,
-            alignItems: 'center',
-          }}
-        >
-          <ActivityIndicator size="small" />
-        </View>
-      );
-    }
-    if (!loading && noMoreData && employee.length > 0) {
-      return (
-        <View
-          style={{
-            paddingTop: spacing.medium,
-            paddingBottom: spacing.small,
-            alignItems: 'center',
-          }}
-        >
-          <Text style={{ color: '#888' }}>Đã hết dữ liệu</Text>
-        </View>
-      );
-    }
-    return null;
-  };
 
   return (
     <View style={styles.container}>
@@ -218,56 +99,25 @@ const Employee = ({}) => {
         </View>
       </View>
       {/* Table */}
-      <View style={{ flex: 1 }}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          <View style={styles.table}>
-            <FlatList
-              ref={flatListRef}
-              data={employee}
-              keyExtractor={item => item.EmployeeID?.toString()}
-              style={styles.bodyScroll}
-              renderItem={renderItem}
-              ListHeaderComponent={renderHeader}
-              ListEmptyComponent={
-                !loading && employee.length === 0 ? (
-                  <Text
-                    style={[
-                      AppStyles.label,
-                      { textAlign: 'center', marginTop: spacing.medium },
-                    ]}
-                  >
-                    Không có dữ liệu
-                  </Text>
-                ) : null
-              }
-              ListFooterComponent={renderFooter}
-              refreshControl={
-                <RefreshControl
-                  refreshing={refreshing}
-                  onRefresh={handleRefresh}
-                />
-              }
-              onEndReached={() => {
-                if (
-                  !onEndReachedCalledDuringMomentum.current &&
-                  !loadingMore &&
-                  !noMoreData &&
-                  !loading &&
-                  employee.length > 0
-                ) {
-                  handleLoadMore();
-                  onEndReachedCalledDuringMomentum.current = true;
-                }
-              }}
-              onMomentumScrollBegin={() => {
-                onEndReachedCalledDuringMomentum.current = false;
-              }}
-              onEndReachedThreshold={0.3}
-              showsVerticalScrollIndicator={false}
-            />
-          </View>
-        </ScrollView>
-      </View>
+      <RenderTable
+        layoutFields={layoutFields}
+        data={employee}
+        keyExtractor={item => item.EmployeeID?.toString()}
+        onRowPress={item =>
+          navigate(Screen_Name.Details_Employee, { id: item.EmployeeID })
+        }
+        loading={loading}
+        loadingMore={loadingMore}
+        refreshing={refreshing}
+        noMoreData={noMoreData}
+        onRefresh={handleRefresh}
+        onLoadMore={handleLoadMore}
+        emptyMessage="Không có dữ liệu"
+        style={styles.table}
+        tableRowStyle={styles.tableRow}
+        headerStyle={styles.tableRowHeader}
+        cellStyle={styles.cell}
+      />
 
       {/* Footer */}
 
