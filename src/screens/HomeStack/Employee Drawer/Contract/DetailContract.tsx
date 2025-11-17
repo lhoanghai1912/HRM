@@ -33,6 +33,7 @@ import {
   useLocationPicker,
   useOrganizationPicker,
   useEmployeePicker,
+  useProcedurePicker,
 } from '../../../../components/hooks/useSelectPicker';
 import ModalTreeView from '../../../../components/modal/ModalTreeView';
 import ModalEmployeePicker from '../../../../components/modal/ModalEmployeePicker';
@@ -89,6 +90,7 @@ const DetailContract = ({ route }) => {
   const locationPicker = useLocationPicker(field, formData);
   const organizationPicker = useOrganizationPicker();
   const employeePicker = useEmployeePicker();
+  const procedurePicker = useProcedurePicker();
 
   // Fetch functions
   useFocusEffect(
@@ -185,7 +187,12 @@ const DetailContract = ({ route }) => {
         const configs: { fieldName: string; config: any }[] = [];
         layout?.pageData?.forEach(parent => {
           parent.groupFieldConfigs?.forEach(cfg => {
-            if (cfg.customConfig && typeof cfg.customConfig === 'string') {
+            if (
+              cfg.customConfig &&
+              typeof cfg.customConfig === 'string' &&
+              (cfg.customConfig.trim().startsWith('{') ||
+                cfg.customConfig.trim().startsWith('['))
+            ) {
               try {
                 const parsedConfig = JSON.parse(cfg.customConfig);
                 configs.push({
@@ -193,7 +200,11 @@ const DetailContract = ({ route }) => {
                   config: parsedConfig,
                 });
               } catch (e) {
-                console.error('Error parsing customConfig:', e);
+                console.error(
+                  'Error parsing customConfig:',
+                  e,
+                  cfg.customConfig,
+                );
               }
             }
           });
@@ -374,7 +385,7 @@ const DetailContract = ({ route }) => {
     handleClearFile: filePicker.handleClearFile,
     handlePickSelect: selectPicker.handlePickSelect,
     handlePickLocation: locationPicker.handlePickLocation,
-    handlePickProcedure: locationPicker.handlePickProcedure,
+    handlePickProcedure: procedurePicker.handlePickProcedure,
     handlePickOrganization: organizationPicker.handlePickOrganization,
     handlePickEmployee: employeePicker.handlePickEmployee,
   };

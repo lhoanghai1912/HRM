@@ -85,6 +85,7 @@ export const useLocationPicker = (field: any, formData: any) => {
   const [displayField, setDisplayField] = useState<string | null>(null);
   const [openLocationModal, setOpenLocationModal] = useState(false);
   const [locationData, setLocationData] = useState<any>(null);
+  const [procedureData, setProcedureData] = useState<any>(null);
   const [pickerConfig, setPickerConfig] = useState(null);
   const handlePickLocation = async (fieldName: string, cfg: any) => {
     setPickerField(fieldName);
@@ -219,10 +220,12 @@ export const useLocationPicker = (field: any, formData: any) => {
         sortOrder: '',
       };
       const data = await getProcedure(param, option);
-      setLocationData(data?.pageData || data || []);
+      console.log('Procedure data:', data.data);
+
+      setProcedureData(data?.data?.pageData || data || []);
     } catch (error) {
-      console.error('Error loading location data:', error);
-      setLocationData([]);
+      console.error('Error loading procedure data:', error);
+      setProcedureData([]);
     }
   };
 
@@ -258,332 +261,6 @@ export const useOrganizationPicker = () => {
       const res = await getOrganizationTree();
       console.log('Organization tree data:', res);
 
-      // const testData = [
-      //   {
-      //     id: 6,
-      //     orgStructCode: '',
-      //     orgStructName: 'test',
-      //     orgLevelId: 2,
-      //     parentId: null,
-      //     orgLevel: {
-      //       id: 2,
-      //       orgLevelName: 'test1',
-      //       orgLevelDesc: 'test',
-      //       isActive: false,
-      //     },
-      //     childrent: [
-      //       {
-      //         id: 8,
-      //         orgStructCode: '',
-      //         orgStructName: 'test 1',
-      //         orgLevelId: 1,
-      //         parentId: 6,
-      //         orgLevel: {
-      //           id: 1,
-      //           orgLevelName: 'string1',
-      //           orgLevelDesc: 'string2',
-      //           isActive: true,
-      //         },
-      //         childrent: [],
-      //       },
-      //       {
-      //         id: 9,
-      //         orgStructCode: '',
-      //         orgStructName: 'cctc con',
-      //         orgLevelId: 1,
-      //         parentId: 6,
-      //         orgLevel: {
-      //           id: 1,
-      //           orgLevelName: 'string1',
-      //           orgLevelDesc: 'string2',
-      //           isActive: true,
-      //         },
-      //         childrent: [
-      //           {
-      //             id: 13,
-      //             orgStructCode: '',
-      //             orgStructName: 'child child 1',
-      //             orgLevelId: 1,
-      //             parentId: 9,
-      //             orgLevel: {
-      //               id: 1,
-      //               orgLevelName: 'Công ty con child child 1',
-      //               orgLevelDesc: '',
-      //               isActive: true,
-      //             },
-      //             childrent: [],
-      //           },
-      //           {
-      //             id: 14,
-      //             orgStructCode: '',
-      //             orgStructName: 'child child 2',
-      //             orgLevelId: 1,
-      //             parentId: 9,
-      //             orgLevel: {
-      //               id: 1,
-      //               orgLevelName: 'Công ty con child child 2',
-      //               orgLevelDesc: '',
-      //               isActive: true,
-      //             },
-      //             childrent: [],
-      //           },
-      //           {
-      //             id: 15,
-      //             orgStructCode: '',
-      //             orgStructName: 'child child 3',
-      //             orgLevelId: 1,
-      //             parentId: 9,
-      //             orgLevel: {
-      //               id: 1,
-      //               orgLevelName: 'Công ty con child child 3',
-      //               orgLevelDesc: '',
-      //               isActive: true,
-      //             },
-      //             childrent: [],
-      //           },
-      //         ],
-      //       },
-      //     ],
-      //   },
-      //   {
-      //     id: 7,
-      //     orgStructCode: '',
-      //     orgStructName: 'test2',
-      //     orgLevelId: 1,
-      //     parentId: null,
-      //     orgLevel: {
-      //       id: 1,
-      //       orgLevelName: 'string1',
-      //       orgLevelDesc: 'string2',
-      //       isActive: true,
-      //     },
-      //     childrent: [],
-      //   },
-      //   {
-      //     id: 10,
-      //     orgStructCode: '',
-      //     orgStructName: 'Công ty TNHH FOXAI ',
-      //     orgLevelId: 4,
-      //     parentId: null,
-      //     orgLevel: {
-      //       id: 4,
-      //       orgLevelName: 'Tổng công ty',
-      //       orgLevelDesc: '',
-      //       isActive: true,
-      //     },
-      //     childrent: [
-      //       {
-      //         id: 11,
-      //         orgStructCode: '',
-      //         orgStructName: 'FOXAI 1',
-      //         orgLevelId: 6,
-      //         parentId: 10,
-      //         orgLevel: {
-      //           id: 6,
-      //           orgLevelName: 'Công ty con',
-      //           orgLevelDesc: '',
-      //           isActive: true,
-      //         },
-      //         childrent: [],
-      //       },
-      //     ],
-      //   },
-      //   {
-      //     id: 12,
-      //     orgStructCode: '',
-      //     orgStructName: 'FOXAI 2',
-      //     orgLevelId: 6,
-      //     parentId: null,
-      //     orgLevel: {
-      //       id: 6,
-      //       orgLevelName: 'Công ty con',
-      //       orgLevelDesc: '',
-      //       isActive: true,
-      //     },
-      //     childrent: [],
-      //   },
-
-      //   /* ------------------- 10 PHẦN TỬ THÊM MỚI ------------------- */
-
-      //   {
-      //     id: 20,
-      //     orgStructCode: '',
-      //     orgStructName: 'Khối Sản Xuất',
-      //     orgLevelId: 4,
-      //     parentId: null,
-      //     orgLevel: {
-      //       id: 4,
-      //       orgLevelName: 'Tổng công ty',
-      //       orgLevelDesc: '',
-      //       isActive: true,
-      //     },
-      //     childrent: [
-      //       {
-      //         id: 21,
-      //         orgStructCode: '',
-      //         orgStructName: 'Xưởng A',
-      //         orgLevelId: 6,
-      //         parentId: 20,
-      //         orgLevel: {
-      //           id: 6,
-      //           orgLevelName: 'Công ty con',
-      //           orgLevelDesc: '',
-      //           isActive: true,
-      //         },
-      //         childrent: [
-      //           {
-      //             id: 22,
-      //             orgStructCode: '',
-      //             orgStructName: 'Tổ Máy 1',
-      //             orgLevelId: 1,
-      //             parentId: 21,
-      //             orgLevel: {
-      //               id: 1,
-      //               orgLevelName: 'string1',
-      //               orgLevelDesc: 'string2',
-      //               isActive: true,
-      //             },
-      //             childrent: [],
-      //           },
-      //         ],
-      //       },
-      //       {
-      //         id: 23,
-      //         orgStructCode: '',
-      //         orgStructName: 'Xưởng B',
-      //         orgLevelId: 6,
-      //         parentId: 20,
-      //         orgLevel: {
-      //           id: 6,
-      //           orgLevelName: 'Công ty con',
-      //           orgLevelDesc: '',
-      //           isActive: true,
-      //         },
-      //         childrent: [],
-      //       },
-      //     ],
-      //   },
-
-      //   {
-      //     id: 24,
-      //     orgStructCode: '',
-      //     orgStructName: 'Khối Hành Chính',
-      //     orgLevelId: 4,
-      //     parentId: null,
-      //     orgLevel: {
-      //       id: 4,
-      //       orgLevelName: 'Tổng công ty',
-      //       orgLevelDesc: '',
-      //       isActive: true,
-      //     },
-      //     childrent: [
-      //       {
-      //         id: 25,
-      //         orgStructCode: '',
-      //         orgStructName: 'Phòng Nhân Sự',
-      //         orgLevelId: 1,
-      //         parentId: 24,
-      //         orgLevel: {
-      //           id: 1,
-      //           orgLevelName: 'string1',
-      //           orgLevelDesc: 'string2',
-      //           isActive: true,
-      //         },
-      //         childrent: [],
-      //       },
-      //       {
-      //         id: 26,
-      //         orgStructCode: '',
-      //         orgStructName: 'Phòng Hành Chính Tổng Hợp',
-      //         orgLevelId: 1,
-      //         parentId: 24,
-      //         orgLevel: {
-      //           id: 1,
-      //           orgLevelName: 'string1',
-      //           orgLevelDesc: 'string2',
-      //           isActive: true,
-      //         },
-      //         childrent: [
-      //           {
-      //             id: 27,
-      //             orgStructCode: '',
-      //             orgStructName: 'Tổ Văn Thư',
-      //             orgLevelId: 1,
-      //             parentId: 26,
-      //             orgLevel: {
-      //               id: 1,
-      //               orgLevelName: 'string1',
-      //               orgLevelDesc: 'string2',
-      //               isActive: true,
-      //             },
-      //             childrent: [],
-      //           },
-      //         ],
-      //       },
-      //     ],
-      //   },
-
-      //   {
-      //     id: 28,
-      //     orgStructCode: '',
-      //     orgStructName: 'Khối Kinh Doanh',
-      //     orgLevelId: 4,
-      //     parentId: null,
-      //     orgLevel: {
-      //       id: 4,
-      //       orgLevelName: 'Tổng công ty',
-      //       orgLevelDesc: '',
-      //       isActive: true,
-      //     },
-      //     childrent: [
-      //       {
-      //         id: 29,
-      //         orgStructCode: '',
-      //         orgStructName: 'Phòng Sales 1',
-      //         orgLevelId: 1,
-      //         parentId: 28,
-      //         orgLevel: {
-      //           id: 1,
-      //           orgLevelName: 'string1',
-      //           orgLevelDesc: 'string2',
-      //           isActive: true,
-      //         },
-      //         childrent: [],
-      //       },
-      //       {
-      //         id: 30,
-      //         orgStructCode: '',
-      //         orgStructName: 'Phòng Sales 2',
-      //         orgLevelId: 1,
-      //         parentId: 28,
-      //         orgLevel: {
-      //           id: 1,
-      //           orgLevelName: 'string1',
-      //           orgLevelDesc: 'string2',
-      //           isActive: true,
-      //         },
-      //         childrent: [
-      //           {
-      //             id: 31,
-      //             orgStructCode: '',
-      //             orgStructName: 'Nhóm Tư vấn',
-      //             orgLevelId: 1,
-      //             parentId: 30,
-      //             orgLevel: {
-      //               id: 1,
-      //               orgLevelName: 'string1',
-      //               orgLevelDesc: 'string2',
-      //               isActive: true,
-      //             },
-      //             childrent: [],
-      //           },
-      //         ],
-      //       },
-      //     ],
-      //   },
-      // ];
-
-      // setOrgTreeData(res.data);
       setOrgTreeData(res.data);
       console.log('Set organization tree data:', res.data);
 
@@ -742,5 +419,119 @@ export const useEmployeePicker = () => {
     loadingMore,
     hasMore,
     handleLoadMore,
+  };
+};
+
+export const useProcedurePicker = () => {
+  const [showProcedurePicker, setShowProcedurePicker] = useState(false);
+  const [procedureData, setProcedureData] = useState([]);
+  const [pickerField, setPickerField] = useState('');
+  const [displayField, setDisplayField] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
+  const [currentKeyword, setCurrentKeyword] = useState('');
+
+  const PAGE_SIZE = 20;
+
+  // Mở modal và load danh sách procedure
+  const handlePickProcedure = async (
+    fieldName: string,
+    displayFieldName: string,
+    cfg: any,
+  ) => {
+    setPickerField(fieldName);
+    setDisplayField(displayFieldName);
+    setPage(1);
+    setCurrentKeyword('');
+    setShowProcedurePicker(true);
+    await fetchProcedures('', 1, true);
+  };
+
+  // Tìm kiếm procedure
+  const handleSearch = async (keyword: string) => {
+    setCurrentKeyword(keyword);
+    setPage(1);
+    await fetchProcedures(keyword, 1, true);
+  };
+
+  // Hàm lấy danh sách procedure từ API
+  const fetchProcedures = async (
+    keyword: string,
+    pageNum: number = 1,
+    reset: boolean = false,
+  ) => {
+    try {
+      if (reset) {
+        setLoading(true);
+      } else {
+        setLoadingMore(true);
+      }
+
+      const param = {
+        page: pageNum,
+        pageSize: PAGE_SIZE,
+        filter: '',
+        orderBy: '',
+        search: keyword,
+        sortOrder: '',
+      };
+      const data = await getProcedure(param, 'Appointed');
+      const newData = data?.data?.pageData || [];
+      const totalCount = data?.data?.total || 0;
+
+      let totalLoadedItems = 0;
+      if (reset) {
+        setProcedureData(newData);
+        totalLoadedItems = newData.length;
+      } else {
+        setProcedureData(prev => {
+          const combined = [...prev, ...newData];
+          totalLoadedItems = combined.length;
+          return combined;
+        });
+      }
+
+      const hasMoreData = totalLoadedItems < totalCount;
+      setHasMore(hasMoreData);
+    } catch (error) {
+      console.error('Error fetching procedures:', error);
+      if (reset) setProcedureData([]);
+      setHasMore(false);
+    } finally {
+      setLoading(false);
+      setLoadingMore(false);
+    }
+  };
+
+  // Load more khi scroll đến cuối
+  const handleLoadMore = () => {
+    if (!loading && !loadingMore && hasMore) {
+      const nextPage = page + 1;
+      setPage(nextPage);
+      fetchProcedures(currentKeyword, nextPage, false);
+    }
+  };
+
+  // Refresh lại danh sách
+  const handleRefresh = async () => {
+    setPage(1);
+    await fetchProcedures(currentKeyword, 1, true);
+  };
+
+  return {
+    showProcedurePicker,
+    setShowProcedurePicker,
+    procedureData,
+    pickerField,
+    displayField,
+    handlePickProcedure,
+    handleSearch,
+    loading,
+    loadingMore,
+    hasMore,
+    handleLoadMore,
+    handleRefresh,
   };
 };

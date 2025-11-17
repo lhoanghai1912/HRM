@@ -4393,7 +4393,7 @@ export const getLocation = async (
 
 export const getProcedure = async (payload: any, option: string) => {
   try {
-    const response = await apiClient.get(`/api/Procedure/list/${option}`, {
+    const response = await apiClient.get(`Procedure/list/${option}`, {
       params: {
         Page: payload.page,
         PageSize: payload.pageSize,
@@ -4406,6 +4406,8 @@ export const getProcedure = async (payload: any, option: string) => {
         accept: '*/*',
       },
     });
+    console.log('getProcedure response:', response.data);
+
     return response.data;
   } catch (error) {
     console.error('Error fetching procedure paginated:', error);

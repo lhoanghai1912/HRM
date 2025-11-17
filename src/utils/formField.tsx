@@ -115,9 +115,9 @@ export const renderField = (
       ) : (
         <AppInput
           value={value ?? ''}
-          onChangeText={val => onChange(data.fieldName, val)}
-          placeholder={`${data.fieldName} - ${fieldType} `}
-          editable={mode !== 'view' && !data.IsReadOnly}
+          onChangeText={val => onChange(data?.fieldName, val)}
+          placeholder={`${data?.fieldName} - ${fieldType} `}
+          editable={mode !== 'view' && !data?.IsReadOnly}
           multiline={true}
           scrollEnabled={true}
         />
@@ -127,7 +127,8 @@ export const renderField = (
 
       if (
         data.customConfig &&
-        JSON.parse(data.customConfig)?.LocationID === true
+        (JSON.parse(data.customConfig)?.LocationID === true ||
+          JSON.parse(data.customConfig)?.Procedure === true)
       ) {
         if (mode === 'view') {
           // Mode view: chỉ hiển thị text gọn gàng
@@ -171,8 +172,6 @@ export const renderField = (
                   data.displayField,
                   extraProps.pickerData,
                 );
-              console.log('extraProps', extraProps.formData);
-              console.log('extraProps123123213213213123', extraProps.formData);
             }}
           >
             <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
@@ -244,7 +243,6 @@ export const renderField = (
                     data.displayField,
                     extraProps.pickerData,
                   );
-                console.log('extraProps', extraProps.formData);
               }}
             >
               <Text numberOfLines={1} ellipsizeMode="tail">

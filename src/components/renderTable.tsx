@@ -135,6 +135,7 @@ const RenderTable: React.FC<RenderTableProps> = ({
       return (
         <View
           style={{
+            flex: 1,
             paddingTop: spacing.medium,
             paddingBottom: spacing.small,
             alignItems: 'center',
@@ -163,7 +164,7 @@ const RenderTable: React.FC<RenderTableProps> = ({
   return (
     <View style={{ flex: 1 }}>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        <View style={[styles.table, style]}>
+        <View style={[styles.table, style, { width: '100%' }]}>
           <FlatList
             ref={flatListRef}
             data={data}
@@ -172,14 +173,24 @@ const RenderTable: React.FC<RenderTableProps> = ({
             ListHeaderComponent={renderHeader}
             ListEmptyComponent={
               !loading && data.length === 0 ? (
-                <Text
-                  style={[
-                    AppStyles.label,
-                    { textAlign: 'center', marginTop: spacing.medium },
-                  ]}
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    minHeight: 200,
+                    width: '100%',
+                  }}
                 >
-                  {emptyMessage}
-                </Text>
+                  <Text
+                    style={[
+                      AppStyles.label,
+                      { textAlign: 'center', color: '#888' },
+                    ]}
+                  >
+                    {emptyMessage}
+                  </Text>
+                </View>
               ) : null
             }
             ListFooterComponent={renderFooter}

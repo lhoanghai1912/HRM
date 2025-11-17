@@ -165,7 +165,6 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
                                 onPickDate: handlers.handlePickDate,
                                 onPickMonth: handlers.handlePickMonth,
                                 onPickSelectOne: (fieldName: string) => {
-                                  let locationID = false;
                                   let type = '';
                                   let option = '';
                                   try {
@@ -174,35 +173,37 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
                                         typeof cfg.customConfig === 'string'
                                           ? JSON.parse(cfg.customConfig)
                                           : cfg.customConfig;
-                                      locationID =
-                                        parsedConfig?.LocationID === true;
-                                      parsedConfig?.LocationID === true
-                                        ? (type = 'location')
-                                        : parsedConfig?.ProcedureID === true
-                                        ? ((type = 'procedure'),
-                                          (option = parsedConfig?.Option))
-                                        : (type = '');
+                                      console.log('parsedConfig', parsedConfig);
+
+                                      if (parsedConfig?.ProcedureID == true) {
+                                        console.log(
+                                          'ProcedureID found in config',
+                                        );
+
+                                        type = 'Procedure';
+                                        option = parsedConfig?.Option;
+                                      } else if (
+                                        parsedConfig?.LocationID == true
+                                      ) {
+                                        type = 'Location';
+                                      }
                                     }
                                   } catch (e) {
-                                    locationID = false;
+                                    type = '';
                                   }
-                                  if (locationID) {
+                                  if (type === 'Procedure') {
+                                    console.log('Picking procedure');
+
+                                    handlers.handlePickProcedure(
+                                      fieldName,
+                                      cfg,
+                                      option,
+                                    );
+                                  } else if (type === 'Location') {
                                     handlers.handlePickLocation(fieldName, cfg);
                                   } else {
                                     handlers.handlePickSelect(fieldName, cfg);
                                   }
-                                  type === 'location'
-                                    ? handlers.handlePickLocation(
-                                        fieldName,
-                                        cfg,
-                                      )
-                                    : type === 'procedure'
-                                    ? handlers.handlePickProcedure(
-                                        fieldName,
-                                        cfg,
-                                        option,
-                                      )
-                                    : handlers.handlePickSelect(fieldName, cfg);
                                 },
                                 onPickSelectMulti: (
                                   fieldName: string,
@@ -294,7 +295,6 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
                                 onPickDate: handlers.handlePickDate,
                                 onPickMonth: handlers.handlePickMonth,
                                 onPickSelectOne: (fieldName: string) => {
-                                  let locationID = false;
                                   let type = '';
                                   let option = '';
                                   try {
@@ -303,35 +303,37 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
                                         typeof cfg.customConfig === 'string'
                                           ? JSON.parse(cfg.customConfig)
                                           : cfg.customConfig;
-                                      locationID =
-                                        parsedConfig?.LocationID === true;
-                                      parsedConfig?.LocationID === true
-                                        ? (type = 'location')
-                                        : parsedConfig?.ProcedureID === true
-                                        ? ((type = 'procedure'),
-                                          (option = parsedConfig?.Option))
-                                        : (type = '');
+                                      console.log('parsedConfig', parsedConfig);
+
+                                      if (parsedConfig?.ProcedureID == true) {
+                                        console.log(
+                                          'ProcedureID found in config',
+                                        );
+
+                                        type = 'Procedure';
+                                        option = parsedConfig?.Option;
+                                      } else if (
+                                        parsedConfig?.LocationID == true
+                                      ) {
+                                        type = 'Location';
+                                      }
                                     }
                                   } catch (e) {
-                                    locationID = false;
+                                    type = '';
                                   }
-                                  if (locationID) {
+                                  if (type === 'Procedure') {
+                                    console.log('Picking procedure');
+
+                                    handlers.handlePickProcedure(
+                                      fieldName,
+                                      cfg,
+                                      option,
+                                    );
+                                  } else if (type === 'Location') {
                                     handlers.handlePickLocation(fieldName, cfg);
                                   } else {
                                     handlers.handlePickSelect(fieldName, cfg);
                                   }
-                                  type === 'location'
-                                    ? handlers.handlePickLocation(
-                                        fieldName,
-                                        cfg,
-                                      )
-                                    : type === 'procedure'
-                                    ? handlers.handlePickProcedure(
-                                        fieldName,
-                                        cfg,
-                                        option,
-                                      )
-                                    : handlers.handlePickSelect(fieldName, cfg);
                                 },
                                 onPickSelectMulti: (
                                   fieldName: string,

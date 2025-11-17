@@ -33,9 +33,11 @@ import {
   useLocationPicker,
   useOrganizationPicker,
   useEmployeePicker,
+  useProcedurePicker,
 } from '../../../../components/hooks/useSelectPicker';
 import ModalTreeView from '../../../../components/modal/ModalTreeView';
 import ModalEmployeePicker from '../../../../components/modal/ModalEmployeePicker';
+import ModalProcedurePicker from '../../../../components/modal/ModalProcedurePicker';
 
 const DetailEmployee = ({ route }) => {
   const navigation = useNavigation<DrawerNavigationProp<any>>();
@@ -89,7 +91,7 @@ const DetailEmployee = ({ route }) => {
   const locationPicker = useLocationPicker(field, formData);
   const organizationPicker = useOrganizationPicker();
   const employeePicker = useEmployeePicker();
-
+  const procedurePicker = useProcedurePicker();
   // Fetch functions
   useFocusEffect(
     useCallback(() => {
@@ -374,7 +376,7 @@ const DetailEmployee = ({ route }) => {
     handleClearFile: filePicker.handleClearFile,
     handlePickSelect: selectPicker.handlePickSelect,
     handlePickLocation: locationPicker.handlePickLocation,
-    handlePickProcedure: locationPicker.handlePickProcedure,
+    handlePickProcedure: procedurePicker.handlePickProcedure,
     handlePickOrganization: organizationPicker.handlePickOrganization,
     handlePickEmployee: employeePicker.handlePickEmployee,
   };
@@ -546,6 +548,20 @@ const DetailEmployee = ({ route }) => {
         onSelect={handleSelectEmployee}
         onClose={() => employeePicker.setShowEmployeePicker(false)}
         selectedId={formData[employeePicker.pickerField]?.EmployeeID}
+      />
+
+      {/* Procedure Picker Modal */}
+      <ModalProcedurePicker
+        visible={procedurePicker.showProcedurePicker}
+        data={procedurePicker.procedureData}
+        loading={procedurePicker.loading}
+        loadingMore={procedurePicker.loadingMore}
+        hasMore={procedurePicker.hasMore}
+        onLoadMore={procedurePicker.handleLoadMore}
+        onSearch={procedurePicker.handleSearch}
+        onSelect={handleSelectEmployee}
+        onClose={() => procedurePicker.setShowProcedurePicker(false)}
+        selectedId={formData[procedurePicker.pickerField]?.EmployeeID}
       />
 
       {/* Loading Overlay */}

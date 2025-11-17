@@ -34,9 +34,11 @@ import {
   useLocationPicker,
   useOrganizationPicker,
   useEmployeePicker,
+  useProcedurePicker,
 } from '../../../../components/hooks/useSelectPicker';
 import ModalTreeView from '../../../../components/modal/ModalTreeView';
 import ModalEmployeePicker from '../../../../components/modal/ModalEmployeePicker';
+import ModalProcedurePicker from '../../../../components/modal/ModalProcedurePicker';
 
 const DetailAppontment = ({ route }) => {
   const navigation = useNavigation<DrawerNavigationProp<any>>();
@@ -90,6 +92,7 @@ const DetailAppontment = ({ route }) => {
   const locationPicker = useLocationPicker(field, formData);
   const organizationPicker = useOrganizationPicker();
   const employeePicker = useEmployeePicker();
+  const procedurePicker = useProcedurePicker();
 
   // Fetch functions
   useFocusEffect(
@@ -301,6 +304,36 @@ const DetailAppontment = ({ route }) => {
     employeePicker.setShowEmployeePicker(false);
   };
 
+  // ...existing code...
+
+  const handleSelectProcedure = procedure => {
+    console.log('procedurePicker', procedurePicker);
+    console.log('selected procedure', procedure);
+
+    const fieldName = procedurePicker.pickerField;
+    const displayField = procedurePicker.displayField;
+
+    setFormData(prev => ({
+      ...prev,
+      [fieldName]: procedure.ProcedureID,
+      [displayField]: procedure.procedureName,
+    }));
+    setChangedFields(prev => {
+      const safePrev = Array.isArray(prev) ? prev : [];
+      const filtered = safePrev.filter(
+        f => f.fieldName !== fieldName && f.fieldName !== displayField,
+      );
+      return [
+        ...filtered,
+        { fieldName: fieldName, fieldValue: procedure.value },
+        { fieldName: displayField, fieldValue: procedure.label },
+      ];
+    });
+    procedurePicker.setShowProcedurePicker(false);
+  };
+
+  // ...existing code...
+
   const handleSave = async () => {
     if (changedFields.length === 0 && pickedFiles.length === 0) {
       Toast.show({
@@ -375,7 +408,7 @@ const DetailAppontment = ({ route }) => {
     handleClearFile: filePicker.handleClearFile,
     handlePickSelect: selectPicker.handlePickSelect,
     handlePickLocation: locationPicker.handlePickLocation,
-    handlePickProcedure: locationPicker.handlePickProcedure,
+    handlePickProcedure: procedurePicker.handlePickProcedure,
 
     handlePickOrganization: organizationPicker.handlePickOrganization,
     handlePickEmployee: employeePicker.handlePickEmployee,
@@ -536,7 +569,7 @@ const DetailAppontment = ({ route }) => {
         onSearch={keyword => organizationPicker.handleSearch(keyword)}
       />
 
-      {/* Appoint Picker Modal */}
+      {/* Employee Picker Modal */}
       <ModalEmployeePicker
         visible={employeePicker.showEmployeePicker}
         data={employeePicker.employeeData}
@@ -548,6 +581,20 @@ const DetailAppontment = ({ route }) => {
         onSelect={handleSelectEmployee}
         onClose={() => employeePicker.setShowEmployeePicker(false)}
         selectedId={formData[employeePicker.pickerField]?.ContractID}
+      />
+
+      {/* ProcedurePicker */}
+      <ModalProcedurePicker
+        visible={procedurePicker.showProcedurePicker}
+        data={procedurePicker.procedureData}
+        loading={procedurePicker.loading}
+        loadingMore={procedurePicker.loadingMore}
+        hasMore={procedurePicker.hasMore}
+        onLoadMore={procedurePicker.handleLoadMore}
+        onSearch={procedurePicker.handleSearch}
+        onSelect={handleSelectProcedure}
+        onClose={() => procedurePicker.setShowProcedurePicker(false)}
+        selectedId={formData[procedurePicker.pickerField]?.EmployeeID}
       />
 
       {/* Loading Overlay */}
