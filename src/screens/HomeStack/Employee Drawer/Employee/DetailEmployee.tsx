@@ -374,6 +374,7 @@ const DetailEmployee = ({ route }) => {
     handleClearFile: filePicker.handleClearFile,
     handlePickSelect: selectPicker.handlePickSelect,
     handlePickLocation: locationPicker.handlePickLocation,
+    handlePickProcedure: locationPicker.handlePickProcedure,
     handlePickOrganization: organizationPicker.handlePickOrganization,
     handlePickEmployee: employeePicker.handlePickEmployee,
   };

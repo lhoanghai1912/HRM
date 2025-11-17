@@ -34,6 +34,7 @@ export const Screen_Name = {
   //Drawer
   Employee_Drawer: 'Employee_Drawer',
   Attendance_Drawer: 'Attendance_Drawer',
+  Appointment_Drawer: 'Appointment_Drawer',
 
   // Attendance
   Attendance: 'Attendance',
@@ -45,6 +46,8 @@ export const Screen_Name = {
   Details_Contract: 'Details_Contract',
   Detail_Group: 'Detail_Group',
   Group: 'Group',
+  Appointment: 'Appointment',
+  Detail_Appointment: 'Detail_Appointment',
 
   //Shift
   Shift: 'Shift',

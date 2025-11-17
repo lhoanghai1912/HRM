@@ -75,3 +75,17 @@ export const contract_GetAll = async (payload: any) => {
     throw error;
   }
 };
+
+export const appoint_GetAll = async (payload: any) => {
+  try {
+    console.log('appoint_GetAll payload:', payload);
+
+    const res = await apiClient.post('appoint/All', payload);
+    console.log('appoint_GetAll res:', res.data);
+
+    return res.data;
+  } catch (error) {
+    console.log('Error fetching appoint_GetAll:', error);
+    throw error;
+  }
+};

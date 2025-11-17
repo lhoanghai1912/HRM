@@ -23,9 +23,10 @@ import Employee from '../screens/HomeStack/Employee Drawer/Employee';
 import DetailEmployee from '../screens/HomeStack/Employee Drawer/Employee/DetailEmployee';
 import Contract from '../screens/HomeStack/Employee Drawer/Contract';
 import DetailContract from '../screens/HomeStack/Employee Drawer/Contract/DetailContract';
-import Not_Expand from '../screens/HomeStack/Employee Drawer/Group/DetailGroup';
 import GroupDetail from '../screens/HomeStack/Employee Drawer/Group/DetailGroup';
 import Group from '../screens/HomeStack/Employee Drawer/Group';
+import DetailAppointment from '../screens/HomeStack/Employee Drawer/Appointment/DetailAppointment';
+import Appointment from '../screens/HomeStack/Employee Drawer/Appointment';
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
@@ -116,6 +117,9 @@ export const EmployeeDrawer = () => (
           [Screen_Name.Contract]: focused
             ? icons.document_focus
             : icons.document,
+          [Screen_Name.Appointment]: focused
+            ? icons.appointment_focus
+            : icons.appointment,
         };
         return (
           <Image
@@ -129,6 +133,10 @@ export const EmployeeDrawer = () => (
   >
     <Drawer.Screen name={Screen_Name.Employee} component={EmployeeStack} />
     <Drawer.Screen name={Screen_Name.Contract} component={ContractStack} />
+    <Drawer.Screen
+      name={Screen_Name.Appointment}
+      component={AppointmentStack}
+    />
   </Drawer.Navigator>
 );
 
@@ -160,6 +168,22 @@ export const ContractStack = () => (
     <Stack.Screen
       name={Screen_Name.Details_Contract}
       component={DetailContract}
+    />
+    <Stack.Screen name={Screen_Name.Detail_Group} component={GroupDetail} />
+    <Stack.Screen name={Screen_Name.Group} component={Group} />
+  </Stack.Navigator>
+);
+
+export const AppointmentStack = () => (
+  <Stack.Navigator
+    id={undefined}
+    screenOptions={{ headerShown: false }}
+    initialRouteName={Screen_Name.Appointment}
+  >
+    <Stack.Screen name={Screen_Name.Appointment} component={Appointment} />
+    <Stack.Screen
+      name={Screen_Name.Detail_Appointment}
+      component={DetailAppointment}
     />
     <Stack.Screen name={Screen_Name.Detail_Group} component={GroupDetail} />
     <Stack.Screen name={Screen_Name.Group} component={Group} />

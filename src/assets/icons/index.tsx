@@ -61,8 +61,11 @@ import checkedRadio from './checkedRadio.png';
 import uncheckedRadio from './uncheckedRadio.png';
 import shift from './shift.png';
 import shift_focus from './shift_focus.png';
-
+import appointment from './appointment.png';
+import appointment_focus from './appointment_focus.png';
 export default {
+  appointment,
+  appointment_focus,
   shift,
   shift_focus,
   checkedRadio,

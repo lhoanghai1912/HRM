@@ -11,6 +11,7 @@ import {
   getPickerData,
   getLayout,
   updateContract,
+  getAppoint,
 } from '../../../../services/data';
 
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
@@ -37,7 +38,7 @@ import {
 import ModalTreeView from '../../../../components/modal/ModalTreeView';
 import ModalEmployeePicker from '../../../../components/modal/ModalEmployeePicker';
 
-const DetailContract = ({ route }) => {
+const DetailAppontment = ({ route }) => {
   const navigation = useNavigation<DrawerNavigationProp<any>>();
   const contractId = route?.params?.id;
 
@@ -107,7 +108,7 @@ const DetailContract = ({ route }) => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const data = await getSettingLayout('contract');
+      const data = await getSettingLayout('appoint');
       setField(data);
 
       if (data && data.pageData) {
@@ -128,10 +129,10 @@ const DetailContract = ({ route }) => {
   const fetchContractData = async () => {
     try {
       setLoading(true);
-      const data = await getContract(contractId);
+      const data = await getAppoint(contractId);
       setContractData(data);
     } catch (error) {
-      console.log('Error fetching contract data:', error);
+      console.log('Error fetching appoint data:', error);
     } finally {
       setLoading(false);
     }
@@ -140,7 +141,7 @@ const DetailContract = ({ route }) => {
   const fetchAllData = async () => {
     setLoading(true);
     try {
-      const layout = await getSettingLayout('contract');
+      const layout = await getSettingLayout('appoint');
 
       if (contractData) {
         const formData = mapContractToFormData(layout, contractData);
@@ -273,7 +274,7 @@ const DetailContract = ({ route }) => {
 
   const handleSelectEmployee = employee => {
     console.log('employeePicker', employeePicker);
-    console.log('contract', employee);
+    console.log('appoint', employee);
 
     const fieldName = employeePicker.pickerField;
     const displayField = employeePicker.displayField;
@@ -319,7 +320,7 @@ const DetailContract = ({ route }) => {
         try {
           const uploadResult = await uploadFile({
             id: contractId,
-            type: 'Contract',
+            type: 'Appoint',
             files: filesToUpload,
           });
           console.log('Upload file result:', uploadResult);
@@ -375,6 +376,7 @@ const DetailContract = ({ route }) => {
     handlePickSelect: selectPicker.handlePickSelect,
     handlePickLocation: locationPicker.handlePickLocation,
     handlePickProcedure: locationPicker.handlePickProcedure,
+
     handlePickOrganization: organizationPicker.handlePickOrganization,
     handlePickEmployee: employeePicker.handlePickEmployee,
   };
@@ -534,7 +536,7 @@ const DetailContract = ({ route }) => {
         onSearch={keyword => organizationPicker.handleSearch(keyword)}
       />
 
-      {/* Contract Picker Modal */}
+      {/* Appoint Picker Modal */}
       <ModalEmployeePicker
         visible={employeePicker.showEmployeePicker}
         data={employeePicker.employeeData}
@@ -578,4 +580,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DetailContract;
+export default DetailAppontment;

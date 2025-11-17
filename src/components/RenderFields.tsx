@@ -25,6 +25,7 @@ interface RenderFieldsProps {
       selectedIds?: any[],
     ) => void;
     handlePickLocation: (fieldName: string, cfg: any) => void;
+    handlePickProcedure: (fieldName: string, cfg: any, option: string) => void;
     handlePickOrganization: (
       fieldName: string,
       displayField: string,
@@ -165,6 +166,8 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
                                 onPickMonth: handlers.handlePickMonth,
                                 onPickSelectOne: (fieldName: string) => {
                                   let locationID = false;
+                                  let type = '';
+                                  let option = '';
                                   try {
                                     if (cfg.customConfig) {
                                       const parsedConfig =
@@ -173,6 +176,12 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
                                           : cfg.customConfig;
                                       locationID =
                                         parsedConfig?.LocationID === true;
+                                      parsedConfig?.LocationID === true
+                                        ? (type = 'location')
+                                        : parsedConfig?.ProcedureID === true
+                                        ? ((type = 'procedure'),
+                                          (option = parsedConfig?.Option))
+                                        : (type = '');
                                     }
                                   } catch (e) {
                                     locationID = false;
@@ -182,6 +191,18 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
                                   } else {
                                     handlers.handlePickSelect(fieldName, cfg);
                                   }
+                                  type === 'location'
+                                    ? handlers.handlePickLocation(
+                                        fieldName,
+                                        cfg,
+                                      )
+                                    : type === 'procedure'
+                                    ? handlers.handlePickProcedure(
+                                        fieldName,
+                                        cfg,
+                                        option,
+                                      )
+                                    : handlers.handlePickSelect(fieldName, cfg);
                                 },
                                 onPickSelectMulti: (
                                   fieldName: string,
@@ -274,6 +295,8 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
                                 onPickMonth: handlers.handlePickMonth,
                                 onPickSelectOne: (fieldName: string) => {
                                   let locationID = false;
+                                  let type = '';
+                                  let option = '';
                                   try {
                                     if (cfg.customConfig) {
                                       const parsedConfig =
@@ -282,6 +305,12 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
                                           : cfg.customConfig;
                                       locationID =
                                         parsedConfig?.LocationID === true;
+                                      parsedConfig?.LocationID === true
+                                        ? (type = 'location')
+                                        : parsedConfig?.ProcedureID === true
+                                        ? ((type = 'procedure'),
+                                          (option = parsedConfig?.Option))
+                                        : (type = '');
                                     }
                                   } catch (e) {
                                     locationID = false;
@@ -291,6 +320,18 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
                                   } else {
                                     handlers.handlePickSelect(fieldName, cfg);
                                   }
+                                  type === 'location'
+                                    ? handlers.handlePickLocation(
+                                        fieldName,
+                                        cfg,
+                                      )
+                                    : type === 'procedure'
+                                    ? handlers.handlePickProcedure(
+                                        fieldName,
+                                        cfg,
+                                        option,
+                                      )
+                                    : handlers.handlePickSelect(fieldName, cfg);
                                 },
                                 onPickSelectMulti: (
                                   fieldName: string,

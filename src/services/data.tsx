@@ -4391,12 +4391,57 @@ export const getLocation = async (
   }
 };
 
+export const getProcedure = async (payload: any, option: string) => {
+  try {
+    console.log('bádbasbdbaw');
+
+    console.log(`/api/Procedure/list/${option}`, {
+      params: {
+        Page: payload.paramQuery.page,
+        PageSize: payload.paramQuery.PageSize,
+        Filter: payload.paramQuery.Filter || '',
+        OrderBy: payload.paramQuery.OrderBy || '',
+        SortOrder: payload.paramQuery.SortOrder || '',
+        Search: payload.paramQuery.Search || '',
+      },
+    });
+
+    const response = await apiClient.get(`/api/Procedure/list/${option}`, {
+      params: {
+        Page: payload.paramQuery.page,
+        PageSize: payload.paramQuery.pageSize,
+        Filter: payload.paramQuery.filter || '',
+        OrderBy: payload.paramQuery.orderBy || '',
+        SortOrder: payload.paramQuery.sortOrder || '',
+        Search: payload.paramQuery.search || '',
+      },
+      headers: {
+        accept: '*/*',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching procedure paginated:', error);
+    throw error;
+  }
+};
+
 export const getContract = async contractId => {
   try {
     const response = await apiClient.get(`Contract/${contractId}`);
     return response.data;
   } catch (error) {
     console.error('Error fetching contract:', error);
+    throw error;
+  }
+};
+
+export const getAppoint = async appointId => {
+  try {
+    const response = await apiClient.get(`Appoint/${appointId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching appoint:', error);
     throw error;
   }
 };

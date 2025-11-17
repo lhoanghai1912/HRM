@@ -4,6 +4,7 @@ import {
   getPickerData,
   getLocation,
   getOrganizationTree,
+  getProcedure,
 } from '../../services/data';
 import { employee_GetAll } from '../../services/hr';
 
@@ -85,7 +86,6 @@ export const useLocationPicker = (field: any, formData: any) => {
   const [openLocationModal, setOpenLocationModal] = useState(false);
   const [locationData, setLocationData] = useState<any>(null);
   const [pickerConfig, setPickerConfig] = useState(null);
-
   const handlePickLocation = async (fieldName: string, cfg: any) => {
     setPickerField(fieldName);
     setDisplayField(cfg.displayField);
@@ -146,12 +146,79 @@ export const useLocationPicker = (field: any, formData: any) => {
     try {
       const param = {
         page: 1,
-        pageSize: 100,
+        pageSize: 15,
         filter: '',
         orderBy: '',
         search: '',
       };
       const data = await getLocation(param, countryIdParam, provinceIdParam);
+      setLocationData(data?.pageData || data || []);
+    } catch (error) {
+      console.error('Error loading location data:', error);
+      setLocationData([]);
+    }
+  };
+
+  const handlePickProcedure = async (
+    fieldName: string,
+    cfg: any,
+    option: string,
+  ) => {
+    setPickerField(fieldName);
+    setDisplayField(cfg.displayField);
+    setPickerConfig(cfg);
+
+    // Parse customConfig để lấy FieldParam và FieldConfigDependent
+    let customConfig: any = {};
+    try {
+      customConfig = cfg.customConfig ? JSON.parse(cfg.customConfig) : {};
+    } catch (e) {
+      console.log('Error parsing customConfig:', e);
+    }
+
+    if (customConfig.FieldParam) {
+      // Tìm fieldName ứng với FieldParam
+      const paramFieldName = Object.keys(formData).find(key =>
+        key.toLowerCase().includes(customConfig.FieldParam.toLowerCase()),
+      );
+
+      const allConfigs =
+        field?.pageData?.flatMap(parent => parent.groupFieldConfigs || []) ||
+        [];
+
+      // Tìm cfg có fieldName === paramFieldName
+      const paramFieldConfig = allConfigs.find(
+        cfg => cfg.fieldName === paramFieldName,
+      );
+
+      const paramValue = paramFieldName ? formData[paramFieldName] : null;
+
+      const dependentValue = formData[customConfig.FieldConfigDependent];
+      if (!dependentValue) {
+        Alert.alert(
+          'Thông báo',
+          `Vui lòng chọn ${
+            paramFieldConfig?.label || 'trường phụ thuộc'
+          } trước`,
+        );
+        return;
+      }
+    }
+
+    setLocationData([]);
+    setOpenLocationModal(true);
+
+    // Load dữ liệu trong background
+    try {
+      const param = {
+        Page: 1,
+        PageSize: 99,
+        filter: '',
+        orderBy: '',
+        search: '',
+        sortOrder: '',
+      };
+      const data = await getProcedure(param, option);
       setLocationData(data?.pageData || data || []);
     } catch (error) {
       console.error('Error loading location data:', error);
@@ -166,6 +233,7 @@ export const useLocationPicker = (field: any, formData: any) => {
     locationData,
     pickerConfig,
     handlePickLocation,
+    handlePickProcedure,
     setOpenLocationModal,
   };
 };
