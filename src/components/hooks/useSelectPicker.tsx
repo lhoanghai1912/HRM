@@ -211,8 +211,8 @@ export const useLocationPicker = (field: any, formData: any) => {
     // Load dữ liệu trong background
     try {
       const param = {
-        Page: 1,
-        PageSize: 99,
+        page: 1,
+        pageSize: 99,
         filter: '',
         orderBy: '',
         search: '',

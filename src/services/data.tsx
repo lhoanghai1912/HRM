@@ -4393,27 +4393,14 @@ export const getLocation = async (
 
 export const getProcedure = async (payload: any, option: string) => {
   try {
-    console.log('bádbasbdbaw');
-
-    console.log(`/api/Procedure/list/${option}`, {
-      params: {
-        Page: payload.paramQuery.page,
-        PageSize: payload.paramQuery.PageSize,
-        Filter: payload.paramQuery.Filter || '',
-        OrderBy: payload.paramQuery.OrderBy || '',
-        SortOrder: payload.paramQuery.SortOrder || '',
-        Search: payload.paramQuery.Search || '',
-      },
-    });
-
     const response = await apiClient.get(`/api/Procedure/list/${option}`, {
       params: {
-        Page: payload.paramQuery.page,
-        PageSize: payload.paramQuery.pageSize,
-        Filter: payload.paramQuery.filter || '',
-        OrderBy: payload.paramQuery.orderBy || '',
-        SortOrder: payload.paramQuery.sortOrder || '',
-        Search: payload.paramQuery.search || '',
+        Page: payload.page,
+        PageSize: payload.pageSize,
+        Filter: payload.filter || '',
+        OrderBy: payload.orderBy || '',
+        SortOrder: payload.sortOrder || '',
+        Search: payload.search || '',
       },
       headers: {
         accept: '*/*',
