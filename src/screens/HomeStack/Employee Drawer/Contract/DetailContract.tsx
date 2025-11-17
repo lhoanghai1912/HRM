@@ -9,6 +9,8 @@ import {
   getContract,
   uploadFile,
   getPickerData,
+  getLayout,
+  updateContract,
 } from '../../../../services/data';
 
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
@@ -32,10 +34,10 @@ import {
   useOrganizationPicker,
   useEmployeePicker,
 } from '../../../../components/hooks/useSelectPicker';
+import ModalTreeView from '../../../../components/modal/ModalTreeView';
+import ModalEmployeePicker from '../../../../components/modal/ModalEmployeePicker';
 
 const DetailContract = ({ route }) => {
-  console.log('DetailContract route params:', route?.params);
-
   const navigation = useNavigation<DrawerNavigationProp<any>>();
   const contractId = route?.params?.id;
 
@@ -87,6 +89,7 @@ const DetailContract = ({ route }) => {
   const locationPicker = useLocationPicker(field, formData);
   const organizationPicker = useOrganizationPicker();
   const employeePicker = useEmployeePicker();
+
   // Fetch functions
   useFocusEffect(
     useCallback(() => {
@@ -105,8 +108,6 @@ const DetailContract = ({ route }) => {
     try {
       setLoading(true);
       const data = await getSettingLayout('contract');
-      console.log('Fetched field data:', data);
-
       setField(data);
 
       if (data && data.pageData) {
@@ -241,13 +242,80 @@ const DetailContract = ({ route }) => {
     return formData;
   };
 
+  const handleSelectOrganization = node => {
+    console.log('node', node);
+    console.log('organizationPicker', organizationPicker);
+
+    const fieldName = organizationPicker.orgFieldName;
+    const displayField = organizationPicker.orgDisplayField;
+
+    setFormData(prev => ({
+      ...prev,
+      [fieldName]: node, // Lưu cả object
+      [displayField]: node.orgStructName || node.name,
+    }));
+    setChangedFields(prev => {
+      const safePrev = Array.isArray(prev) ? prev : [];
+      const filtered = safePrev.filter(
+        f => f.fieldName !== fieldName && f.fieldName !== displayField,
+      );
+      return [
+        ...filtered,
+        { fieldName: fieldName, fieldValue: node.id }, // Khi lưu chỉ gửi id
+        {
+          fieldName: displayField,
+          fieldValue: node.orgStructName || node.name,
+        },
+      ];
+    });
+    organizationPicker.setShowOrgTree(false);
+  };
+
+  const handleSelectEmployee = employee => {
+    console.log('employeePicker', employeePicker);
+    console.log('contract', employee);
+
+    const fieldName = employeePicker.pickerField;
+    const displayField = employeePicker.displayField;
+
+    setFormData(prev => ({
+      ...prev,
+      [fieldName]: employee.ContractID,
+      [displayField]: employee.fullName,
+    }));
+    setChangedFields(prev => {
+      const safePrev = Array.isArray(prev) ? prev : [];
+      const filtered = safePrev.filter(
+        f => f.fieldName !== fieldName && f.fieldName !== displayField,
+      );
+      return [
+        ...filtered,
+        { fieldName: fieldName, fieldValue: employee.ContractID },
+        {
+          fieldName: displayField,
+          fieldValue: employee.fullName,
+        },
+      ];
+    });
+    employeePicker.setShowEmployeePicker(false);
+  };
+
   const handleSave = async () => {
+    if (changedFields.length === 0 && pickedFiles.length === 0) {
+      Toast.show({
+        type: 'info',
+        text1: 'Không có thay đổi để lưu',
+      });
+      return;
+    }
     try {
       setLoading(true);
 
       const filesToUpload = [...pickedFiles];
 
       if (filesToUpload.length > 0) {
+        console.log('Files to upload:', filesToUpload);
+
         try {
           const uploadResult = await uploadFile({
             id: contractId,
@@ -268,7 +336,9 @@ const DetailContract = ({ route }) => {
       }
 
       if (changedFields.length > 0) {
-        // await updateContract(contractId, changedFields);
+        console.log('Files to upload:', changedFields);
+
+        await updateContract(contractId, changedFields);
       }
 
       setChangedFields([]);
@@ -454,6 +524,28 @@ const DetailContract = ({ route }) => {
           title="Chọn địa điểm"
         />
       )}
+      <ModalTreeView
+        visible={organizationPicker.showOrgTree}
+        data={organizationPicker.orgTreeData}
+        selectedId={formData[organizationPicker.orgFieldName]}
+        onSelect={handleSelectOrganization}
+        onClose={() => organizationPicker.setShowOrgTree(false)}
+        onSearch={keyword => organizationPicker.handleSearch(keyword)}
+      />
+
+      {/* Contract Picker Modal */}
+      <ModalEmployeePicker
+        visible={employeePicker.showEmployeePicker}
+        data={employeePicker.employeeData}
+        loading={employeePicker.loading}
+        loadingMore={employeePicker.loadingMore}
+        hasMore={employeePicker.hasMore}
+        onLoadMore={employeePicker.handleLoadMore}
+        onSearch={employeePicker.handleSearch}
+        onSelect={handleSelectEmployee}
+        onClose={() => employeePicker.setShowEmployeePicker(false)}
+        selectedId={formData[employeePicker.pickerField]?.ContractID}
+      />
 
       {/* Loading Overlay */}
       {loading && (

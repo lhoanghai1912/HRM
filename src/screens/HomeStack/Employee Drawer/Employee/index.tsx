@@ -58,7 +58,7 @@ const Employee = ({}) => {
   const fetchLayoutData = async () => {
     try {
       const data = await getLayout('profile');
-      console.log('layout', data);
+      console.log('layoutEmployee', data);
       const filteredFields = (data.pageData || []).filter(field =>
         fieldColumnsArr.includes(field.fieldName),
       );
@@ -221,77 +221,6 @@ const Employee = ({}) => {
       <View style={{ flex: 1 }}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           <View style={styles.table}>
-            {/* Table Header */}
-            {/* <View style={styles.tableRowHeader}>
-              <View
-                style={[
-                  styles.checkboxCell,
-                  { minWidth: COLUMN_MIN_WIDTHS.checkbox },
-                ]}
-              >
-                <View>
-                  <Text>#</Text>
-                </View>
-              </View>
-              <Text style={{ borderLeftWidth: 0.5 }} />
-              <Text
-                style={[
-                  styles.headerCell,
-                  {
-                    minWidth: COLUMN_MIN_WIDTHS.name,
-                    flex: 2,
-                  },
-                ]}
-              >
-                Mã nhân viên
-              </Text>
-              <Text style={{ borderLeftWidth: 0.5 }} />
-
-              <Text
-                style={[
-                  styles.headerCell,
-                  { minWidth: COLUMN_MIN_WIDTHS.work, flex: 1 },
-                ]}
-              >
-                Tên nhân viên
-              </Text>
-              <Text style={{ borderLeftWidth: 0.5 }} />
-              <Text
-                style={[
-                  styles.headerCell,
-                  { minWidth: COLUMN_MIN_WIDTHS.time, flex: 1 },
-                ]}
-              >
-                Giới tính
-              </Text>
-              <Text style={{ borderLeftWidth: 0.5 }} />
-              <Text
-                style={[
-                  styles.headerCell,
-                  { minWidth: COLUMN_MIN_WIDTHS.unit, flex: 1 },
-                ]}
-              >
-                Số điện thoại
-              </Text>
-              <Text style={{ borderLeftWidth: 0.5 }} />
-              <Text
-                style={[
-                  styles.headerCell,
-                  { minWidth: COLUMN_MIN_WIDTHS.object, flex: 1 },
-                ]}
-              >
-                Email
-              </Text>
-              <Text style={{ borderLeftWidth: 0.5 }} />
-              <Text
-                style={[
-                  styles.headerCell,
-                  { minWidth: COLUMN_MIN_WIDTHS.location, flex: 1 },
-                ]}
-              >
-                Ngày sinh
-              </Text>
-            </View> */}
             <FlatList
               ref={flatListRef}
               data={employee}

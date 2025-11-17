@@ -5,6 +5,7 @@ import icons from '../assets/icons';
 import AppStyles from '../components/AppStyle';
 import { lo } from '../language/Resource';
 import { joinString, splitString } from '../components/stringHelper';
+import { ms, spacing } from './spacing';
 
 type RenderFieldExtraProps = {
   onPickDate?: (fieldName: string) => void;
@@ -58,7 +59,7 @@ export const mapFieldType = TypeControl => {
       return 'currency'; // Tiền tệ
     case 'Percent':
       return 'percent'; // Phần trăm
-    case 'Checkbox':
+    case 'CheckBox':
       return 'checkbox'; // Tích chọn
     case 'Image':
       return 'image'; // Hình ảnh
@@ -514,6 +515,52 @@ export const renderField = (
               )}
             </View>
           ) : null}
+        </View>
+      );
+    case 'checkbox':
+      return (
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}
+        >
+          <TouchableOpacity
+            disabled={mode === 'view' || data.IsReadOnly}
+            onPress={() => {
+              if (mode !== 'view' && !data.IsReadOnly) {
+                onChange(data.fieldName, !value);
+              }
+            }}
+            style={{
+              marginRight: spacing.small,
+              width: ms(20),
+              height: ms(20),
+              borderWidth: 1,
+              borderColor: '#888',
+              borderRadius: 4,
+              backgroundColor: value ? '#1890ff' : '#fff',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            {value ? (
+              <View
+                style={{
+                  width: spacing.medium,
+                  height: spacing.medium,
+                  backgroundColor: '#1890ff',
+                  borderRadius: 2,
+                }}
+              />
+            ) : null}
+          </TouchableOpacity>
+          <Text style={{}}>
+            {data.label ||
+              (extraProps.formData &&
+                extraProps.formData[data.fieldName + 'Label']) ||
+              'Chọn'}
+          </Text>
         </View>
       );
     case 'image':

@@ -1,35 +1,35 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity,
-  ActivityIndicator,
-  Image,
-  RefreshControl,
   FlatList,
+  RefreshControl,
+  ActivityIndicator,
+  TouchableOpacity,
+  Image,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { DrawerNavigationProp } from '@react-navigation/drawer';
 import CustomHeader from '../../../../components/CustomHeader';
 import icons from '../../../../assets/icons';
-import { Screen_Name } from '../../../../navigation/ScreenName';
-import { ms, spacing } from '../../../../utils/spacing';
 import { usePaginatedList } from '../../../../components/Paginated';
-import { navigate } from '../../../../navigation/RootNavigator';
+import { ms, spacing } from '../../../../utils/spacing';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
-import styles from '../styles';
 import AppStyles from '../../../../components/AppStyle';
-import { contract_GetAll } from '../../../../services/hr';
+import { navigate } from '../../../../navigation/RootNavigator';
+import { Screen_Name } from '../../../../navigation/ScreenName';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { DrawerNavigationProp } from '@react-navigation/drawer';
+import styles from '../styles';
 import { getLayout } from '../../../../services/data';
 import { renderField } from '../../../../utils/formField';
+import { contract_GetAll } from '../../../../services/hr';
 
 const PAGE_SIZE = 15;
 
-const Contract = () => {
+const Contract = ({}) => {
   const navigation = useNavigation<DrawerNavigationProp<any>>();
   const FIELD_COLUMNS =
-    'ContractStatusID,ContractNo,StartDate,EndDate,SyncDocumentID';
+    'ContractStatusID,contractNo,startDate,endDate,syncDocumentID';
 
   const flatListRef = useRef<FlatList>(null);
   const [searchInput, setSearchInput] = useState(''); // Input tạm thời
@@ -38,6 +38,7 @@ const Contract = () => {
   const fieldColumnsArr = FIELD_COLUMNS.split(',')
     .map(s => s.trim())
     .filter(Boolean);
+  console.log('fieldColumnsArr', fieldColumnsArr);
 
   // Sử dụng hook phân trang
   const {
@@ -49,35 +50,36 @@ const Contract = () => {
     handleLoadMore,
     handleRefresh,
   } = usePaginatedList(contract_GetAll, PAGE_SIZE, {
-    orderBy: 'Id',
-    sortOrder: ' desc',
+    orderBy: 'contractNo',
+    sortOrder: ' asc',
     search: searchQuery,
     fieldColumns: FIELD_COLUMNS,
   });
   const onEndReachedCalledDuringMomentum = useRef(false);
-
-  console.log('Contract data:', contract);
+  console.log('contract', contract);
 
   const fetchLayoutData = async () => {
     try {
       const data = await getLayout('contract');
-      console.log('layout', data);
+      console.log('layoutContract', data);
       const filteredFields = (data.pageData || []).filter(field =>
         fieldColumnsArr.includes(field.fieldName),
       );
+      console.log('filteredFields', filteredFields);
+
       setLayoutFields(filteredFields);
-      console.log('fieldColumnsArr', filteredFields);
+      console.log('layoutFields', layoutFields);
     } catch (error) {
       console.log('Error fetching layout data:', error);
       setLayoutFields([]);
     }
   };
 
-  useEffect(() => {
-    fetchLayoutData();
-    console.log('fetch layout data', layoutFields);
-  }, []);
-
+  useFocusEffect(
+    useCallback(() => {
+      fetchLayoutData();
+    }, []),
+  );
   const renderHeader = () => (
     <View style={styles.tableRowHeader}>
       {/* Cột STT */}
@@ -87,21 +89,26 @@ const Contract = () => {
       <Text style={{ borderLeftWidth: 0.5 }} />
       {/* Render các cột theo layout */}
       {Array.isArray(layoutFields) && layoutFields.length > 0 ? (
-        layoutFields.map((field, index) => (
-          <React.Fragment key={field.fieldName}>
-            <Text
-              style={[
-                styles.headerCell,
-                { minWidth: field.minWidth || ms(120), flex: 1 },
-              ]}
-            >
-              {field.label}
-            </Text>
-            {index < layoutFields.length - 1 && (
-              <Text style={{ borderLeftWidth: 0.5 }} />
-            )}
-          </React.Fragment>
-        ))
+        layoutFields.map(
+          (field, index) => (
+            console.log('field in header:', field),
+            (
+              <React.Fragment key={field.fieldName}>
+                <Text
+                  style={[
+                    styles.headerCell,
+                    { minWidth: field.minWidth || ms(120), flex: 1 },
+                  ]}
+                >
+                  {field.label}
+                </Text>
+                {index < layoutFields.length - 1 && (
+                  <Text style={{ borderLeftWidth: 0.5 }} />
+                )}
+              </React.Fragment>
+            )
+          ),
+        )
       ) : (
         <Text style={{ marginLeft: 8, color: '#888' }}>
           Đang tải cấu hình bảng...
@@ -111,10 +118,10 @@ const Contract = () => {
   );
   const renderItem = ({ item, index }) => (
     <TouchableOpacity
-      key={item.EmployeeID}
+      key={item.contractNo}
       style={styles.tableRow}
       onPress={() => {
-        navigate(Screen_Name.Details_Employee, { id: item.EmployeeID });
+        navigate(Screen_Name.Details_Contract, { id: item.Id });
       }}
     >
       {/* STT */}
@@ -196,7 +203,7 @@ const Contract = () => {
   return (
     <View style={styles.container}>
       <CustomHeader
-        label="Employee Application"
+        label="Contract Application"
         leftIcon={icons.menu}
         leftPress={() => navigation.openDrawer()}
       />
@@ -218,17 +225,15 @@ const Contract = () => {
             Đang hiển thị {contract.length} bản ghi
           </Text>
           <Text style={AppStyles.text}></Text>
-          {/* <Text style={AppStyles.text}>{visibleCount}</Text> */}
         </View>
       </View>
-      {/* Table */}
       <View style={{ flex: 1 }}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           <View style={styles.table}>
             <FlatList
               ref={flatListRef}
               data={contract}
-              keyExtractor={item => item.EmployeeID?.toString()}
+              keyExtractor={item => item.contractNo?.toString()}
               style={styles.bodyScroll}
               renderItem={renderItem}
               ListHeaderComponent={renderHeader}
@@ -272,8 +277,6 @@ const Contract = () => {
           </View>
         </ScrollView>
       </View>
-
-      {/* Footer */}
 
       {(loading || refreshing) && (
         <View

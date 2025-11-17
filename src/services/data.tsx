@@ -4177,6 +4177,8 @@ export const getLayout = async (layout: string) => {
       `ConfigLayout/layout-field-config?layout=${layout}`,
     );
     const data = await response.data;
+    console.log('Layout data fetched:', data);
+
     return data;
   } catch (error) {
     console.error('Error fetching data:', error);
@@ -4242,6 +4244,24 @@ export const updateEmployee = async (id: string, fields: any[]) => {
     return response.data;
   } catch (error) {
     console.error('Error updating employee:', error);
+    throw error;
+  }
+};
+
+export const updateContract = async (id: string, fields: any[]) => {
+  console.log('updateContract called with:', { id, fields });
+
+  try {
+    console.log('FormData to update contract:', fields);
+
+    const response = await apiClient.put(`Contract/${id}`, fields, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error updating contract:', error);
     throw error;
   }
 };
