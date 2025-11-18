@@ -1,6 +1,6 @@
 import { DrawerNavigationProp } from '@react-navigation/drawer';
-import { useNavigation } from '@react-navigation/native';
-import React, { useEffect, useRef } from 'react';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import React, { useCallback, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -58,9 +58,12 @@ const Group = ({ route }) => {
 
   console.log('layout', layout);
 
-  useEffect(() => {
-    fetchGroupData();
-  }, [id, groupConfig]);
+  useFocusEffect(
+    useCallback(() => {
+      fetchGroupData();
+    }, [id, groupConfig]),
+  );
+
   console.log(
     'groupFieldConfigs',
     layout?.pageData.filter(cfg => cfg.parentId === groupConfig.id),

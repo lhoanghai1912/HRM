@@ -64,6 +64,8 @@ const RenderTable: React.FC<RenderTableProps> = ({
     }
     return field.width || field.minWidth || ms(150);
   };
+  console.log('layoutFields in RenderTable', layoutFields);
+  console.log('data in RenderTable', data);
 
   const renderHeader = () => (
     <View style={[styles.tableRowHeader, headerStyle]}>

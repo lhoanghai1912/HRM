@@ -86,12 +86,12 @@ export const renderField = (
   extraProps: RenderFieldExtraProps = {},
 ) => {
   const fieldType = mapFieldType(data.typeControl);
-
+  const isReadOnly = data.isReadOnly;
   switch (fieldType) {
     case 'singleLine':
       return (
         <>
-          {mode === 'view' ? (
+          {mode === 'view' || isReadOnly === true ? (
             <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
               {value}
             </Text>
@@ -100,7 +100,7 @@ export const renderField = (
               value={value ?? ''}
               onChangeText={val => onChange(data.fieldName, val)}
               placeholder={`${data.fieldName} - ${fieldType} `}
-              editable={mode !== 'view' && !data.IsReadOnly}
+              editable={mode !== 'view' && !data.isReadOnly}
               numberOfLines={1}
               multiline={false}
               scrollEnabled={true}
@@ -109,7 +109,7 @@ export const renderField = (
         </>
       );
     case 'multiLine':
-      return mode === 'view' ? (
+      return mode === 'view' || isReadOnly === true ? (
         <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
           {value}
         </Text>
@@ -118,7 +118,7 @@ export const renderField = (
           value={value ?? ''}
           onChangeText={val => onChange(data?.fieldName, val)}
           placeholder={`${data?.fieldName} - ${fieldType} `}
-          editable={mode !== 'view' && !data?.IsReadOnly}
+          editable={mode !== 'view' && !data?.isReadOnly}
           multiline={true}
           scrollEnabled={true}
         />
@@ -131,7 +131,7 @@ export const renderField = (
         (JSON.parse(data.customConfig)?.LocationID === true ||
           JSON.parse(data.customConfig)?.Procedure === true)
       ) {
-        if (mode === 'view') {
+        if (mode === 'view' || isReadOnly === true) {
           // Mode view: chỉ hiển thị text gọn gàng
           const displayText = (() => {
             if (value && typeof value === 'object' && value.label) {
@@ -158,7 +158,7 @@ export const renderField = (
 
         return (
           <TouchableOpacity
-            disabled={mode === 'view'}
+            disabled={mode === 'view' || isReadOnly === true}
             style={{
               borderWidth: 1,
               borderRadius: 10,
@@ -202,7 +202,7 @@ export const renderField = (
           </TouchableOpacity>
         );
       } else {
-        if (mode === 'view') {
+        if (mode === 'view' || isReadOnly === true) {
           // Mode view: chỉ hiển thị text gọn gàng
           const displayText = (() => {
             if (value && typeof value === 'object' && value.label) {
@@ -230,7 +230,7 @@ export const renderField = (
         return (
           <>
             <TouchableOpacity
-              disabled={mode === 'view'}
+              disabled={mode === 'view' || isReadOnly === true}
               style={{
                 borderWidth: 1,
                 borderRadius: 10,
@@ -275,13 +275,13 @@ export const renderField = (
         );
       }
     case 'selectMulti':
-      return mode === 'view' ? (
+      return mode === 'view' || isReadOnly === true ? (
         <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
           {value}
         </Text>
       ) : (
         <TouchableOpacity
-          disabled={mode === 'view'}
+          disabled={mode === 'view' || isReadOnly === true}
           style={{
             borderWidth: 1,
             borderRadius: 10,
@@ -371,7 +371,7 @@ export const renderField = (
         </TouchableOpacity>
       );
     case 'date':
-      return mode === 'view' ? (
+      return mode === 'view' || isReadOnly === true ? (
         <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
           {value
             ? typeof value === 'string'
@@ -382,7 +382,7 @@ export const renderField = (
       ) : (
         <TouchableOpacity
           onPress={() => extraProps.onPickDate?.(data.fieldName)}
-          disabled={mode === 'view' || data.IsReadOnly}
+          disabled={mode === 'view' || isReadOnly === true || data.isReadOnly}
         >
           <AppInput
             value={
@@ -399,7 +399,7 @@ export const renderField = (
         </TouchableOpacity>
       );
     case 'month':
-      return mode === 'view' ? (
+      return mode === 'view' || isReadOnly === true ? (
         <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
           {value && value.month && value.year
             ? `${value.month}/${value.year}`
@@ -407,7 +407,7 @@ export const renderField = (
         </Text>
       ) : (
         <TouchableOpacity
-          disabled={mode === 'view'}
+          disabled={mode === 'view' || isReadOnly === true}
           style={{ borderWidth: 1, marginBottom: 8, padding: 8 }}
           onPress={() => {
             if (extraProps.onPickMonth) extraProps.onPickMonth(data.fieldName);
@@ -419,7 +419,7 @@ export const renderField = (
         </TouchableOpacity>
       );
     case 'int':
-      return mode === 'view' ? (
+      return mode === 'view' || isReadOnly === true ? (
         <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
           {value}
         </Text>
@@ -428,7 +428,7 @@ export const renderField = (
           value={value?.toString() ?? ''}
           onChangeText={val => onChange(data.fieldName, val)}
           placeholder={`${data.fieldName} - ${fieldType} `}
-          editable={mode !== 'view' && !data.IsReadOnly}
+          editable={mode !== 'view' && !data.isReadOnly}
           keyboardType="numeric"
           numberOfLines={1}
           multiline={false}
@@ -436,7 +436,7 @@ export const renderField = (
         />
       );
     case 'decimal':
-      return mode === 'view' ? (
+      return mode === 'view' || isReadOnly === true ? (
         <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
           {value}
         </Text>
@@ -445,7 +445,7 @@ export const renderField = (
           value={value?.toString() ?? ''}
           onChangeText={val => onChange(data.fieldName, val)}
           placeholder={`${data.fieldName} - ${fieldType} `}
-          editable={mode !== 'view' && !data.IsReadOnly}
+          editable={mode !== 'view' && !data.isReadOnly}
           keyboardType="decimal-pad"
           numberOfLines={1}
           multiline={false}
@@ -453,7 +453,7 @@ export const renderField = (
         />
       );
     case 'file':
-      return mode === 'view' ? (
+      return mode === 'view' || isReadOnly === true ? (
         <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
           {value && (value.name || value.uri || typeof value === 'string')
             ? value.name || value.uri || value
@@ -462,7 +462,7 @@ export const renderField = (
       ) : (
         <View style={{ borderWidth: 1, marginBottom: 8, padding: 8 }}>
           <TouchableOpacity
-            disabled={mode === 'view'}
+            disabled={mode === 'view' || isReadOnly === true}
             onPress={() => {
               if (extraProps.onPickFile) extraProps.onPickFile(data.fieldName);
             }}
@@ -517,7 +517,7 @@ export const renderField = (
         </View>
       );
     case 'checkbox':
-      return mode === 'view' ? (
+      return mode === 'view' || isReadOnly === true ? (
         <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
           {value && value === true ? 'Có' : 'Không'}
         </Text>
@@ -529,9 +529,9 @@ export const renderField = (
           }}
         >
           <TouchableOpacity
-            disabled={mode === 'view' || data.IsReadOnly}
+            disabled={mode === 'view' || isReadOnly === true || data.isReadOnly}
             onPress={() => {
-              if (mode !== 'view' && !data.IsReadOnly) {
+              if (mode !== 'view' && !data.isReadOnly) {
                 onChange(data.fieldName, !value);
               }
             }}
@@ -567,7 +567,7 @@ export const renderField = (
         </View>
       );
     case 'image':
-      return mode === 'view' ? (
+      return mode === 'view' || isReadOnly === true ? (
         <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
           {value && value.uri
             ? value.uri
@@ -577,7 +577,7 @@ export const renderField = (
         </Text>
       ) : (
         <TouchableOpacity
-          disabled={mode === 'view'}
+          disabled={mode === 'view' || isReadOnly === true}
           style={{ borderWidth: 1, marginBottom: 8, padding: 8 }}
           onPress={() => {
             if (extraProps.onPickImage) extraProps.onPickImage(data.fieldName);
@@ -593,7 +593,7 @@ export const renderField = (
         </TouchableOpacity>
       );
     case 'organization':
-      return mode === 'view' ? (
+      return mode === 'view' || isReadOnly === true ? (
         <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
           {value && typeof value === 'object' && value.orgStructName
             ? value.orgStructName
@@ -616,7 +616,7 @@ export const renderField = (
               marginBottom: 8,
               backgroundColor: '#e6f7ff',
             }}
-            disabled={mode === 'view' || data.IsReadOnly}
+            disabled={mode === 'view' || isReadOnly === true || data.isReadOnly}
           >
             <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
               {(() => {
@@ -642,7 +642,7 @@ export const renderField = (
         </>
       );
     case 'employee':
-      return mode === 'view' ? (
+      return mode === 'view' || isReadOnly === true ? (
         <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
           {value && typeof value === 'object' && value.name
             ? value.name
@@ -660,7 +660,7 @@ export const renderField = (
             marginBottom: 8,
             backgroundColor: '#e6f7ff',
           }}
-          disabled={mode === 'view' || data.IsReadOnly}
+          disabled={mode === 'view' || isReadOnly === true || data.isReadOnly}
         >
           <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
             {(() => {
@@ -682,7 +682,7 @@ export const renderField = (
       );
     // Các kiểu khác có thể bổ sung thêm
     default:
-      return mode === 'view' ? (
+      return mode === 'view' || isReadOnly === true ? (
         <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
           {value}
         </Text>
@@ -691,7 +691,7 @@ export const renderField = (
           value={value ?? ''}
           onChangeText={val => onChange(data.fieldName, val)}
           placeholder={`${data.fieldName} - ${fieldType} `}
-          editable={mode !== 'view' && !data.IsReadOnly}
+          editable={mode !== 'view' && !data.isReadOnly}
           numberOfLines={1}
           multiline={false}
           scrollEnabled={true}
