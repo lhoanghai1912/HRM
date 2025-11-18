@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: colors.lightGray,
+    borderColor: colors.Gray,
     borderRadius: 8,
     padding: spacing.medium,
     marginVertical: spacing.medium,
@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 50,
     borderWidth: 1,
-    borderColor: colors.lightGray,
+    borderColor: colors.Gray,
     borderRadius: 8,
     marginHorizontal: 6,
     fontSize: 24,

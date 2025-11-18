@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 0,
-    borderColor: '#ccc',
+    borderColor: colors.Gray,
     borderRadius: 25,
     overflow: 'hidden',
     backgroundColor: '#F4F5F5',

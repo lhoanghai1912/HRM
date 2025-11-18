@@ -10,8 +10,9 @@ import {
 } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { renderField } from '../utils/formField';
-import { spacing } from '../utils/spacing';
+import { ms, spacing } from '../utils/spacing';
 import AppStyles from './AppStyle';
+import { colors } from '../utils/color';
 
 interface RenderTableProps {
   layoutFields: any[];
@@ -54,11 +55,14 @@ const RenderTable: React.FC<RenderTableProps> = ({
     if (field.customConfig) {
       try {
         const grid = JSON.parse(field.customConfig)?.GridConfigs;
-        if (grid?.Width) return grid.Width;
-        if (grid?.MinWidth) return grid.MinWidth;
+        if (grid?.Width) {
+          return grid.Width;
+        } else if (grid?.MinWidth) {
+          return grid.MinWidth;
+        } else return ms(200);
       } catch {}
     }
-    return field.width || field.minWidth || 120;
+    return field.width || field.minWidth || ms(150);
   };
 
   const renderHeader = () => (
@@ -79,9 +83,7 @@ const RenderTable: React.FC<RenderTableProps> = ({
             },
           ]}
         >
-          <Text numberOfLines={1} ellipsizeMode="tail">
-            {field.label}
-          </Text>
+          <Text style={{ textAlign: 'center' }}>{field.label}</Text>
         </View>
       ))}
     </View>
@@ -235,21 +237,29 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderBottomWidth: 0.5,
-    borderColor: '#eee',
+    borderColor: colors.Gray,
   },
   headerCell: {
-    padding: 8,
+    padding: spacing.small,
     borderRightWidth: 0.5,
-    borderColor: '#ddd',
+    borderColor: colors.Gray,
     justifyContent: 'center',
   },
   cell: {
-    padding: 8,
+    padding: spacing.small,
+    paddingHorizontal: spacing.medium,
     borderRightWidth: 0.5,
-    borderColor: '#eee',
+    borderColor: colors.Gray,
     justifyContent: 'center',
+    alignItems: 'center',
   },
-  checkboxCell: { justifyContent: 'center', alignItems: 'center' },
+  checkboxCell: {
+    borderRightWidth: 0.5,
+    borderColor: colors.Gray,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: spacing.small,
+  },
 });
 
 export default RenderTable;

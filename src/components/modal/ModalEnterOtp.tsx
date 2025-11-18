@@ -5,6 +5,7 @@ import AppButton from '../AppButton';
 import { useDispatch } from 'react-redux';
 import { setVerificationToken } from '../../store/reducers/userSlice';
 import { forgot_pw } from '../../services/auth';
+import { colors } from '../../utils/color';
 // import { enterOtp } from '../../services/auth';
 
 interface EnterOtpProp {
@@ -150,7 +151,7 @@ const styles = StyleSheet.create({
   otpInput: {
     width: 40,
     borderWidth: 1,
-    borderColor: 'gray',
+    borderColor: colors.Gray,
     textAlign: 'center',
     fontSize: 18,
     borderRadius: 5,

@@ -9,7 +9,7 @@ const tableStyles = StyleSheet.create({
   table: {
     marginHorizontal: spacing.small,
     borderWidth: hair, // ⬅️ viền ngoài
-    borderColor: colors.black, // ⬅️ màu viền ngoài
+    borderColor: colors.Gray,
     borderRadius: 6,
     overflow: 'hidden',
     position: 'relative', // ⬅️ cần để overlay tuyệt đối

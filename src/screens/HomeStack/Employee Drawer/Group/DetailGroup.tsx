@@ -33,12 +33,22 @@ import {
   useLocationPicker,
   useOrganizationPicker,
   useEmployeePicker,
+  useProcedurePicker,
 } from '../../../../components/hooks/useSelectPicker';
 import ModalTreeView from '../../../../components/modal/ModalTreeView';
+import { lo } from '../../../../language/Resource';
 
 const DetailGroup = ({ route }) => {
   const navigation = useNavigation<DrawerNavigationProp<any>>();
-  const { id, employeeId, parent, data, isGroupDetail } = route.params;
+  const {
+    id,
+    employeeId,
+    parent,
+    dataPrev,
+    isGroupDetail,
+    status,
+    layoutPrev,
+  } = route.params;
 
   // Basic states
   const [field, setField] = useState<any>();
@@ -86,6 +96,7 @@ const DetailGroup = ({ route }) => {
   const locationPicker = useLocationPicker(field, formData);
   const organizationPicker = useOrganizationPicker();
   const employeePicker = useEmployeePicker();
+  const procedurePicker = useProcedurePicker();
   const filteredField = field
     ? {
         ...field,
@@ -98,10 +109,12 @@ const DetailGroup = ({ route }) => {
       }
     : null;
 
+  console.log('route', route.params);
+
   // Fetch functions
   useFocusEffect(
     useCallback(() => {
-      fetchData();
+      // fetchData();
       fetchGroupData();
     }, [id]),
   );
@@ -112,32 +125,69 @@ const DetailGroup = ({ route }) => {
     }
   }, [contractData]);
 
-  const fetchData = async () => {
-    try {
-      setLoading(true);
-      const data = await getSettingLayout('contract');
-      setField(data);
+  useEffect(() => {
+    if (layoutPrev) {
+      let formData = {};
 
-      if (data && data.pageData) {
-        const parents = data.pageData.filter(item => item.parentId === null);
-        const expandedInit = {};
-        parents.forEach(p => {
-          expandedInit[p.id] = true; // Mở tất cả sections
+      if (status === 'create' || !dataPrev) {
+        // Tạo mới: các trường trống hoặc defaultValue
+        layoutPrev?.pageData?.forEach(parentGroup => {
+          if (
+            parentGroup.id === parent?.id ||
+            parentGroup.parentId === parent?.id ||
+            parentGroup.fatherId === parent?.id
+          ) {
+            parentGroup.groupFieldConfigs?.forEach(cfg => {
+              if (cfg.defaultValue) {
+                try {
+                  const def =
+                    typeof cfg.defaultValue === 'string'
+                      ? JSON.parse(cfg.defaultValue)
+                      : cfg.defaultValue;
+                  formData[cfg.fieldName] = def.id ?? def;
+                } catch (e) {
+                  formData[cfg.fieldName] = cfg.defaultValue;
+                }
+              } else {
+                formData[cfg.fieldName] = '';
+              }
+            });
+          }
         });
-        setExpandedSections(expandedInit);
+      } else {
+        // Có data: map dữ liệu như hiện tại
+        formData = mapGroupToFormData(layoutPrev, dataPrev);
       }
-    } catch (error) {
-      console.log('Error fetching data:', error);
-    } finally {
-      setLoading(false);
+
+      // Parse customConfig như cũ
+      const configs: { fieldName: string; config: any }[] = [];
+      layoutPrev?.pageData?.forEach(parentGroup => {
+        parentGroup.groupFieldConfigs?.forEach(cfg => {
+          if (cfg.customConfig && typeof cfg.customConfig === 'string') {
+            try {
+              const parsedConfig = JSON.parse(cfg.customConfig);
+              configs.push({
+                fieldName: cfg.fieldName,
+                config: parsedConfig,
+              });
+            } catch (e) {
+              console.error('Error parsing customConfig:', e);
+            }
+          }
+        });
+      });
+
+      setField(layoutPrev);
+      setFormData(formData);
+      setCustomConfigs(configs);
     }
-  };
+  }, [layoutPrev, status, dataPrev, parent]);
 
   const fetchGroupData = async () => {
     try {
       setLoading(true);
       // const data = await getGroup(id);
-      setGroupData(data);
+      setGroupData(field);
     } catch (error) {
       console.log('Error fetching contract data:', error);
     } finally {
@@ -148,48 +198,43 @@ const DetailGroup = ({ route }) => {
   const fetchAllData = async () => {
     setLoading(true);
     try {
-      const layout = await getSettingLayout('profile');
-      if (data) {
-        // Map data từ route params vào formData
-        const formData = mapGroupToFormData(layout, data);
+      const layout = layoutPrev;
+      console.log('layout', layout);
 
-        // Fetch display values cho các field select
-        for (const parentGroup of layout?.pageData || []) {
-          for (const cfg of parentGroup.groupFieldConfigs || []) {
-            if (cfg.displayField && cfg.tableNameSource === 'PickList') {
-              const fieldValue = formData[cfg.fieldName];
+      let formData = {};
 
-              if (fieldValue && !formData[cfg.displayField]) {
-                try {
-                  const pickerData = await getPickerData(
-                    {
-                      page: 1,
-                      pageSize: 100,
-                      filter: '',
-                      orderBy: '',
-                      search: '',
-                    },
-                    cfg,
-                  );
-
-                  const item = pickerData.pageData?.find(
-                    i => i.value === fieldValue,
-                  );
-                  if (item) {
-                    formData[cfg.displayField] = item.label;
+      if (layout) {
+        if (status === 'create' || !dataPrev) {
+          // Tạo mới: các trường trống hoặc defaultValue
+          layout?.pageData?.forEach(parentGroup => {
+            if (
+              parentGroup.id === parent?.id ||
+              parentGroup.parentId === parent?.id ||
+              parentGroup.fatherId === parent?.id
+            ) {
+              parentGroup.groupFieldConfigs?.forEach(cfg => {
+                if (cfg.defaultValue) {
+                  try {
+                    const def =
+                      typeof cfg.defaultValue === 'string'
+                        ? JSON.parse(cfg.defaultValue)
+                        : cfg.defaultValue;
+                    formData[cfg.fieldName] = def.id ?? def;
+                  } catch (e) {
+                    formData[cfg.fieldName] = cfg.defaultValue;
                   }
-                } catch (e) {
-                  console.error(
-                    `Error fetching display value for ${cfg.fieldName}:`,
-                    e,
-                  );
+                } else {
+                  formData[cfg.fieldName] = '';
                 }
-              }
+              });
             }
-          }
+          });
+        } else {
+          // Có data: map dữ liệu như hiện tại
+          formData = mapGroupToFormData(layout, dataPrev);
         }
 
-        // Parse customConfig
+        // Parse customConfig như cũ
         const configs: { fieldName: string; config: any }[] = [];
         layout?.pageData?.forEach(parentGroup => {
           parentGroup.groupFieldConfigs?.forEach(cfg => {
@@ -301,13 +346,14 @@ const DetailGroup = ({ route }) => {
 
       setChangedFields([]);
       setPickedFiles([]);
-      fetchData();
+      // fetchData();
       fetchGroupData();
       fetchAllData();
       Toast.show({
         type: 'success',
         text1: 'Lưu dữ liệu thành công',
       });
+      navigation.goBack();
     } catch (error) {
       console.error('Error saving data:', error);
       Alert.alert('Lỗi', 'Lỗi khi lưu dữ liệu');
@@ -333,6 +379,7 @@ const DetailGroup = ({ route }) => {
     handlePickSelect: selectPicker.handlePickSelect,
     handlePickLocation: locationPicker.handlePickLocation,
     handlePickEmployee: employeePicker.handlePickEmployee,
+    handlePickProcedure: procedurePicker.handlePickProcedure,
     handlePickOrganization: organizationPicker.handlePickOrganization,
   };
 

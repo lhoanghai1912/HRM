@@ -6,6 +6,7 @@ import AppStyles from '../components/AppStyle';
 import { lo } from '../language/Resource';
 import { joinString, splitString } from '../components/stringHelper';
 import { ms, spacing } from './spacing';
+import { colors } from './color';
 
 type RenderFieldExtraProps = {
   onPickDate?: (fieldName: string) => void;
@@ -516,7 +517,11 @@ export const renderField = (
         </View>
       );
     case 'checkbox':
-      return (
+      return mode === 'view' ? (
+        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
+          {value && value === true ? 'Có' : 'Không'}
+        </Text>
+      ) : (
         <View
           style={{
             flexDirection: 'row',
@@ -535,7 +540,7 @@ export const renderField = (
               width: ms(20),
               height: ms(20),
               borderWidth: 1,
-              borderColor: '#888',
+              borderColor: colors.Gray,
               borderRadius: 4,
               backgroundColor: value ? '#1890ff' : '#fff',
               alignItems: 'center',
@@ -698,7 +703,7 @@ const styles = StyleSheet.create({
   cell: {
     padding: 8,
     borderWidth: 0.5,
-    borderColor: '#ccc',
+    borderColor: colors.Gray,
     justifyContent: 'center',
   },
   text: {

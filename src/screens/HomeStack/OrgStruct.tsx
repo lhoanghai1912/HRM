@@ -21,6 +21,7 @@ import { spacing } from '../../utils/spacing';
 import tableStyles from '../../components/TableStyle';
 import AppStyles from '../../components/AppStyle';
 import { useTranslation } from 'react-i18next';
+import { colors } from '../../utils/color';
 
 const OrnStruct = ({ navigation }: any) => {
   const [loading, setLoading] = useState(false);
@@ -176,7 +177,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, alignItems: 'center' },
   search: {
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: colors.Gray,
     borderRadius: 10,
     paddingHorizontal: 12,
     paddingVertical: 10,

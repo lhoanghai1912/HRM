@@ -105,45 +105,50 @@ export const useLocationPicker = (field: any, formData: any) => {
     let provinceIdParam = null;
 
     if (customConfig.FieldParam) {
-      // Tìm fieldName ứng với FieldParam
-      const paramFieldName = Object.keys(formData).find(key =>
-        key.toLowerCase().includes(customConfig.FieldParam.toLowerCase()),
-      );
-
-      const allConfigs =
-        field?.pageData?.flatMap(parent => parent.groupFieldConfigs || []) ||
-        [];
-
-      // Tìm cfg có fieldName === paramFieldName
-      const paramFieldConfig = allConfigs.find(
-        cfg => cfg.fieldName === paramFieldName,
-      );
-
-      const paramValue = paramFieldName ? formData[paramFieldName] : null;
-
-      if (customConfig.FieldParam === 'countryId') {
-        countryIdParam = paramValue;
-      }
-      if (customConfig.FieldParam === 'provinceId') {
-        provinceIdParam = paramValue;
-      }
-
-      const dependentValue = formData[customConfig.FieldConfigDependent];
-      if (!dependentValue) {
-        Alert.alert(
-          'Thông báo',
-          `Vui lòng chọn ${
-            paramFieldConfig?.label || 'trường phụ thuộc'
-          } trước`,
+      // Nếu có FieldConfigDependent, lấy giá trị của field phụ thuộc
+      if (customConfig.FieldConfigDependent) {
+        const dependentValue = formData[customConfig.FieldConfigDependent];
+        if (!dependentValue) {
+          // Tìm label của trường phụ thuộc
+          const allConfigs =
+            field?.pageData?.flatMap(
+              parent => parent.groupFieldConfigs || [],
+            ) || [];
+          const dependentFieldConfig = allConfigs.find(
+            cfg => cfg.fieldName === customConfig.FieldConfigDependent,
+          );
+          const dependentLabel =
+            dependentFieldConfig?.label || customConfig.FieldConfigDependent;
+          Alert.alert('Thông báo', `Vui lòng chọn ${dependentLabel} trước`);
+          return;
+        }
+        // Nếu FieldParam là countryId, lấy giá trị của field phụ thuộc làm param
+        if (customConfig.FieldParam === 'countryId') {
+          countryIdParam = dependentValue;
+        }
+        // Nếu FieldParam là provinceId, lấy giá trị của field phụ thuộc làm param
+        if (customConfig.FieldParam === 'provinceId') {
+          provinceIdParam = dependentValue;
+        }
+      } else {
+        // Nếu không có FieldConfigDependent, lấy giá trị trực tiếp từ formData
+        const paramFieldName = Object.keys(formData).find(key =>
+          key.toLowerCase().includes(customConfig.FieldParam.toLowerCase()),
         );
-        return;
+        const paramValue = paramFieldName ? formData[paramFieldName] : null;
+        if (customConfig.FieldParam === 'countryId') {
+          countryIdParam = paramValue;
+        }
+        if (customConfig.FieldParam === 'provinceId') {
+          provinceIdParam = paramValue;
+        }
       }
     }
 
     setLocationData([]);
     setOpenLocationModal(true);
 
-    // Load dữ liệu trong background
+    // Load dữ liệu location
     try {
       const param = {
         page: 1,
@@ -160,75 +165,6 @@ export const useLocationPicker = (field: any, formData: any) => {
     }
   };
 
-  const handlePickProcedure = async (
-    fieldName: string,
-    cfg: any,
-    option: string,
-  ) => {
-    setPickerField(fieldName);
-    setDisplayField(cfg.displayField);
-    setPickerConfig(cfg);
-
-    // Parse customConfig để lấy FieldParam và FieldConfigDependent
-    let customConfig: any = {};
-    try {
-      customConfig = cfg.customConfig ? JSON.parse(cfg.customConfig) : {};
-    } catch (e) {
-      console.log('Error parsing customConfig:', e);
-    }
-
-    if (customConfig.FieldParam) {
-      // Tìm fieldName ứng với FieldParam
-      const paramFieldName = Object.keys(formData).find(key =>
-        key.toLowerCase().includes(customConfig.FieldParam.toLowerCase()),
-      );
-
-      const allConfigs =
-        field?.pageData?.flatMap(parent => parent.groupFieldConfigs || []) ||
-        [];
-
-      // Tìm cfg có fieldName === paramFieldName
-      const paramFieldConfig = allConfigs.find(
-        cfg => cfg.fieldName === paramFieldName,
-      );
-
-      const paramValue = paramFieldName ? formData[paramFieldName] : null;
-
-      const dependentValue = formData[customConfig.FieldConfigDependent];
-      if (!dependentValue) {
-        Alert.alert(
-          'Thông báo',
-          `Vui lòng chọn ${
-            paramFieldConfig?.label || 'trường phụ thuộc'
-          } trước`,
-        );
-        return;
-      }
-    }
-
-    setLocationData([]);
-    setOpenLocationModal(true);
-
-    // Load dữ liệu trong background
-    try {
-      const param = {
-        page: 1,
-        pageSize: 99,
-        filter: '',
-        orderBy: '',
-        search: '',
-        sortOrder: '',
-      };
-      const data = await getProcedure(param, option);
-      console.log('Procedure data:', data.data);
-
-      setProcedureData(data?.data?.pageData || data || []);
-    } catch (error) {
-      console.error('Error loading procedure data:', error);
-      setProcedureData([]);
-    }
-  };
-
   return {
     pickerField,
     displayField,
@@ -236,7 +172,6 @@ export const useLocationPicker = (field: any, formData: any) => {
     locationData,
     pickerConfig,
     handlePickLocation,
-    handlePickProcedure,
     setOpenLocationModal,
   };
 };
@@ -308,7 +243,7 @@ export const useEmployeePicker = () => {
   const [currentKeyword, setCurrentKeyword] = useState(''); // Lưu keyword hiện tại
 
   // Mở modal và load danh sách nhân viên
-  const handlePickEmployee = async (fieldName, displayFieldName, cfg) => {
+  const handlePickEmployee = async (fieldName, displayFieldName) => {
     setPickerField(fieldName);
     setDisplayField(displayFieldName);
     setPage(1);
@@ -439,8 +374,13 @@ export const useProcedurePicker = () => {
   const handlePickProcedure = async (
     fieldName: string,
     displayFieldName: string,
-    cfg: any,
   ) => {
+    console.log(
+      'handlePickProcedure called with:',
+      fieldName,
+      displayFieldName,
+    );
+
     setPickerField(fieldName);
     setDisplayField(displayFieldName);
     setPage(1);

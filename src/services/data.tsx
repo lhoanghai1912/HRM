@@ -4353,6 +4353,8 @@ export const getData_Group = async (data: any) => {
         },
       },
     );
+    console.log('getData_Group response:', response.data);
+
     return response.data;
   } catch (error) {
     console.error('Error getData_Group:', error);

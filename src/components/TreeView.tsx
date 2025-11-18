@@ -11,6 +11,7 @@ import {
   ViewStyle,
   ActivityIndicator,
 } from 'react-native';
+import { colors } from '../utils/color';
 
 if (
   Platform.OS === 'android' &&
@@ -246,7 +247,7 @@ function findPath(nodes: TreeNode[], id: Id): TreeNode[] | null {
 }
 
 const styles = StyleSheet.create({
-  container: { borderWidth: 1, borderColor: '#E5E7EB', borderRadius: 10 },
+  container: { borderWidth: 1, borderColor: colors.Gray, borderRadius: 10 },
   row: {
     flexDirection: 'row',
     alignItems: 'center',

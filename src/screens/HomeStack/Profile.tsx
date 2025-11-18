@@ -541,7 +541,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.medium,
     borderRadius: 15,
     borderWidth: 1,
-    borderColor: '#E2E5EA',
+    borderColor: colors.Gray,
   },
   sectionHeader: {
     flexDirection: 'row',
@@ -562,7 +562,7 @@ const styles = StyleSheet.create({
   },
   readonlyInput: {
     borderWidth: 1,
-    borderColor: '#E2E5EA',
+    borderColor: colors.Gray,
     borderRadius: 12,
     paddingHorizontal: spacing.small,
     paddingVertical: ms(8),

@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
   },
   errorBorder: {
-    borderColor: '#ff5a5f',
+    borderColor: colors.Gray,
   },
   errorText: {
     color: '#ff5a5f',

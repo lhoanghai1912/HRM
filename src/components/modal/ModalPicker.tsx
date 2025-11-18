@@ -384,7 +384,7 @@ const styles = StyleSheet.create({
     height: 22,
     borderRadius: 6,
     borderWidth: 2,
-    borderColor: '#ddd',
+    borderColor: colors.Gray,
     backgroundColor: '#fff',
     marginRight: spacing.medium,
     justifyContent: 'center',
@@ -420,7 +420,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.medium,
     borderRadius: 6,
     borderWidth: 1,
-    borderColor: '#007AFF',
+    borderColor: colors.Gray,
     alignSelf: 'center',
   },
   checkedRow: {

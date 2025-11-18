@@ -5,6 +5,7 @@ import icons from '../assets/icons';
 import { mapFieldType, renderField } from '../utils/formField';
 import { navigate } from '../navigation/RootNavigator';
 import { Screen_Name } from '../navigation/ScreenName';
+import { colors } from '../utils/color';
 
 interface RenderFieldsProps {
   field: any;
@@ -25,7 +26,11 @@ interface RenderFieldsProps {
       selectedIds?: any[],
     ) => void;
     handlePickLocation: (fieldName: string, cfg: any) => void;
-    handlePickProcedure: (fieldName: string, cfg: any, option: string) => void;
+    handlePickProcedure: (
+      fieldName: string,
+      displayField: string,
+      option: string,
+    ) => void;
     handlePickOrganization: (
       fieldName: string,
       displayField: string,
@@ -85,7 +90,7 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
               style={{
                 marginBottom: 24,
                 borderWidth: 1,
-                borderColor: '#ccc',
+                borderColor: colors.Gray,
                 borderRadius: 8,
               }}
             >
@@ -111,6 +116,7 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
                       id, // <-- lấy từ props của RenderFields
                       groupLabel: parent.label,
                       groupConfig: parent,
+                      layout: field,
                     });
                   }
                 }}
@@ -164,45 +170,48 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
                                 formData,
                                 onPickDate: handlers.handlePickDate,
                                 onPickMonth: handlers.handlePickMonth,
-                                onPickSelectOne: (fieldName: string) => {
+                                onPickSelectOne: (
+                                  fieldName: string,
+                                  displayField: string,
+                                ) => {
                                   let type = '';
                                   let option = '';
+                                  let typeField = '';
                                   try {
                                     if (cfg.customConfig) {
                                       const parsedConfig =
                                         typeof cfg.customConfig === 'string'
                                           ? JSON.parse(cfg.customConfig)
                                           : cfg.customConfig;
+                                      typeField = parsedConfig?.typeField;
+                                      option = parsedConfig?.Option;
                                       console.log('parsedConfig', parsedConfig);
-
-                                      if (parsedConfig?.ProcedureID == true) {
-                                        console.log(
-                                          'ProcedureID found in config',
-                                        );
-
-                                        type = 'Procedure';
-                                        option = parsedConfig?.Option;
-                                      } else if (
-                                        parsedConfig?.LocationID == true
-                                      ) {
-                                        type = 'Location';
-                                      }
                                     }
                                   } catch (e) {
-                                    type = '';
+                                    typeField = '';
                                   }
-                                  if (type === 'Procedure') {
-                                    console.log('Picking procedure');
 
-                                    handlers.handlePickProcedure(
-                                      fieldName,
-                                      cfg,
-                                      option,
-                                    );
-                                  } else if (type === 'Location') {
-                                    handlers.handlePickLocation(fieldName, cfg);
-                                  } else {
-                                    handlers.handlePickSelect(fieldName, cfg);
+                                  switch (typeField) {
+                                    case 'Location':
+                                      console.log('Picking location');
+
+                                      handlers.handlePickLocation(
+                                        fieldName,
+                                        cfg,
+                                      );
+                                      break;
+                                    case 'Procedure':
+                                      console.log('Picking Procedure');
+
+                                      handlers.handlePickProcedure(
+                                        fieldName,
+                                        displayField,
+                                        option,
+                                      );
+                                      break;
+                                    default:
+                                      handlers.handlePickSelect(fieldName, cfg);
+                                      break;
                                   }
                                 },
                                 onPickSelectMulti: (
@@ -294,45 +303,48 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
                                 formData,
                                 onPickDate: handlers.handlePickDate,
                                 onPickMonth: handlers.handlePickMonth,
-                                onPickSelectOne: (fieldName: string) => {
+                                onPickSelectOne: (
+                                  fieldName: string,
+                                  displayField: string,
+                                ) => {
                                   let type = '';
                                   let option = '';
+                                  let typeField = '';
                                   try {
                                     if (cfg.customConfig) {
                                       const parsedConfig =
                                         typeof cfg.customConfig === 'string'
                                           ? JSON.parse(cfg.customConfig)
                                           : cfg.customConfig;
+                                      typeField = parsedConfig?.typeField;
+                                      option = parsedConfig?.Option;
                                       console.log('parsedConfig', parsedConfig);
-
-                                      if (parsedConfig?.ProcedureID == true) {
-                                        console.log(
-                                          'ProcedureID found in config',
-                                        );
-
-                                        type = 'Procedure';
-                                        option = parsedConfig?.Option;
-                                      } else if (
-                                        parsedConfig?.LocationID == true
-                                      ) {
-                                        type = 'Location';
-                                      }
                                     }
                                   } catch (e) {
-                                    type = '';
+                                    typeField = '';
                                   }
-                                  if (type === 'Procedure') {
-                                    console.log('Picking procedure');
 
-                                    handlers.handlePickProcedure(
-                                      fieldName,
-                                      cfg,
-                                      option,
-                                    );
-                                  } else if (type === 'Location') {
-                                    handlers.handlePickLocation(fieldName, cfg);
-                                  } else {
-                                    handlers.handlePickSelect(fieldName, cfg);
+                                  switch (typeField) {
+                                    case 'Location':
+                                      console.log('Picking location');
+
+                                      handlers.handlePickLocation(
+                                        fieldName,
+                                        cfg,
+                                      );
+                                      break;
+                                    case 'Procedure':
+                                      console.log('Picking Procedure');
+
+                                      handlers.handlePickProcedure(
+                                        fieldName,
+                                        displayField,
+                                        option,
+                                      );
+                                      break;
+                                    default:
+                                      handlers.handlePickSelect(fieldName, cfg);
+                                      break;
                                   }
                                 },
                                 onPickSelectMulti: (

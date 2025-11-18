@@ -312,12 +312,19 @@ const DetailAppontment = ({ route }) => {
 
     const fieldName = procedurePicker.pickerField;
     const displayField = procedurePicker.displayField;
+    console.log('fieldName', fieldName);
+    console.log('displayField', displayField);
 
-    setFormData(prev => ({
-      ...prev,
-      [fieldName]: procedure.ProcedureID,
-      [displayField]: procedure.procedureName,
-    }));
+    setFormData(prev => {
+      const updatedFormData = {
+        ...prev,
+        [fieldName]: procedure.ProcedureID,
+        [displayField]: procedure.procedureName,
+      };
+      console.log('formData after setFormData', updatedFormData);
+      return updatedFormData;
+    });
+
     setChangedFields(prev => {
       const safePrev = Array.isArray(prev) ? prev : [];
       const filtered = safePrev.filter(
@@ -417,7 +424,7 @@ const DetailAppontment = ({ route }) => {
   return (
     <View style={styles.container}>
       <CustomHeader
-        label="DetailContract Screen"
+        label="Detail Appointment"
         leftIcon={icons.menu}
         leftPress={() => navigation.openDrawer()}
         rightIcon={icons.document_focus}
