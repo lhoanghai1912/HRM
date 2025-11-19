@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, Image, TouchableOpacity } from 'react-native';
+import { View, Text, Image, TouchableOpacity, ScrollView } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import AppStyles from './AppStyle';
 import icons from '../assets/icons';
 import { mapFieldType, renderField } from '../utils/formField';
@@ -54,8 +55,8 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
   toggleSection,
   handleChange,
   handlers,
-  id, // <-- truyền vào đây
-  isGroupDetail, // <-- thêm vào đây
+  id,
+  isGroupDetail,
 }) => {
   try {
     if (!field || !field.pageData) return null;
@@ -69,6 +70,8 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
         return (a.columnIndex || 0) - (b.columnIndex || 0);
       });
     console.log('RenderFields - field.pageData:', field.pageData);
+
+    const navigation = useNavigation();
 
     return (
       <>
@@ -88,9 +91,9 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
             <View
               key={parent.id}
               style={{
-                marginBottom: 24,
-                borderWidth: 1,
-                borderColor: colors.Gray,
+                // marginBottom: 16,
+                borderBottomWidth: 0.5,
+                borderColor: colors.black,
                 borderRadius: 8,
               }}
             >
@@ -100,41 +103,37 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
                   justifyContent: 'space-between',
                   alignItems: 'center',
                   paddingHorizontal: 8,
+                  // paddingVertical: 16,
+                  backgroundColor: 'red',
                 }}
                 onPress={() => {
-                  console.log('isgroupdetail', isGroupDetail);
-                  console.log('expand', expanded);
-
-                  if (parent.groupType !== 2 || isGroupDetail) {
-                    console.log('Toggle section for parent id:', parent.id);
-
-                    toggleSection(parent.id);
-                  } else {
-                    console.log([id, parent]);
-                    navigate(Screen_Name.Group, {
-                      // screen: Screen_Name.Detail_Group,
-                      id, // <-- lấy từ props của RenderFields
-                      groupLabel: parent.label,
-                      groupConfig: parent,
-                      layout: field,
-                    });
-                  }
+                  navigate(Screen_Name.Child_Field, {
+                    parent,
+                    children,
+                    formData,
+                    handleChange,
+                    handlers,
+                    customConfigs,
+                  });
                 }}
               >
-                <Text style={{ fontWeight: 'bold', fontSize: 16, margin: 8 }}>
+                <Text
+                  style={{
+                    fontWeight: 'bold',
+                    fontSize: 16,
+                    margin: 8,
+                    backgroundColor: 'blue',
+                  }}
+                >
                   {parent.name}
                 </Text>
-                <Image
-                  style={[AppStyles.icon]}
-                  source={expanded ? icons.down : icons.up}
-                />
+                <Image style={[AppStyles.icon]} source={icons.arrow} />
               </TouchableOpacity>
 
-              {/* Nếu parent có groupFieldConfigs thì render luôn ở đây */}
               {expanded &&
                 parent.groupFieldConfigs &&
                 parent.groupFieldConfigs.length > 0 && (
-                  <View style={{ marginHorizontal: 16, marginBottom: 8 }}>
+                  <View style={{ marginHorizontal: 16 }}>
                     {parent.groupFieldConfigs
                       .sort((a, b) => {
                         if ((a.columnIndex || 0) !== (b.columnIndex || 0)) {
@@ -150,7 +149,10 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
                         return (
                           <View
                             key={cfg.id}
-                            style={{ marginHorizontal: 16, marginBottom: 4 }}
+                            style={{
+                              marginHorizontal: 16,
+                              marginBottom: 4,
+                            }}
                           >
                             <Text style={AppStyles.label}>
                               {cfg.label}
@@ -170,86 +172,14 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
                                 formData,
                                 onPickDate: handlers.handlePickDate,
                                 onPickMonth: handlers.handlePickMonth,
-                                onPickSelectOne: (
-                                  fieldName: string,
-                                  displayField: string,
-                                ) => {
-                                  let type = '';
-                                  let option = '';
-                                  let typeField = '';
-                                  try {
-                                    if (cfg.customConfig) {
-                                      const parsedConfig =
-                                        typeof cfg.customConfig === 'string'
-                                          ? JSON.parse(cfg.customConfig)
-                                          : cfg.customConfig;
-                                      typeField = parsedConfig?.typeField;
-                                      option = parsedConfig?.Option;
-                                      console.log('parsedConfig', parsedConfig);
-                                    }
-                                  } catch (e) {
-                                    typeField = '';
-                                  }
-
-                                  switch (typeField) {
-                                    case 'Location':
-                                      console.log('Picking location');
-
-                                      handlers.handlePickLocation(
-                                        fieldName,
-                                        cfg,
-                                      );
-                                      break;
-                                    case 'Procedures':
-                                      console.log('Picking Procedure');
-
-                                      handlers.handlePickProcedure(
-                                        fieldName,
-                                        displayField,
-                                        option,
-                                      );
-                                      break;
-                                    default:
-                                      handlers.handlePickSelect(fieldName, cfg);
-                                      break;
-                                  }
-                                },
-                                onPickSelectMulti: (
-                                  fieldName: string,
-                                  displayField: string,
-                                  pickerData: any,
-                                  selectedIds: any[],
-                                ) => {
-                                  handlers.handlePickSelect(
-                                    fieldName,
-                                    cfg,
-                                    selectedIds,
-                                  );
-                                },
+                                onPickSelectOne: handlers.handlePickSelect,
+                                onPickSelectMulti: handlers.handlePickSelect,
                                 onPickFile: handlers.handlePickFile,
                                 onPickImage: handlers.handlePickImage,
                                 onClearFile: handlers.handleClearFile,
-                                onPickOrganization: (
-                                  fieldName: string,
-                                  displayField: any,
-                                ) => {
-                                  handlers.handlePickOrganization(
-                                    fieldName,
-                                    displayField,
-                                    cfg,
-                                  );
-                                },
-                                onPickEmployee: (
-                                  fieldName: string,
-                                  displayField: string,
-                                  cfg: any,
-                                ) => {
-                                  handlers.handlePickEmployee(
-                                    fieldName,
-                                    displayField,
-                                    cfg,
-                                  );
-                                },
+                                onPickOrganization:
+                                  handlers.handlePickOrganization,
+                                onPickEmployee: handlers.handlePickEmployee,
                               },
                             )}
                           </View>
@@ -257,139 +187,6 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
                       })}
                   </View>
                 )}
-
-              {/* Nếu child có groupFieldConfigs thì render luôn ở đây */}
-              {expanded &&
-                children.map(child => (
-                  <View
-                    key={child.id}
-                    style={{ marginHorizontal: 16, marginBottom: 8 }}
-                  >
-                    <Text style={{ fontSize: 14, fontWeight: 'bold' }}>
-                      {child.name}
-                    </Text>
-                    {child.groupFieldConfigs
-                      .sort((a, b) => {
-                        if ((a.columnIndex || 0) !== (b.columnIndex || 0)) {
-                          return (a.columnIndex || 0) - (b.columnIndex || 0);
-                        }
-                        return (a.sortOrder || 0) - (b.sortOrder || 0);
-                      })
-                      .map(cfg => {
-                        const customConfig =
-                          customConfigs.find(c => c.fieldName === cfg.fieldName)
-                            ?.config || null;
-
-                        return (
-                          <View
-                            key={cfg.id}
-                            style={{ marginHorizontal: 16, marginBottom: 4 }}
-                          >
-                            <Text style={AppStyles.label}>
-                              {cfg.label}
-                              {customConfig?.isRequired && (
-                                <Text style={{ color: 'red' }}> *</Text>
-                              )}
-                            </Text>
-                            <Text>{`${cfg.typeControl}- ${mapFieldType(
-                              cfg.typeControl,
-                            )}`}</Text>
-                            {renderField(
-                              cfg,
-                              formData[cfg.fieldName],
-                              handleChange,
-                              'edit',
-                              {
-                                formData,
-                                onPickDate: handlers.handlePickDate,
-                                onPickMonth: handlers.handlePickMonth,
-                                onPickSelectOne: (
-                                  fieldName: string,
-                                  displayField: string,
-                                ) => {
-                                  let type = '';
-                                  let option = '';
-                                  let typeField = '';
-                                  try {
-                                    if (cfg.customConfig) {
-                                      const parsedConfig =
-                                        typeof cfg.customConfig === 'string'
-                                          ? JSON.parse(cfg.customConfig)
-                                          : cfg.customConfig;
-                                      typeField = parsedConfig?.typeField;
-                                      option = parsedConfig?.Option;
-                                      console.log('parsedConfig', parsedConfig);
-                                    }
-                                  } catch (e) {
-                                    typeField = '';
-                                  }
-
-                                  switch (typeField) {
-                                    case 'Location':
-                                      console.log('Picking location');
-
-                                      handlers.handlePickLocation(
-                                        fieldName,
-                                        cfg,
-                                      );
-                                      break;
-                                    case 'Procedure':
-                                      console.log('Picking Procedure');
-
-                                      handlers.handlePickProcedure(
-                                        fieldName,
-                                        displayField,
-                                        option,
-                                      );
-                                      break;
-                                    default:
-                                      handlers.handlePickSelect(fieldName, cfg);
-                                      break;
-                                  }
-                                },
-                                onPickSelectMulti: (
-                                  fieldName: string,
-                                  displayField: string,
-                                  pickerData: any,
-                                  selectedIds: any[],
-                                ) => {
-                                  handlers.handlePickSelect(
-                                    fieldName,
-                                    cfg,
-                                    selectedIds,
-                                  );
-                                },
-                                onPickFile: handlers.handlePickFile,
-                                onPickImage: handlers.handlePickImage,
-                                onClearFile: handlers.handleClearFile,
-                                onPickOrganization: (
-                                  fieldName: string,
-                                  displayField: any,
-                                ) => {
-                                  handlers.handlePickOrganization(
-                                    fieldName,
-                                    displayField,
-                                    cfg,
-                                  );
-                                },
-                                onPickEmployee: (
-                                  fieldName: string,
-                                  displayField: string,
-                                  cfg: any,
-                                ) => {
-                                  handlers.handlePickEmployee(
-                                    fieldName,
-                                    displayField,
-                                    cfg,
-                                  );
-                                },
-                              },
-                            )}
-                          </View>
-                        );
-                      })}
-                  </View>
-                ))}
             </View>
           );
         })}

@@ -587,9 +587,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollView: {
-    flex: 1,
     backgroundColor: 'white',
-    marginBottom: spacing.medium,
     padding: spacing.medium,
   },
 });

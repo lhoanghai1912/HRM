@@ -9,6 +9,7 @@ import Remote from '../screens/HomeStack/Application/Remote';
 import Attendance from '../screens/HomeStack/Check_InOut';
 import Attendance_Update from '../screens/HomeStack/Application/Attendance_Update';
 import Detail_Late_Early from '../screens/HomeStack/Application/Late_Early/Detail';
+import DetailField from '../components/DetailField';
 // import { AttendanceDrawer } from './DrawerNavigator';
 
 export const Screen_Name = {
@@ -48,6 +49,8 @@ export const Screen_Name = {
   Group: 'Group',
   Appointment: 'Appointment',
   Detail_Appointment: 'Detail_Appointment',
+  Detail_Field: 'Detail_Field',
+  Child_Field: 'Child_Field',
 
   //Shift
   Shift: 'Shift',

@@ -27,6 +27,9 @@ import GroupDetail from '../screens/HomeStack/Employee Drawer/Group/DetailGroup'
 import Group from '../screens/HomeStack/Employee Drawer/Group';
 import DetailAppointment from '../screens/HomeStack/Employee Drawer/Appointment/DetailAppointment';
 import Appointment from '../screens/HomeStack/Employee Drawer/Appointment';
+import DetailField from '../components/DetailField';
+import Child_Field from '../components/Child_Field';
+import Detail_Field from '../components/DetailField';
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
@@ -153,6 +156,8 @@ export const EmployeeStack = () => (
       name={Screen_Name.Details_Employee}
       component={DetailEmployee}
     />
+    <Stack.Screen name={Screen_Name.Detail_Field} component={Detail_Field} />
+    <Stack.Screen name={Screen_Name.Child_Field} component={Child_Field} />
     <Stack.Screen name={Screen_Name.Detail_Group} component={GroupDetail} />
     <Stack.Screen name={Screen_Name.Group} component={Group} />
   </Stack.Navigator>
@@ -169,6 +174,8 @@ export const ContractStack = () => (
       name={Screen_Name.Details_Contract}
       component={DetailContract}
     />
+    <Stack.Screen name={Screen_Name.Detail_Field} component={Detail_Field} />
+    <Stack.Screen name={Screen_Name.Child_Field} component={Child_Field} />
     <Stack.Screen name={Screen_Name.Detail_Group} component={GroupDetail} />
     <Stack.Screen name={Screen_Name.Group} component={Group} />
   </Stack.Navigator>
@@ -185,6 +192,8 @@ export const AppointmentStack = () => (
       name={Screen_Name.Detail_Appointment}
       component={DetailAppointment}
     />
+    <Stack.Screen name={Screen_Name.Detail_Field} component={Detail_Field} />
+    <Stack.Screen name={Screen_Name.Child_Field} component={Child_Field} />
     <Stack.Screen name={Screen_Name.Detail_Group} component={GroupDetail} />
     <Stack.Screen name={Screen_Name.Group} component={Group} />
   </Stack.Navigator>
