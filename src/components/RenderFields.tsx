@@ -200,7 +200,7 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
                                         cfg,
                                       );
                                       break;
-                                    case 'Procedure':
+                                    case 'Procedures':
                                       console.log('Picking Procedure');
 
                                       handlers.handlePickProcedure(

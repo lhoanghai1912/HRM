@@ -56,8 +56,8 @@ export const mapFieldType = TypeControl => {
       return 'int'; // Số nguyên
     case 'Decimal':
       return 'decimal'; // Số thập phân
-    case 'Currency':
-      return 'currency'; // Tiền tệ
+    case 'Money':
+      return 'money'; // Tiền tệ
     case 'Percent':
       return 'percent'; // Phần trăm
     case 'CheckBox':
@@ -88,11 +88,45 @@ export const renderField = (
   const fieldType = mapFieldType(data.typeControl);
   const isReadOnly = data.isReadOnly;
   switch (fieldType) {
+    case 'money':
+      return (
+        <>
+          {isReadOnly ? (
+            <Text
+              numberOfLines={1}
+              ellipsizeMode="tail"
+              style={styles.disabled}
+            >
+              {value != null && value !== ''
+                ? Number(value).toLocaleString('vi-VN', {
+                    style: 'currency',
+                    currency: 'VND',
+                  })
+                : '-'}
+            </Text>
+          ) : (
+            <AppInput
+              value={value ?? ''}
+              onChangeText={val => onChange(data.fieldName, val)}
+              placeholder={`${data.fieldName} - money`}
+              keyboardType="numeric"
+              editable={!isReadOnly}
+              numberOfLines={1}
+              multiline={false}
+              scrollEnabled={true}
+            />
+          )}
+        </>
+      );
     case 'singleLine':
       return (
         <>
           {mode === 'view' || isReadOnly === true ? (
-            <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
+            <Text
+              numberOfLines={1}
+              ellipsizeMode="tail"
+              style={styles.disabled}
+            >
               {value}
             </Text>
           ) : (
@@ -110,7 +144,7 @@ export const renderField = (
       );
     case 'multiLine':
       return mode === 'view' || isReadOnly === true ? (
-        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
+        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.disabled}>
           {value}
         </Text>
       ) : (
@@ -150,7 +184,19 @@ export const renderField = (
           })();
 
           return (
-            <Text numberOfLines={1} ellipsizeMode="tail" style={{ flex: 1 }}>
+            <Text
+              numberOfLines={1}
+              ellipsizeMode="tail"
+              style={{
+                color: 'red',
+                flex: 1,
+                borderColor: colors.Gray,
+                borderWidth: 1,
+                padding: spacing.small,
+                borderRadius: 10,
+                backgroundColor: '#e6f7ff',
+              }}
+            >
               {displayText}
             </Text>
           );
@@ -162,8 +208,8 @@ export const renderField = (
             style={{
               borderWidth: 1,
               borderRadius: 10,
-              padding: 8,
-              marginBottom: 8,
+              padding: spacing.small,
+              marginBottom: spacing.small,
               backgroundColor: '#e6f7ff', // màu khác biệt
             }}
             onPress={() => {
@@ -175,7 +221,11 @@ export const renderField = (
                 );
             }}
           >
-            <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
+            <Text
+              numberOfLines={1}
+              ellipsizeMode="tail"
+              style={styles.disabled}
+            >
               {(() => {
                 // 1. Nếu value là object có label
                 if (value && typeof value === 'object' && value.label) {
@@ -221,7 +271,11 @@ export const renderField = (
           })();
 
           return (
-            <Text numberOfLines={1} ellipsizeMode="tail" style={{ flex: 1 }}>
+            <Text
+              numberOfLines={1}
+              ellipsizeMode="tail"
+              style={styles.disabled}
+            >
               {displayText}
             </Text>
           );
@@ -234,8 +288,8 @@ export const renderField = (
               style={{
                 borderWidth: 1,
                 borderRadius: 10,
-                padding: 8,
-                marginBottom: 8,
+                padding: spacing.small,
+                marginBottom: spacing.small,
               }}
               onPress={() => {
                 if (extraProps.onPickSelectOne)
@@ -276,7 +330,7 @@ export const renderField = (
       }
     case 'selectMulti':
       return mode === 'view' || isReadOnly === true ? (
-        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
+        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.disabled}>
           {value}
         </Text>
       ) : (
@@ -285,8 +339,8 @@ export const renderField = (
           style={{
             borderWidth: 1,
             borderRadius: 10,
-            padding: 8,
-            marginBottom: 8,
+            padding: spacing.small,
+            marginBottom: spacing.small,
           }}
           onPress={() => {
             if (extraProps.onPickSelectMulti) {
@@ -372,7 +426,7 @@ export const renderField = (
       );
     case 'date':
       return mode === 'view' || isReadOnly === true ? (
-        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
+        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.disabled}>
           {value
             ? typeof value === 'string'
               ? new Date(value).toLocaleDateString('vi-VN')
@@ -400,7 +454,7 @@ export const renderField = (
       );
     case 'month':
       return mode === 'view' || isReadOnly === true ? (
-        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
+        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.disabled}>
           {value && value.month && value.year
             ? `${value.month}/${value.year}`
             : value || ''}
@@ -408,19 +462,19 @@ export const renderField = (
       ) : (
         <TouchableOpacity
           disabled={mode === 'view' || isReadOnly === true}
-          style={{ borderWidth: 1, marginBottom: 8, padding: 8 }}
+          style={{ borderWidth: 1, marginBottom: spacing.small, padding: 8 }}
           onPress={() => {
             if (extraProps.onPickMonth) extraProps.onPickMonth(data.fieldName);
           }}
         >
-          <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
+          <Text numberOfLines={1} ellipsizeMode="tail" style={styles.disabled}>
             {value ? `${value.month}/${value.year}` : data.fieldName}
           </Text>
         </TouchableOpacity>
       );
     case 'int':
       return mode === 'view' || isReadOnly === true ? (
-        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
+        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.disabled}>
           {value}
         </Text>
       ) : (
@@ -437,7 +491,7 @@ export const renderField = (
       );
     case 'decimal':
       return mode === 'view' || isReadOnly === true ? (
-        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
+        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.disabled}>
           {value}
         </Text>
       ) : (
@@ -454,13 +508,15 @@ export const renderField = (
       );
     case 'file':
       return mode === 'view' || isReadOnly === true ? (
-        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
+        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.disabled}>
           {value && (value.name || value.uri || typeof value === 'string')
             ? value.name || value.uri || value
             : ''}
         </Text>
       ) : (
-        <View style={{ borderWidth: 1, marginBottom: 8, padding: 8 }}>
+        <View
+          style={{ borderWidth: 1, marginBottom: spacing.small, padding: 8 }}
+        >
           <TouchableOpacity
             disabled={mode === 'view' || isReadOnly === true}
             onPress={() => {
@@ -480,7 +536,7 @@ export const renderField = (
               style={{
                 flexDirection: 'row',
                 alignItems: 'center',
-                marginTop: 8,
+                marginTop: spacing.small,
               }}
             >
               <Text style={{ flex: 1 }}>
@@ -516,9 +572,10 @@ export const renderField = (
           ) : null}
         </View>
       );
+
     case 'checkbox':
       return mode === 'view' || isReadOnly === true ? (
-        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
+        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.disabled}>
           {value && value === true ? 'Có' : 'Không'}
         </Text>
       ) : (
@@ -568,7 +625,7 @@ export const renderField = (
       );
     case 'image':
       return mode === 'view' || isReadOnly === true ? (
-        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
+        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.disabled}>
           {value && value.uri
             ? value.uri
             : value && typeof value === 'string'
@@ -578,12 +635,12 @@ export const renderField = (
       ) : (
         <TouchableOpacity
           disabled={mode === 'view' || isReadOnly === true}
-          style={{ borderWidth: 1, marginBottom: 8, padding: 8 }}
+          style={{ borderWidth: 1, marginBottom: spacing.small, padding: 8 }}
           onPress={() => {
             if (extraProps.onPickImage) extraProps.onPickImage(data.fieldName);
           }}
         >
-          <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
+          <Text numberOfLines={1} ellipsizeMode="tail" style={styles.disabled}>
             {value && value.uri
               ? 'Đã chọn ảnh'
               : value && typeof value === 'string'
@@ -594,7 +651,7 @@ export const renderField = (
       );
     case 'organization':
       return mode === 'view' || isReadOnly === true ? (
-        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
+        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.disabled}>
           {value && typeof value === 'object' && value.orgStructName
             ? value.orgStructName
             : value || ''}
@@ -612,8 +669,8 @@ export const renderField = (
             style={{
               borderWidth: 1,
               borderRadius: 10,
-              padding: 8,
-              marginBottom: 8,
+              padding: spacing.small,
+              marginBottom: spacing.small,
               backgroundColor: '#e6f7ff',
             }}
             disabled={mode === 'view' || isReadOnly === true || data.isReadOnly}
@@ -643,7 +700,7 @@ export const renderField = (
       );
     case 'employee':
       return mode === 'view' || isReadOnly === true ? (
-        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
+        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.disabled}>
           {value && typeof value === 'object' && value.name
             ? value.name
             : value || ''}
@@ -656,8 +713,8 @@ export const renderField = (
           style={{
             borderWidth: 1,
             borderRadius: 10,
-            padding: 8,
-            marginBottom: 8,
+            padding: spacing.small,
+            marginBottom: spacing.small,
             backgroundColor: '#e6f7ff',
           }}
           disabled={mode === 'view' || isReadOnly === true || data.isReadOnly}
@@ -683,7 +740,7 @@ export const renderField = (
     // Các kiểu khác có thể bổ sung thêm
     default:
       return mode === 'view' || isReadOnly === true ? (
-        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>
+        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.disabled}>
           {value}
         </Text>
       ) : (
@@ -701,12 +758,20 @@ export const renderField = (
 };
 const styles = StyleSheet.create({
   cell: {
-    padding: 8,
+    padding: spacing.small,
     borderWidth: 0.5,
     borderColor: colors.Gray,
     justifyContent: 'center',
   },
   text: {
     textAlign: 'center',
+  },
+  disabled: {
+    flex: 1,
+    borderColor: colors.Gray,
+    // borderWidth: 1,
+    padding: spacing.small,
+    borderRadius: 10,
+    backgroundColor: colors.lightGray,
   },
 });

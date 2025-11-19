@@ -385,8 +385,8 @@ const DetailEmployee = ({ route }) => {
     <View style={styles.container}>
       <CustomHeader
         label="DetailEmployee Screen"
-        leftIcon={icons.menu}
-        leftPress={() => navigation.openDrawer()}
+        leftIcon={icons.back}
+        leftPress={() => navigation.goBack()}
         rightIcon={icons.document_focus}
         rightPress={handleSave}
       />

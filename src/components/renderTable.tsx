@@ -121,7 +121,7 @@ const RenderTable: React.FC<RenderTableProps> = ({
               label: field.label,
               displayField: field.displayField,
             },
-            item[field.fieldName],
+            item[field.displayField],
             () => {},
             'view',
             {

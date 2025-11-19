@@ -27,7 +27,7 @@ const PAGE_SIZE = 15;
 const Appointment = ({}) => {
   const navigation = useNavigation<DrawerNavigationProp<any>>();
   const FIELD_COLUMNS =
-    'EmployeeID,EffectiveDate,organizationUnitAppointID,jobPositionAppointID,employeeOrganizationUnitID,procedureID,appointStatusID,ExpirationDate';
+    'employeeId,EffectiveDate,organizationUnitAppointID,jobPositionAppointID,employeeOrganizationUnitID,procedureID,appointStatusID,ExpirationDate';
 
   const [searchInput, setSearchInput] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
@@ -52,12 +52,20 @@ const Appointment = ({}) => {
     fieldColumns: FIELD_COLUMNS,
   });
 
+  const appointmentData = appointment.map(item => ({
+    ...item,
+    employeeID: item.EmployeeId,
+    employeeName: item.employeeName,
+  }));
+
   const fetchLayoutData = async () => {
     try {
       const data = await getLayout('appoint');
       console.log('layoutApp', data);
       const filteredFields = (data.pageData || []).filter(field =>
-        fieldColumnsArr.includes(field.fieldName),
+        fieldColumnsArr
+          .map(s => s.toLowerCase())
+          .includes(field.fieldName.toLowerCase()),
       );
       setLayoutFields(filteredFields);
       console.log('fieldColumnsArr', filteredFields);
@@ -102,7 +110,7 @@ const Appointment = ({}) => {
       {/* Table */}
       <RenderTable
         layoutFields={layoutFields}
-        data={appointment}
+        data={appointmentData}
         keyExtractor={item => item.Id}
         onRowPress={item =>
           navigate(Screen_Name.Detail_Appointment, { id: item.Id })

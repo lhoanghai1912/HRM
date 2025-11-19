@@ -318,8 +318,8 @@ const DetailAppontment = ({ route }) => {
     setFormData(prev => {
       const updatedFormData = {
         ...prev,
-        [fieldName]: procedure.ProcedureID,
-        [displayField]: procedure.procedureName,
+        [fieldName]: procedure.value,
+        [displayField]: procedure.label,
       };
       console.log('formData after setFormData', updatedFormData);
       return updatedFormData;
@@ -416,7 +416,6 @@ const DetailAppontment = ({ route }) => {
     handlePickSelect: selectPicker.handlePickSelect,
     handlePickLocation: locationPicker.handlePickLocation,
     handlePickProcedure: procedurePicker.handlePickProcedure,
-
     handlePickOrganization: organizationPicker.handlePickOrganization,
     handlePickEmployee: employeePicker.handlePickEmployee,
   };

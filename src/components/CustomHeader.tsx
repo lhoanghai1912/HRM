@@ -28,6 +28,8 @@ interface CustomHeaderProps {
   label?: string;
   leftIcon?: ImageRequireSource;
   leftPress?: () => void;
+  leftIcon1?: ImageRequireSource;
+  leftPress1?: () => void;
   rightIcon?: ImageRequireSource;
   rightPress?: () => void;
 }
@@ -37,6 +39,8 @@ const CustomHeader: React.FC<CustomHeaderProps> = ({
   label,
   leftIcon,
   leftPress,
+  leftIcon1,
+  leftPress1,
   rightIcon,
   rightPress,
 }) => {
@@ -69,6 +73,7 @@ const CustomHeader: React.FC<CustomHeaderProps> = ({
             />
           </TouchableOpacity>
         )}
+
         <Text style={[AppStyles.label, { textAlign: 'left' }]}>{label}</Text>
       </View>
       <View style={[styles.headerItem, { width: '5%' }]}></View>

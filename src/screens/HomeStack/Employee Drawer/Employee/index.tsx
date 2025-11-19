@@ -46,7 +46,7 @@ const Employee = ({}) => {
     handleRefresh,
   } = usePaginatedList(employee_GetAll, PAGE_SIZE, {
     orderBy: 'employeeId',
-    sortOrder: ' asc',
+    sortOrder: ' desc',
     search: searchQuery,
     fieldColumns: FIELD_COLUMNS,
   });
