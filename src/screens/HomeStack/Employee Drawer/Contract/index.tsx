@@ -23,6 +23,7 @@ import styles from '../styles';
 import { getLayout } from '../../../../services/data';
 import { renderField } from '../../../../utils/formField';
 import { contract_GetAll } from '../../../../services/hr';
+import RenderTable from '../../../../components/renderTable';
 
 const PAGE_SIZE = 15;
 
@@ -227,56 +228,25 @@ const Contract = ({}) => {
           <Text style={AppStyles.text}></Text>
         </View>
       </View>
-      <View style={{ flex: 1 }}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          <View style={styles.table}>
-            <FlatList
-              ref={flatListRef}
-              data={contract}
-              keyExtractor={item => item.contractNo?.toString()}
-              style={styles.bodyScroll}
-              renderItem={renderItem}
-              ListHeaderComponent={renderHeader}
-              ListEmptyComponent={
-                !loading && contract.length === 0 ? (
-                  <Text
-                    style={[
-                      AppStyles.label,
-                      { textAlign: 'center', marginTop: spacing.medium },
-                    ]}
-                  >
-                    Không có dữ liệu
-                  </Text>
-                ) : null
-              }
-              ListFooterComponent={renderFooter}
-              refreshControl={
-                <RefreshControl
-                  refreshing={refreshing}
-                  onRefresh={handleRefresh}
-                />
-              }
-              onEndReached={() => {
-                if (
-                  !onEndReachedCalledDuringMomentum.current &&
-                  !loadingMore &&
-                  !noMoreData &&
-                  !loading &&
-                  contract.length > 0
-                ) {
-                  handleLoadMore();
-                  onEndReachedCalledDuringMomentum.current = true;
-                }
-              }}
-              onMomentumScrollBegin={() => {
-                onEndReachedCalledDuringMomentum.current = false;
-              }}
-              onEndReachedThreshold={0.3}
-              showsVerticalScrollIndicator={false}
-            />
-          </View>
-        </ScrollView>
-      </View>
+      <RenderTable
+        layoutFields={layoutFields}
+        data={contract}
+        keyExtractor={item => item.Id}
+        onRowPress={item =>
+          navigate(Screen_Name.Details_Contract, { id: item.Id })
+        }
+        loading={loading}
+        loadingMore={loadingMore}
+        refreshing={refreshing}
+        noMoreData={noMoreData}
+        onRefresh={handleRefresh}
+        onLoadMore={handleLoadMore}
+        emptyMessage="Không có dữ liệu"
+        style={styles.table}
+        tableRowStyle={styles.tableRow}
+        headerStyle={styles.tableRowHeader}
+        cellStyle={styles.cell}
+      />
 
       {(loading || refreshing) && (
         <View

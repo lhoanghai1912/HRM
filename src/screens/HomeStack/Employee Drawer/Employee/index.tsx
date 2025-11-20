@@ -26,7 +26,7 @@ const PAGE_SIZE = 15;
 
 const Employee = ({}) => {
   const navigation = useNavigation<DrawerNavigationProp<any>>();
-  const FIELD_COLUMNS = 'employeeCode,fullName,genderID,birthDay,mobile,email';
+  const FIELD_COLUMNS = 'employeeCode,fullName,mobile,email';
 
   const [searchInput, setSearchInput] = useState('');
   const [searchQuery, setSearchQuery] = useState('');

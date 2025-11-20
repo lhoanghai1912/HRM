@@ -9,12 +9,13 @@ import {
 } from 'react-native';
 import AppStyles from './AppStyle';
 import icons from '../assets/icons';
-import { mapFieldType, renderField } from '../utils/formField';
+import { getDisplayValue, mapFieldType, renderField } from '../utils/formField';
 import { navigate } from '../navigation/RootNavigator';
 import { Screen_Name } from '../navigation/ScreenName';
 import { colors } from '../utils/color';
 import { spacing } from '../utils/spacing';
 import { fonts } from '../utils/fontSize';
+import { formatDate } from '../utils/helper';
 
 interface RenderFieldsProps {
   field: any;
@@ -53,6 +54,8 @@ interface RenderFieldsProps {
   };
   id?: string;
   isGroupDetail?: boolean;
+  isEditMode?: boolean; // 🔹 thêm prop
+  validationErrors?: { [fieldName: string]: string };
 }
 
 // Item trong SectionList: 2 loại
@@ -68,7 +71,7 @@ type SectionItem =
     };
 
 type ParentSection = {
-  parent: any; // chính object parent trong pageData
+  parent: any;
   data: SectionItem[];
 };
 
@@ -82,11 +85,12 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
   handlers,
   id,
   isGroupDetail,
+  isEditMode = false,
+  validationErrors = {},
 }) => {
   try {
     if (!field || !field.pageData) return null;
 
-    // Lấy danh sách parent
     const parents = field.pageData
       .filter((item: any) => item.parentId === null)
       .sort((a: any, b: any) => {
@@ -96,7 +100,6 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
         return (a.columnIndex || 0) - (b.columnIndex || 0);
       });
 
-    // Build sections cho SectionList
     const sections: ParentSection[] = parents.map((parent: any) => {
       const children = field.pageData
         .filter((child: any) => child.parentId === parent.id)
@@ -108,10 +111,8 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
         });
 
       const expanded = expandedSections[parent.id] ?? true;
-
       const items: SectionItem[] = [];
 
-      // 1 item đại diện cho groupFieldConfigs của parent
       if (parent.groupFieldConfigs && parent.groupFieldConfigs.length > 0) {
         items.push({
           type: 'parentFields',
@@ -119,7 +120,6 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
         });
       }
 
-      // Mỗi child là 1 item
       children.forEach((child: any) => {
         items.push({
           type: 'child',
@@ -128,26 +128,166 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
         });
       });
 
-      // Nếu collapsed thì data = [] để ẩn body
       return {
         parent,
         data: expanded ? items : [],
       };
     });
 
-    // Render 1 item trong section
+    // 📌 helper: render 1 field (view vs edit)
+    const renderOneField = (cfg: any) => {
+      const customConfig =
+        customConfigs.find(c => c.fieldName === cfg.fieldName)?.config || null;
+      const errorMsg = validationErrors[cfg.fieldName];
+      // ưu tiên displayField nếu có
+      const displayKey = cfg.displayField || cfg.fieldName;
+      const valueRaw = formData[displayKey];
+      const displayValue = getDisplayValue(cfg, valueRaw, { formData });
+
+      let value = '';
+      if (valueRaw !== null && valueRaw !== undefined) {
+        // nếu là field ngày (typeControl = 'Day' hoặc mapFieldType = 'date')
+        const fieldType = mapFieldType(cfg.typeControl);
+        if (fieldType === 'date' || cfg.typeControl === 'Day') {
+          value = formatDate(valueRaw);
+        } else {
+          value = String(valueRaw);
+        }
+      }
+
+      if (!isEditMode) {
+        // 🔹 View mode: label + value cùng hàng
+        return (
+          <View
+            key={cfg.id}
+            style={{
+              marginVertical: 4,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              borderBottomWidth: 0.5,
+              paddingVertical: spacing.small,
+              width: `100%`,
+              paddingHorizontal: spacing.small,
+            }}
+          >
+            <Text
+              numberOfLines={1}
+              style={[
+                AppStyles.text,
+                { paddingRight: spacing.small, width: `50%` },
+              ]}
+            >
+              {cfg.label}
+              {customConfig?.isRequired && (
+                <Text style={{ color: 'red' }}> *</Text>
+              )}
+            </Text>
+            <Text
+              ellipsizeMode="tail"
+              style={{
+                fontWeight: 'bold',
+                fontSize: fonts.normal,
+                width: `50%`,
+                textAlign: 'right',
+              }}
+              numberOfLines={1}
+            >
+              {displayValue}
+            </Text>
+          </View>
+        );
+      }
+
+      // 🔹 Edit mode: như hiện tại
+      return (
+        <View
+          key={cfg.id}
+          style={
+            errorMsg
+              ? {
+                  borderWidth: 1,
+                  borderColor: 'red',
+                  borderRadius: 4,
+                  padding: 2,
+                }
+              : { marginVertical: 4 }
+          }
+        >
+          <Text style={AppStyles.label}>
+            {cfg.label}
+            {customConfig?.isRequired && (
+              <Text style={{ color: 'red' }}> *</Text>
+            )}
+          </Text>
+          <Text>{`${cfg.typeControl}- ${mapFieldType(cfg.typeControl)}`}</Text>
+          {renderField(cfg, formData[cfg.fieldName], handleChange, 'edit', {
+            formData,
+            onPickDate: handlers.handlePickDate,
+            onPickMonth: handlers.handlePickMonth,
+            onPickSelectOne: (fieldName: string, displayField: string) => {
+              let option = '';
+              let typeField = '';
+              try {
+                if (cfg.customConfig) {
+                  const parsedConfig =
+                    typeof cfg.customConfig === 'string'
+                      ? JSON.parse(cfg.customConfig)
+                      : cfg.customConfig;
+                  typeField = parsedConfig?.typeField;
+                  option = parsedConfig?.Option;
+                }
+              } catch (e) {
+                typeField = '';
+              }
+
+              switch (typeField) {
+                case 'Location':
+                  handlers.handlePickLocation(fieldName, cfg);
+                  break;
+                case 'Procedure':
+                case 'Procedures':
+                  handlers.handlePickProcedure(fieldName, displayField, option);
+                  break;
+                default:
+                  handlers.handlePickSelect(fieldName, cfg);
+                  break;
+              }
+            },
+            onPickSelectMulti: (
+              fieldName: string,
+              displayField: string,
+              pickerData: any,
+              selectedIds: any[],
+            ) => {
+              handlers.handlePickSelect(fieldName, cfg, selectedIds);
+            },
+            onPickFile: handlers.handlePickFile,
+            onPickImage: handlers.handlePickImage,
+            onClearFile: handlers.handleClearFile,
+            onPickOrganization: (fieldName: string, displayField: any) => {
+              handlers.handlePickOrganization(fieldName, displayField, cfg);
+            },
+            onPickEmployee: (
+              fieldName: string,
+              displayField: string,
+              cfgInner: any,
+            ) => {
+              handlers.handlePickEmployee(fieldName, displayField, cfgInner);
+            },
+          })}
+        </View>
+      );
+    };
+
     const renderItem = ({
       item,
-      index,
       section,
     }: {
       item: SectionItem;
       index: number;
       section: SectionListData<SectionItem, ParentSection>;
     }) => {
-      const parent = section.parent;
-      const isLast = index === section.data.length - 1;
-
       const itemContainerStyle = {
         padding: spacing.small,
         marginHorizontal: spacing.medium,
@@ -157,6 +297,7 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
       } as const;
 
       if (item.type === 'parentFields') {
+        const parent = section.parent;
         return (
           <View style={itemContainerStyle}>
             <View
@@ -173,107 +314,7 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
                   }
                   return (a.sortOrder || 0) - (b.sortOrder || 0);
                 })
-                .map((cfg: any) => {
-                  const customConfig =
-                    customConfigs.find(c => c.fieldName === cfg.fieldName)
-                      ?.config || null;
-
-                  return (
-                    <View key={cfg.id} style={{ marginBottom: 8 }}>
-                      <Text style={AppStyles.label}>
-                        {cfg.label}
-                        {customConfig?.isRequired && (
-                          <Text style={{ color: 'red' }}> *</Text>
-                        )}
-                      </Text>
-                      <Text>{`${cfg.typeControl}- ${mapFieldType(
-                        cfg.typeControl,
-                      )}`}</Text>
-                      {renderField(
-                        cfg,
-                        formData[cfg.fieldName],
-                        handleChange,
-                        'edit',
-                        {
-                          formData,
-                          onPickDate: handlers.handlePickDate,
-                          onPickMonth: handlers.handlePickMonth,
-                          onPickSelectOne: (
-                            fieldName: string,
-                            displayField: string,
-                          ) => {
-                            let option = '';
-                            let typeField = '';
-                            try {
-                              if (cfg.customConfig) {
-                                const parsedConfig =
-                                  typeof cfg.customConfig === 'string'
-                                    ? JSON.parse(cfg.customConfig)
-                                    : cfg.customConfig;
-                                typeField = parsedConfig?.typeField;
-                                option = parsedConfig?.Option;
-                              }
-                            } catch (e) {
-                              typeField = '';
-                            }
-
-                            switch (typeField) {
-                              case 'Location':
-                                handlers.handlePickLocation(fieldName, cfg);
-                                break;
-                              case 'Procedure':
-                                handlers.handlePickProcedure(
-                                  fieldName,
-                                  displayField,
-                                  option,
-                                );
-                                break;
-                              default:
-                                handlers.handlePickSelect(fieldName, cfg);
-                                break;
-                            }
-                          },
-                          onPickSelectMulti: (
-                            fieldName: string,
-                            displayField: string,
-                            pickerData: any,
-                            selectedIds: any[],
-                          ) => {
-                            handlers.handlePickSelect(
-                              fieldName,
-                              cfg,
-                              selectedIds,
-                            );
-                          },
-                          onPickFile: handlers.handlePickFile,
-                          onPickImage: handlers.handlePickImage,
-                          onClearFile: handlers.handleClearFile,
-                          onPickOrganization: (
-                            fieldName: string,
-                            displayField: any,
-                          ) => {
-                            handlers.handlePickOrganization(
-                              fieldName,
-                              displayField,
-                              cfg,
-                            );
-                          },
-                          onPickEmployee: (
-                            fieldName: string,
-                            displayField: string,
-                            cfg: any,
-                          ) => {
-                            handlers.handlePickEmployee(
-                              fieldName,
-                              displayField,
-                              cfg,
-                            );
-                          },
-                        },
-                      )}
-                    </View>
-                  );
-                })}
+                .map((cfg: any) => renderOneField(cfg))}
             </View>
           </View>
         );
@@ -290,7 +331,12 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
                 paddingBottom: spacing.small,
               }}
             >
-              <Text style={{ fontSize: fonts.normal, fontWeight: 'bold' }}>
+              <Text
+                style={{
+                  fontSize: fonts.normal,
+                  fontWeight: 'bold',
+                }}
+              >
                 {child.name}
               </Text>
               {child.groupFieldConfigs
@@ -300,107 +346,7 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
                   }
                   return (a.sortOrder || 0) - (b.sortOrder || 0);
                 })
-                .map((cfg: any) => {
-                  const customConfig =
-                    customConfigs.find(c => c.fieldName === cfg.fieldName)
-                      ?.config || null;
-
-                  return (
-                    <View key={cfg.id} style={{ marginVertical: 4 }}>
-                      <Text style={AppStyles.label}>
-                        {cfg.label}
-                        {customConfig?.isRequired && (
-                          <Text style={{ color: 'red' }}> *</Text>
-                        )}
-                      </Text>
-                      <Text>{`${cfg.typeControl}- ${mapFieldType(
-                        cfg.typeControl,
-                      )}`}</Text>
-                      {renderField(
-                        cfg,
-                        formData[cfg.fieldName],
-                        handleChange,
-                        'edit',
-                        {
-                          formData,
-                          onPickDate: handlers.handlePickDate,
-                          onPickMonth: handlers.handlePickMonth,
-                          onPickSelectOne: (
-                            fieldName: string,
-                            displayField: string,
-                          ) => {
-                            let option = '';
-                            let typeField = '';
-                            try {
-                              if (cfg.customConfig) {
-                                const parsedConfig =
-                                  typeof cfg.customConfig === 'string'
-                                    ? JSON.parse(cfg.customConfig)
-                                    : cfg.customConfig;
-                                typeField = parsedConfig?.typeField;
-                                option = parsedConfig?.Option;
-                              }
-                            } catch (e) {
-                              typeField = '';
-                            }
-
-                            switch (typeField) {
-                              case 'Location':
-                                handlers.handlePickLocation(fieldName, cfg);
-                                break;
-                              case 'Procedure':
-                                handlers.handlePickProcedure(
-                                  fieldName,
-                                  displayField,
-                                  option,
-                                );
-                                break;
-                              default:
-                                handlers.handlePickSelect(fieldName, cfg);
-                                break;
-                            }
-                          },
-                          onPickSelectMulti: (
-                            fieldName: string,
-                            displayField: string,
-                            pickerData: any,
-                            selectedIds: any[],
-                          ) => {
-                            handlers.handlePickSelect(
-                              fieldName,
-                              cfg,
-                              selectedIds,
-                            );
-                          },
-                          onPickFile: handlers.handlePickFile,
-                          onPickImage: handlers.handlePickImage,
-                          onClearFile: handlers.handleClearFile,
-                          onPickOrganization: (
-                            fieldName: string,
-                            displayField: any,
-                          ) => {
-                            handlers.handlePickOrganization(
-                              fieldName,
-                              displayField,
-                              cfg,
-                            );
-                          },
-                          onPickEmployee: (
-                            fieldName: string,
-                            displayField: string,
-                            cfg: any,
-                          ) => {
-                            handlers.handlePickEmployee(
-                              fieldName,
-                              displayField,
-                              cfg,
-                            );
-                          },
-                        },
-                      )}
-                    </View>
-                  );
-                })}
+                .map((cfg: any) => renderOneField(cfg))}
             </View>
           </View>
         );
@@ -409,7 +355,6 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
       return null;
     };
 
-    // Header của mỗi section = parent item (sticky)
     const renderSectionHeader = ({
       section,
     }: {
@@ -430,7 +375,6 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
           <View
             style={{
               borderRadius: 20,
-              zIndex: 10,
             }}
           >
             <TouchableOpacity
@@ -438,9 +382,10 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
                 flexDirection: 'row',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                // paddingHorizontal: 8,
               }}
               onPress={() => {
+                console.log('layout', field);
+
                 if (parent.groupType !== 2 || isGroupDetail) {
                   toggleSection(parent.id);
                 } else {
@@ -479,7 +424,7 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
         renderItem={renderItem}
         renderSectionHeader={renderSectionHeader}
         stickySectionHeadersEnabled={true}
-        contentContainerStyle={{}}
+        contentContainerStyle={{ paddingBottom: spacing.medium }}
       />
     );
   } catch (error) {

@@ -7,6 +7,7 @@ import { lo } from '../language/Resource';
 import { joinString, splitString } from '../components/stringHelper';
 import { ms, spacing } from './spacing';
 import { colors } from './color';
+import { formatDate } from './helper';
 
 type RenderFieldExtraProps = {
   onPickDate?: (fieldName: string) => void;
@@ -77,6 +78,156 @@ export const mapFieldType = TypeControl => {
       return 'singleLine';
   }
 };
+
+export const getDisplayValue = (
+  data: any,
+  value: any,
+  extraProps: RenderFieldExtraProps = {},
+): string => {
+  const fieldType = mapFieldType(data.typeControl);
+
+  const fromDisplayField =
+    extraProps.formData && data.displayField
+      ? extraProps.formData[data.displayField]
+      : undefined;
+
+  switch (fieldType) {
+    case 'date':
+      return formatDate(value);
+
+    case 'month': {
+      if (value && typeof value === 'object' && value.month && value.year) {
+        return `${value.month}/${value.year}`;
+      }
+      return value ? String(value) : '';
+    }
+
+    case 'selectOne': {
+      if (value && typeof value === 'object' && value.label) {
+        return value.label;
+      }
+      const found = (extraProps.pickerData || []).find(
+        (item: any) => item.value === value || item.id === value,
+      );
+      if (found && (found.label || found.name)) {
+        return found.label ?? found.name;
+      }
+      if (fromDisplayField !== undefined && fromDisplayField !== null) {
+        return String(fromDisplayField);
+      }
+      return value ? String(value) : '';
+    }
+
+    case 'selectMulti': {
+      console.log('selectMulti value = ', value);
+      const fromDisplayField =
+        extraProps.formData && data.displayField
+          ? extraProps.formData[data.displayField]
+          : undefined;
+
+      // 1️⃣ value rỗng → ưu tiên lấy từ displayField (JSON string hoặc array)
+      if (
+        !value ||
+        (typeof value === 'string' && value.trim().length === 0) ||
+        (Array.isArray(value) && value.length === 0)
+      ) {
+        if (fromDisplayField) {
+          try {
+            if (typeof fromDisplayField === 'string') {
+              const arr = JSON.parse(fromDisplayField);
+              const labels = arr
+                .map((d: any) => d.pickListValue)
+                .filter(Boolean);
+              return labels.join(', ');
+            }
+            if (Array.isArray(fromDisplayField)) {
+              const labels = fromDisplayField
+                .map((d: any) => d.pickListValue)
+                .filter(Boolean);
+              return labels.join(', ');
+            }
+          } catch {
+            // nếu parse fail thì trả raw
+            return String(fromDisplayField);
+          }
+        }
+        return '';
+      }
+
+      // 2️⃣ value là array object → chỉ lấy pickListValue
+      if (Array.isArray(value) && typeof value[0] === 'object') {
+        const labels = value
+          .map((v: any) => v && v.pickListValue)
+          .filter(Boolean);
+        return labels.join(', ');
+      }
+
+      // 3️⃣ value là array primitive (id / string)
+      if (Array.isArray(value)) {
+        // nếu thực tế bạn lưu luôn pickListValue trong mảng thì join luôn
+        return value.map(v => String(v)).join(', ');
+      }
+
+      // 4️⃣ value là string JSON → parse rồi lấy pickListValue
+      if (typeof value === 'string') {
+        try {
+          const arr = JSON.parse(value);
+          if (Array.isArray(arr)) {
+            const labels = arr.map((d: any) => d.pickListValue).filter(Boolean);
+            return labels.join(', ');
+          }
+        } catch (e) {
+          // không phải JSON thì cho nó rơi xuống fallback
+          console.log('parse selectMulti value as JSON fail: ', e);
+        }
+      }
+
+      // 5️⃣ fallback
+      return String(value);
+    }
+
+    case 'checkbox':
+      return value ? 'Có' : 'Không';
+
+    case 'file': {
+      if (!value) return '';
+      if (typeof value === 'string') return value;
+      if (value.name) return value.name;
+      if (value.uri) return value.uri;
+      if (fromDisplayField) return String(fromDisplayField);
+      return '';
+    }
+
+    case 'image': {
+      if (!value) return '';
+      if (typeof value === 'string') return value;
+      if (value.uri) return value.uri;
+      if (fromDisplayField) return String(fromDisplayField);
+      return '';
+    }
+
+    case 'organization': {
+      if (value && typeof value === 'object' && value.orgStructName) {
+        return value.orgStructName;
+      }
+      if (fromDisplayField) return String(fromDisplayField);
+      return value ? String(value) : '';
+    }
+
+    case 'employee': {
+      if (value && typeof value === 'object' && value.name) {
+        return value.name;
+      }
+      if (fromDisplayField) return String(fromDisplayField);
+      return value ? String(value) : '';
+    }
+
+    default:
+      if (value === null || value === undefined) return '';
+      return String(value);
+  }
+};
+
 // Hàm render từng trường theo kiểu đã ánh xạ
 export const renderField = (
   data,
@@ -323,7 +474,7 @@ export const renderField = (
                 return 'Chọn...';
               }
               if (Array.isArray(value) && typeof value[0] === 'object') {
-                console.log('value', value);
+                // console.log('value', value);
 
                 const labels = value
                   .map(
