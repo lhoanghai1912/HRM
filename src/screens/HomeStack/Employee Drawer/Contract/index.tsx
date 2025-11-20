@@ -228,6 +228,25 @@ const Contract = ({}) => {
           <Text style={AppStyles.text}></Text>
         </View>
       </View>
+      <RenderTable
+        layoutFields={layoutFields}
+        data={contract}
+        keyExtractor={item => item.Id}
+        onRowPress={item =>
+          navigate(Screen_Name.Details_Contract, { id: item.Id })
+        }
+        loading={loading}
+        loadingMore={loadingMore}
+        refreshing={refreshing}
+        noMoreData={noMoreData}
+        onRefresh={handleRefresh}
+        onLoadMore={handleLoadMore}
+        emptyMessage="Không có dữ liệu"
+        style={styles.table}
+        tableRowStyle={styles.tableRow}
+        headerStyle={styles.tableRowHeader}
+        cellStyle={styles.cell}
+      />
       {/* Table */}
       <RenderTable
         layoutFields={layoutFields}

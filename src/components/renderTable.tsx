@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -13,6 +13,8 @@ import { renderField } from '../utils/formField';
 import { ms, spacing } from '../utils/spacing';
 import AppStyles from './AppStyle';
 import { colors } from '../utils/color';
+import { Image } from 'react-native';
+import icons from '../assets/icons';
 
 interface RenderTableProps {
   layoutFields: any[];
@@ -51,6 +53,18 @@ const RenderTable: React.FC<RenderTableProps> = ({
 }) => {
   const onEndReachedCalledDuringMomentum = useRef(false);
   const flatListRef = useRef<FlatList>(null);
+
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
+  const handleScroll = (e: any) => {
+    const offsetY = e.nativeEvent.contentOffset.y;
+    setShowScrollTop(offsetY > ms(100)); // 👉 kéo 250px thì show nút
+  };
+
+  const scrollToTop = () => {
+    flatListRef.current?.scrollToOffset({ offset: 0, animated: true });
+  };
+
   const getColWidth = field => {
     if (field.customConfig) {
       try {
@@ -85,7 +99,7 @@ const RenderTable: React.FC<RenderTableProps> = ({
             },
           ]}
         >
-          <Text style={{ textAlign: 'center' }}>{field.label}</Text>
+          <Text style={{ textAlign: 'left' }}>{field.label}</Text>
         </View>
       ))}
     </View>
@@ -203,6 +217,8 @@ const RenderTable: React.FC<RenderTableProps> = ({
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
               ) : undefined
             }
+            onScroll={handleScroll} // 👈 THÊM DÒNG NÀY
+            scrollEventThrottle={16}
             onEndReached={() => {
               if (
                 onLoadMore &&
@@ -224,6 +240,11 @@ const RenderTable: React.FC<RenderTableProps> = ({
           />
         </View>
       </ScrollView>
+      {showScrollTop && (
+        <TouchableOpacity style={styles.scrollTopBtn} onPress={scrollToTop}>
+          <Image source={icons.up} style={AppStyles.icon} />
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
@@ -253,7 +274,7 @@ const styles = StyleSheet.create({
     borderRightWidth: 0.5,
     borderColor: colors.Gray,
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'flex-start',
   },
   checkboxCell: {
     borderRightWidth: 0.5,
@@ -261,6 +282,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: spacing.small,
+  },
+  scrollTopBtn: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    backgroundColor: colors.primary || '#1976D2',
+    padding: 12,
+    borderRadius: 30,
+    elevation: 5,
   },
 });
 

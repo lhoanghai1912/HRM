@@ -1,16 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { View, StyleSheet, ActivityIndicator, Alert } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
 import DatePicker from 'react-native-date-picker';
 import MonthPicker from 'react-native-month-year-picker';
 import {
-  dataTest,
   getSettingLayout,
   getEmployee,
   updateEmployee,
   uploadFile,
   getPickerData,
-  getLayout,
 } from '../../../../services/data';
 
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
@@ -38,14 +35,20 @@ import {
 import ModalTreeView from '../../../../components/modal/ModalTreeView';
 import ModalEmployeePicker from '../../../../components/modal/ModalEmployeePicker';
 import ModalProcedurePicker from '../../../../components/modal/ModalProcedurePicker';
+import AppButton from '../../../../components/AppButton';
+import { colors } from '../../../../utils/color';
+import { validateLayoutForm } from '../../../../utils/helper';
 
 const DetailEmployee = ({ route }) => {
   const navigation = useNavigation<DrawerNavigationProp<any>>();
-  const employeeId = route?.params?.id;
 
-  // Basic states
+  const employeeId = route?.params?.id;
+  const [validationErrors, setValidationErrors] = useState<{
+    [key: string]: string;
+  }>({});
+
   const [field, setField] = useState<any>();
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState<any>({});
   const [loading, setLoading] = useState(false);
   const [expandedSections, setExpandedSections] = useState<{
     [key: number]: boolean;
@@ -59,10 +62,12 @@ const DetailEmployee = ({ route }) => {
   const [customConfigs, setCustomConfigs] = useState<
     { fieldName: string; config: any }[]
   >([]);
-  const [employeeData, setEmployeeData] = useState();
+  const [employeeData, setEmployeeData] = useState<any>();
 
-  // Handle change function
-  const handleChange = (fieldName: string, value) => {
+  // 🔹 trạng thái view / edit
+  const [isEditMode, setIsEditMode] = useState(false);
+
+  const handleChange = (fieldName: string, value: any) => {
     setFormData(prev => ({ ...prev, [fieldName]: value }));
 
     setChangedFields(prev => {
@@ -77,7 +82,6 @@ const DetailEmployee = ({ route }) => {
     });
   };
 
-  // Use custom hooks (after handleChange declaration)
   const datePicker = useDatePicker(handleChange);
   const monthPicker = useMonthPicker(handleChange);
   const filePicker = useFilePicker(
@@ -92,7 +96,7 @@ const DetailEmployee = ({ route }) => {
   const organizationPicker = useOrganizationPicker();
   const employeePicker = useEmployeePicker();
   const procedurePicker = useProcedurePicker();
-  // Fetch functions
+
   useFocusEffect(
     useCallback(() => {
       fetchData();
@@ -113,8 +117,10 @@ const DetailEmployee = ({ route }) => {
       setField(data);
 
       if (data && data.pageData) {
-        const parents = data.pageData.filter(item => item.parentId === null);
-        const expandedInit = {};
+        const parents = data.pageData.filter(
+          (item: any) => item.parentId === null,
+        );
+        const expandedInit: { [key: number]: boolean } = {};
         parents.forEach(parent => {
           expandedInit[parent.id] = false;
         });
@@ -131,6 +137,8 @@ const DetailEmployee = ({ route }) => {
     try {
       setLoading(true);
       const data = await getEmployee(employeeId);
+      console.log('employeeData', data);
+
       setEmployeeData(data);
     } catch (error) {
       console.log('Error fetching employee data:', error);
@@ -145,15 +153,14 @@ const DetailEmployee = ({ route }) => {
       const layout = await getSettingLayout('profile');
 
       if (employeeData) {
-        const formData = mapEmployeeToFormData(layout, employeeData);
+        const mappedFormData = mapEmployeeToFormData(layout, employeeData);
 
-        // Fetch display values cho các field select
         for (const parent of layout?.pageData || []) {
           for (const cfg of parent.groupFieldConfigs || []) {
             if (cfg.displayField && cfg.tableNameSource === 'PickList') {
-              const fieldValue = formData[cfg.fieldName];
+              const fieldValue = mappedFormData[cfg.fieldName];
 
-              if (fieldValue && !formData[cfg.displayField]) {
+              if (fieldValue && !mappedFormData[cfg.displayField]) {
                 try {
                   const pickerData = await getPickerData(
                     {
@@ -167,10 +174,10 @@ const DetailEmployee = ({ route }) => {
                   );
 
                   const item = pickerData.pageData?.find(
-                    i => i.value === fieldValue,
+                    (i: any) => i.value === fieldValue,
                   );
                   if (item) {
-                    formData[cfg.displayField] = item.label;
+                    mappedFormData[cfg.displayField] = item.label;
                   }
                 } catch (e) {
                   console.error(
@@ -183,10 +190,9 @@ const DetailEmployee = ({ route }) => {
           }
         }
 
-        // Parse customConfig
         const configs: { fieldName: string; config: any }[] = [];
-        layout?.pageData?.forEach(parent => {
-          parent.groupFieldConfigs?.forEach(cfg => {
+        layout?.pageData?.forEach((parent: any) => {
+          parent.groupFieldConfigs?.forEach((cfg: any) => {
             if (cfg.customConfig && typeof cfg.customConfig === 'string') {
               try {
                 const parsedConfig = JSON.parse(cfg.customConfig);
@@ -202,10 +208,8 @@ const DetailEmployee = ({ route }) => {
         });
 
         setField(layout);
-        setFormData(formData);
+        setFormData(mappedFormData);
         setCustomConfigs(configs);
-        console.log('layout', layout);
-        console.log('formData', formData);
       }
     } catch (error) {
       console.error(error);
@@ -214,46 +218,43 @@ const DetailEmployee = ({ route }) => {
     }
   };
 
-  const mapEmployeeToFormData = (layout, employeeData) => {
-    const formData = {};
+  const mapEmployeeToFormData = (layout: any, employee: any) => {
+    const mapped: any = {};
 
-    layout?.pageData?.forEach(parent => {
-      parent.groupFieldConfigs?.forEach(cfg => {
-        if (employeeData.hasOwnProperty(cfg.fieldName)) {
-          formData[cfg.fieldName] = employeeData[cfg.fieldName];
+    layout?.pageData?.forEach((parent: any) => {
+      parent.groupFieldConfigs?.forEach((cfg: any) => {
+        if (employee.hasOwnProperty(cfg.fieldName)) {
+          mapped[cfg.fieldName] = employee[cfg.fieldName];
         } else if (cfg.defaultValue) {
           try {
             const def =
               typeof cfg.defaultValue === 'string'
                 ? JSON.parse(cfg.defaultValue)
                 : cfg.defaultValue;
-            formData[cfg.fieldName] = def.id ?? def;
+            mapped[cfg.fieldName] = def.id ?? def;
           } catch (e) {
-            formData[cfg.fieldName] = cfg.defaultValue;
+            mapped[cfg.fieldName] = cfg.defaultValue;
           }
         } else {
-          formData[cfg.fieldName] = '';
+          mapped[cfg.fieldName] = '';
         }
 
-        if (cfg.displayField && employeeData.hasOwnProperty(cfg.displayField)) {
-          formData[cfg.displayField] = employeeData[cfg.displayField];
+        if (cfg.displayField && employee.hasOwnProperty(cfg.displayField)) {
+          mapped[cfg.displayField] = employee[cfg.displayField];
         }
       });
     });
 
-    return formData;
+    return mapped;
   };
 
-  const handleSelectOrganization = node => {
-    console.log('node', node);
-    console.log('organizationPicker', organizationPicker);
-
+  const handleSelectOrganization = (node: any) => {
     const fieldName = organizationPicker.orgFieldName;
     const displayField = organizationPicker.orgDisplayField;
 
     setFormData(prev => ({
       ...prev,
-      [fieldName]: node, // Lưu cả object
+      [fieldName]: node,
       [displayField]: node.orgStructName || node.name,
     }));
     setChangedFields(prev => {
@@ -263,7 +264,7 @@ const DetailEmployee = ({ route }) => {
       );
       return [
         ...filtered,
-        { fieldName: fieldName, fieldValue: node.id }, // Khi lưu chỉ gửi id
+        { fieldName: fieldName, fieldValue: node.id },
         {
           fieldName: displayField,
           fieldValue: node.orgStructName || node.name,
@@ -273,10 +274,7 @@ const DetailEmployee = ({ route }) => {
     organizationPicker.setShowOrgTree(false);
   };
 
-  const handleSelectEmployee = employee => {
-    console.log('employeePicker', employeePicker);
-    console.log('employee', employee);
-
+  const handleSelectEmployee = (employee: any) => {
     const fieldName = employeePicker.pickerField;
     const displayField = employeePicker.displayField;
 
@@ -303,11 +301,29 @@ const DetailEmployee = ({ route }) => {
   };
 
   const handleSave = async () => {
-    if (changedFields.length === 0 && pickedFiles.length === 0) {
-      Toast.show({
-        type: 'info',
-        text1: 'Không có thay đổi để lưu',
-      });
+    if (!isEditMode) {
+      const { isValid, errors } = validateLayoutForm(
+        field,
+        formData,
+        customConfigs,
+        {},
+      );
+      setValidationErrors(errors);
+      if (!isValid) {
+        Toast.show({
+          type: 'error',
+          text1: 'Vui lòng nhập đầy đủ các trường bắt buộc',
+        });
+        return;
+      }
+
+      if (changedFields.length === 0 && pickedFiles.length === 0) {
+        Toast.show({
+          type: 'info',
+          text1: 'Không có thay đổi để lưu',
+        });
+        return;
+      }
       return;
     }
     try {
@@ -316,8 +332,6 @@ const DetailEmployee = ({ route }) => {
       const filesToUpload = [...pickedFiles];
 
       if (filesToUpload.length > 0) {
-        console.log('Files to upload:', filesToUpload);
-
         try {
           const uploadResult = await uploadFile({
             id: employeeId,
@@ -338,8 +352,6 @@ const DetailEmployee = ({ route }) => {
       }
 
       if (changedFields.length > 0) {
-        console.log('Files to upload:', changedFields);
-
         await updateEmployee(employeeId, changedFields);
       }
 
@@ -352,6 +364,9 @@ const DetailEmployee = ({ route }) => {
         type: 'success',
         text1: 'Lưu dữ liệu thành công',
       });
+
+      // Sau khi save xong, chuyển về view mode
+      setIsEditMode(false);
     } catch (error) {
       console.error('Error saving data:', error);
       Alert.alert('Lỗi', 'Lỗi khi lưu dữ liệu');
@@ -367,7 +382,16 @@ const DetailEmployee = ({ route }) => {
     }));
   };
 
-  // Handlers object for RenderFields
+  // 🔹 right icon: nếu đang view → chuyển sang edit; nếu đang edit → gọi save
+  const handleRightPress = () => {
+    if (isEditMode) {
+      handleSave();
+      setIsEditMode(false);
+    } else {
+      setIsEditMode(true);
+    }
+  };
+
   const handlers = {
     handlePickDate: datePicker.handlePickDate,
     handlePickMonth: monthPicker.handlePickMonth,
@@ -385,13 +409,20 @@ const DetailEmployee = ({ route }) => {
     <View style={styles.container}>
       <CustomHeader
         label="DetailEmployee Screen"
-        leftIcon={icons.back}
-        leftPress={() => navigation.goBack()}
-        rightIcon={icons.document_focus}
-        rightPress={handleSave}
+        leftIcon={icons.menu}
+        leftPress={() => navigation.openDrawer()}
+        // ví dụ: dùng icon edit khi view, icon document_focus khi edit
+        rightIcon={isEditMode ? icons.document_focus : icons.edit}
+        rightPress={handleRightPress}
       />
 
-      <ScrollView style={styles.scrollView}>
+      <View
+        style={{
+          flex: 1,
+          paddingVertical: spacing.small,
+          backgroundColor: colors.background,
+        }}
+      >
         <RenderFields
           field={field}
           formData={formData}
@@ -400,11 +431,33 @@ const DetailEmployee = ({ route }) => {
           toggleSection={toggleSection}
           handleChange={handleChange}
           handlers={handlers}
-          id={employeeId} // <-- truyền vào đây
+          id={employeeId}
+          isGroupDetail={true}
+          isEditMode={isEditMode}
+          validationErrors={validationErrors}
         />
-      </ScrollView>
+      </View>
 
-      {/* Date Picker */}
+      {/* Nếu muốn khi view thì ẩn button update dưới: */}
+      {isEditMode && (
+        <View
+          style={{
+            alignItems: 'center',
+            marginBottom: spacing.medium,
+          }}
+        >
+          <AppButton
+            title="update"
+            onPress={handleRightPress}
+            customStyle={{
+              width: '50%',
+              padding: spacing.medium,
+              justifyContent: 'center',
+            }}
+          />
+        </View>
+      )}
+
       <DatePicker
         modal
         mode="date"
@@ -414,7 +467,6 @@ const DetailEmployee = ({ route }) => {
         onCancel={datePicker.onCancelDate}
       />
 
-      {/* Month Picker */}
       {monthPicker.openMonth && (
         <MonthPicker
           onChange={monthPicker.onChangeMonth}
@@ -423,7 +475,6 @@ const DetailEmployee = ({ route }) => {
         />
       )}
 
-      {/* Select Picker Modal */}
       {selectPicker.openPicker && (
         <ModalPicker
           visible={selectPicker.openPicker}
@@ -491,7 +542,6 @@ const DetailEmployee = ({ route }) => {
         />
       )}
 
-      {/* Location Picker Modal */}
       {locationPicker.openLocationModal && (
         <ModalLocation
           visible={locationPicker.openLocationModal}
@@ -527,6 +577,7 @@ const DetailEmployee = ({ route }) => {
           title="Chọn địa điểm"
         />
       )}
+
       <ModalTreeView
         visible={organizationPicker.showOrgTree}
         data={organizationPicker.orgTreeData}
@@ -536,7 +587,6 @@ const DetailEmployee = ({ route }) => {
         onSearch={keyword => organizationPicker.handleSearch(keyword)}
       />
 
-      {/* Employee Picker Modal */}
       <ModalEmployeePicker
         visible={employeePicker.showEmployeePicker}
         data={employeePicker.employeeData}
@@ -550,7 +600,6 @@ const DetailEmployee = ({ route }) => {
         selectedId={formData[employeePicker.pickerField]?.EmployeeID}
       />
 
-      {/* Procedure Picker Modal */}
       <ModalProcedurePicker
         visible={procedurePicker.showProcedurePicker}
         data={procedurePicker.procedureData}
@@ -564,7 +613,6 @@ const DetailEmployee = ({ route }) => {
         selectedId={formData[procedurePicker.pickerField]?.EmployeeID}
       />
 
-      {/* Loading Overlay */}
       {loading && (
         <View
           style={{
@@ -585,10 +633,6 @@ const DetailEmployee = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  scrollView: {
-    backgroundColor: 'white',
-    padding: spacing.medium,
   },
 });
 

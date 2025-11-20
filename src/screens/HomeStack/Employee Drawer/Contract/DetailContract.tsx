@@ -37,11 +37,16 @@ import {
 } from '../../../../components/hooks/useSelectPicker';
 import ModalTreeView from '../../../../components/modal/ModalTreeView';
 import ModalEmployeePicker from '../../../../components/modal/ModalEmployeePicker';
+import { colors } from '../../../../utils/color';
+import { validateLayoutForm } from '../../../../utils/helper';
 
 const DetailContract = ({ route }) => {
   const navigation = useNavigation<DrawerNavigationProp<any>>();
   const contractId = route?.params?.id;
-
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<{
+    [key: string]: string;
+  }>({});
   // Basic states
   const [field, setField] = useState<any>();
   const [formData, setFormData] = useState({});
@@ -312,11 +317,29 @@ const DetailContract = ({ route }) => {
   };
 
   const handleSave = async () => {
-    if (changedFields.length === 0 && pickedFiles.length === 0) {
-      Toast.show({
-        type: 'info',
-        text1: 'Không có thay đổi để lưu',
-      });
+    if (!isEditMode) {
+      const { isValid, errors } = validateLayoutForm(
+        field,
+        formData,
+        customConfigs,
+        {},
+      );
+      setValidationErrors(errors);
+      if (!isValid) {
+        Toast.show({
+          type: 'error',
+          text1: 'Vui lòng nhập đầy đủ các trường bắt buộc',
+        });
+        return;
+      }
+
+      if (changedFields.length === 0 && pickedFiles.length === 0) {
+        Toast.show({
+          type: 'info',
+          text1: 'Không có thay đổi để lưu',
+        });
+        return;
+      }
       return;
     }
     try {
@@ -361,11 +384,21 @@ const DetailContract = ({ route }) => {
         type: 'success',
         text1: 'Lưu dữ liệu thành công',
       });
+      setIsEditMode(false);
     } catch (error) {
       console.error('Error saving data:', error);
       Alert.alert('Lỗi', 'Lỗi khi lưu dữ liệu');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleRightPress = () => {
+    if (isEditMode) {
+      handleSave();
+      setIsEditMode(false);
+    } else {
+      setIsEditMode(true);
     }
   };
 
@@ -396,11 +429,17 @@ const DetailContract = ({ route }) => {
         label="DetailContract Screen"
         leftIcon={icons.menu}
         leftPress={() => navigation.openDrawer()}
-        rightIcon={icons.document_focus}
-        rightPress={handleSave}
+        rightIcon={isEditMode ? icons.document_focus : icons.edit}
+        rightPress={handleRightPress}
       />
 
-      <ScrollView style={styles.scrollView}>
+      <View
+        style={{
+          flex: 1,
+          paddingVertical: spacing.small,
+          backgroundColor: colors.background,
+        }}
+      >
         <RenderFields
           field={field}
           formData={formData}
@@ -409,10 +448,12 @@ const DetailContract = ({ route }) => {
           toggleSection={toggleSection}
           handleChange={handleChange}
           handlers={handlers}
-          id={contractId} // <-- truyền vào đây
+          id={contractId}
+          isGroupDetail={true}
+          isEditMode={isEditMode}
+          validationErrors={validationErrors}
         />
-      </ScrollView>
-
+      </View>
       {/* Date Picker */}
       <DatePicker
         modal
