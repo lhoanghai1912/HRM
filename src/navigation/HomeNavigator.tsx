@@ -1,6 +1,6 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Screen_Name } from './ScreenName';
-import BottomTabNavigator from './BottomTabNavigator';
+import { BottomTabNavigator } from './BottomTabNavigator';
 
 import Profile from '../screens/HomeStack/Profile';
 import Menu from '../screens/HomeStack/Menu';
@@ -24,6 +24,7 @@ const HomeNavigator = () => {
         name={Screen_Name.BottomTab_Navigator}
         component={BottomTabNavigator}
       />
+
       {/* <Stack.Screen
         name={Screen_Name.Drawer_Navigator}
         component={DrawerNavigator}

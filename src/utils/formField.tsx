@@ -8,6 +8,7 @@ import { joinString, splitString } from '../components/stringHelper';
 import { ms, spacing } from './spacing';
 import { colors } from './color';
 import { formatDate } from './helper';
+import { border, weight } from './fontSize';
 
 type RenderFieldExtraProps = {
   onPickDate?: (fieldName: string) => void;

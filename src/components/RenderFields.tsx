@@ -166,6 +166,7 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
               alignItems: 'center',
               justifyContent: 'space-between',
               borderBottomWidth: 0.5,
+              borderBottomColor: colors.underline,
               paddingVertical: spacing.small,
               width: `100%`,
               paddingHorizontal: spacing.small,
@@ -368,6 +369,7 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
           style={{
             marginHorizontal: spacing.medium,
             borderBottomWidth: expanded ? 0 : 0.7,
+            borderBottomColor: colors.underline,
             borderColor: colors.lightGray,
             backgroundColor: colors.background,
           }}

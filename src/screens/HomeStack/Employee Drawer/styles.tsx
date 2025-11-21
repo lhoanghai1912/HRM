@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { spacing } from '../../../utils/spacing';
 import { colors } from '../../../utils/color';
+import { border, weight } from '../../../utils/fontSize';
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.white },
@@ -11,7 +12,7 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.small,
     backgroundColor: colors.white,
     borderBottomWidth: 1,
-    borderBottomColor: '#e5e7eb',
+    borderBottomColor: colors.underline,
   },
 
   tableHeader: {},
@@ -35,7 +36,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 8,
     borderBottomWidth: 1,
-    borderBottomColor: '#d1d5db',
+    borderBottomColor: colors.underline,
     alignItems: 'center',
   },
   tableRow: {
@@ -44,7 +45,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 8,
     borderBottomWidth: 1,
-    borderBottomColor: '#e5e7eb',
+    borderBottomColor: colors.underline,
     alignItems: 'center',
   },
   checkboxCell: {

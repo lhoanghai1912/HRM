@@ -22,6 +22,7 @@ import tableStyles from '../../components/TableStyle';
 import AppStyles from '../../components/AppStyle';
 import { useTranslation } from 'react-i18next';
 import { colors } from '../../utils/color';
+import { border } from '../../utils/fontSize';
 
 const OrnStruct = ({ navigation }: any) => {
   const [loading, setLoading] = useState(false);

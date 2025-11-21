@@ -3,7 +3,7 @@ import { Modal, View, Text, Pressable, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { colors } from '../../utils/color';
 import { spacing } from '../../utils/spacing';
-import { fonts } from '../../utils/fontSize';
+import { border, fonts, weight } from '../../utils/fontSize';
 
 interface LanguageModalProps {
   visible: boolean;
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
   },
   languageItem: {
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: colors.underline,
     paddingVertical: spacing.small,
     paddingHorizontal: spacing.medium,
   },

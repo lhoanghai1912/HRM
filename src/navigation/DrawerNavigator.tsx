@@ -30,6 +30,7 @@ import Appointment from '../screens/HomeStack/Employee Drawer/Appointment';
 import DetailField from '../components/DetailField';
 import Child_Field from '../components/Child_Field';
 import Detail_Field from '../components/DetailField';
+import PayRoll from '../screens/HomeStack/PayRoll';
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
@@ -65,7 +66,7 @@ export const AttendanceDrawer = () => (
   </Drawer.Navigator>
 );
 
-export const CheckDrawer = () => (
+export const PayRollDrawer = () => (
   <Drawer.Navigator
     id={undefined}
     screenOptions={({ route }) => ({
@@ -93,7 +94,7 @@ export const CheckDrawer = () => (
       },
     })}
   >
-    <Drawer.Screen name={Screen_Name.Shift} component={ShiftStack} />
+    <Drawer.Screen name={Screen_Name.PayRoll_Drawer} component={PayRoll} />
     <Drawer.Screen
       name={Screen_Name.Application}
       component={ApplicationStack}
@@ -136,10 +137,10 @@ export const EmployeeDrawer = () => (
   >
     <Drawer.Screen name={Screen_Name.Employee} component={EmployeeStack} />
     <Drawer.Screen name={Screen_Name.Contract} component={ContractStack} />
-    <Drawer.Screen
+    {/* <Drawer.Screen
       name={Screen_Name.Appointment}
       component={AppointmentStack}
-    />
+    /> */}
   </Drawer.Navigator>
 );
 

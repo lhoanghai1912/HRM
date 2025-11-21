@@ -2,6 +2,7 @@
 import { StyleSheet } from 'react-native';
 import { colors } from '../utils/color';
 import { spacing } from '../utils/spacing';
+import { border } from '../utils/fontSize';
 
 const hair = StyleSheet.hairlineWidth;
 
@@ -19,7 +20,7 @@ const tableStyles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#F8FAFC',
     borderBottomWidth: hair,
-    borderBottomColor: colors.Gray,
+    borderBottomColor: colors.underline,
   },
   row: {
     flexDirection: 'row',
@@ -28,7 +29,7 @@ const tableStyles = StyleSheet.create({
   },
   rowSep: {
     borderBottomWidth: hair, // ⬅️ ngăn cách giữa các dòng
-    borderBottomColor: colors.Gray,
+    borderBottomColor: colors.underline,
   },
   cell: {
     paddingVertical: spacing.small,

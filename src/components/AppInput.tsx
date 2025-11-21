@@ -16,7 +16,7 @@ import icons from '../assets/icons';
 import { ms, spacing } from '../utils/spacing';
 import { colors } from '../utils/color';
 import { ImageSourcePropType } from 'react-native';
-import { fonts } from '../utils/fontSize';
+import { border, fonts } from '../utils/fontSize';
 
 interface AppInputProps extends TextInputProps {
   leftIcon?: ImageSourcePropType;

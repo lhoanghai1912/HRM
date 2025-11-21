@@ -5,7 +5,6 @@ import HomeNavigator from './HomeNavigator';
 import SplashScreen from '../screens/Splash';
 import { useSelector } from 'react-redux';
 import AuthNavigator from './AuthNavigator';
-import BottomTabNavigator from './BottomTabNavigator';
 const AppNavigator = () => {
   const [showSplash, setShowSplash] = useState(true);
   const token = useSelector((state: any) => state.user.token);

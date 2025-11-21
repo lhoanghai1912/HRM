@@ -12,6 +12,7 @@ import { colors } from '../../utils/color';
 import { spacing } from '../../utils/spacing';
 import { lo } from '../../language/Resource';
 import AppStyles from '../AppStyle';
+import { border, weight } from '../../utils/fontSize';
 
 const ModalPicker = ({
   visible,
@@ -345,7 +346,7 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.medium,
     paddingHorizontal: spacing.medium,
     borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    borderBottomColor: colors.underline,
     backgroundColor: '#f8f9fa',
     borderRadius: 12,
   },

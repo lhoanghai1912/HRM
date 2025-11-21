@@ -121,7 +121,7 @@ const AppStyles = StyleSheet.create({
   dropdownItem: {
     padding: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: colors.underline,
   },
 
   linkText: {

@@ -8,7 +8,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import { spacing } from '../../utils/spacing';
-import { fonts } from '../../utils/fontSize';
+import { fonts, weight } from '../../utils/fontSize';
 import { colors } from '../../utils/color';
 
 const ModalLocation = ({
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
   item: {
     paddingVertical: spacing.medium,
     borderBottomWidth: 0.5,
-    borderColor: colors.Gray,
+    borderColor: colors.underline,
     borderWidth: 0.5,
     borderRadius: spacing.medium,
     backgroundColor: colors.white,

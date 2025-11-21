@@ -9,6 +9,7 @@ export const colors = {
   black: '#000000',
   error: '#b00020',
   border: '#e1e1e1',
+  underline: '#D9D9D9',
   Gray: '#bababa',
   lightGray: '##DAE3E8',
   darkGray: '#7b7b7b',

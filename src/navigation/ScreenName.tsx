@@ -56,7 +56,7 @@ export const Screen_Name = {
   Shift: 'Shift',
   Details_Shift: 'Details_Shift',
 
-  Check_Drawer: 'Check_Drawer',
+  PayRoll_Drawer: 'PayRoll_Drawer',
 
   //Application
   Application: 'Application',

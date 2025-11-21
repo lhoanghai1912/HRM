@@ -10,8 +10,8 @@ import Notifications from '../screens/HomeStack/Noti';
 import Attendance from '../screens/HomeStack/Check_InOut';
 import {
   AttendanceDrawer,
-  CheckDrawer,
   EmployeeDrawer,
+  PayRollDrawer,
 } from './DrawerNavigator';
 import Details_Shift from '../screens/HomeStack/Shift/Details';
 import Shift from '../screens/HomeStack/Shift';
@@ -38,7 +38,7 @@ const HomeStack = () => (
       name={Screen_Name.Employee_Drawer}
       component={EmployeeDrawer}
     />
-    <Stack.Screen name={Screen_Name.Check_Drawer} component={CheckDrawer} />
+    <Stack.Screen name={Screen_Name.PayRoll_Drawer} component={PayRollDrawer} />
     {/* <Stack.Screen name={Screen_Name.Test} component={Test} /> */}
   </Stack.Navigator>
 );

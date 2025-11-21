@@ -261,7 +261,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderBottomWidth: 0.5,
-    borderColor: colors.Gray,
+    borderColor: colors.underline,
   },
   headerCell: {
     padding: spacing.small,

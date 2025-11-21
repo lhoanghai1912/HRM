@@ -88,14 +88,14 @@ export const form_itemStack = (t = i18next.t.bind(i18next)) => [
     // screen: Screen_Name.Payroll, // Đặt tên màn hình đúng với navigation
     screen: Screen_Name.Employee,
   },
-  {
-    id: 'recruitment',
-    title: t('label.stack_employee'), // Tuyển dụng
-    icon: icons.list,
-    bg: '#FFEFE5',
-    // screen: Screen_Name.Recruitment, // Đặt tên màn hình đúng với navigation
-    screen: Screen_Name.Employee_Drawer,
-  },
+  // {
+  //   id: 'recruitment',
+  //   title: t('label.stack_employee'), // Tuyển dụng
+  //   icon: icons.list,
+  //   bg: '#FFEFE5',
+  //   // screen: Screen_Name.Recruitment, // Đặt tên màn hình đúng với navigation
+  //   screen: Screen_Name.Employee_Drawer,
+  // },
 ];
 
 export const form_itemHRM = (t = i18next.t.bind(i18next)) => [
