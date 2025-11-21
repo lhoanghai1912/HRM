@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { colors } from '../../utils/color';
 import { ms, spacing } from '../../utils/spacing';
-import { fonts } from '../../utils/fontSize';
+import { fonts, weight } from '../../utils/fontSize';
 import NavBar from '../../components/Navbar';
 
 const Notifications = ({ navigation }) => {

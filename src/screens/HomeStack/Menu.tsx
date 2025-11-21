@@ -10,7 +10,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { colors, darken } from '../../utils/color';
 import { ms, spacing } from '../../utils/spacing';
-import { fonts } from '../../utils/fontSize';
+import { border, fonts, weight } from '../../utils/fontSize';
 import NavBar from '../../components/Navbar';
 import { form_itemHRM } from '../../utils/form';
 import AppStyles from '../../components/AppStyle';

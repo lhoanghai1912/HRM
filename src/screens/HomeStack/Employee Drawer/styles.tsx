@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { spacing } from '../../../utils/spacing';
 import { colors } from '../../../utils/color';
+import { border, weight } from '../../../utils/fontSize';
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.white },

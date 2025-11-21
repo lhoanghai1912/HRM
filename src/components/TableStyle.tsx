@@ -2,6 +2,7 @@
 import { StyleSheet } from 'react-native';
 import { colors } from '../utils/color';
 import { spacing } from '../utils/spacing';
+import { border } from '../utils/fontSize';
 
 const hair = StyleSheet.hairlineWidth;
 

@@ -19,6 +19,7 @@ import { Screen_Name } from '../../navigation/ScreenName';
 import NavBar from '../../components/Navbar';
 import ModalEnterOtp from '../../components/modal/ModalEnterOtp';
 import { sendOtp } from '../../services/auth';
+import { border } from '../../utils/fontSize';
 // import { login, loginFirebase } from '../../services/auth';
 // import { GoogleSignin } from '@react-native-google-signin/google-signin';
 // import auth from '@react-native-firebase/auth';

@@ -12,6 +12,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { colors } from '../utils/color';
+import { border } from '../utils/fontSize';
 
 if (
   Platform.OS === 'android' &&

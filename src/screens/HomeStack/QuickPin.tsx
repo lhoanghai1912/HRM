@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { colors, darken } from '../../utils/color';
 import { ms, spacing } from '../../utils/spacing';
-import { fonts } from '../../utils/fontSize';
+import { border, fonts } from '../../utils/fontSize';
 import AppStyles from '../../components/AppStyle';
 
 interface Item {

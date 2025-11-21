@@ -26,7 +26,7 @@ import { colors } from '../../utils/color';
 import images from '../../assets/images';
 import AppStyles from '../../components/AppStyle';
 import CustomHeader from '../../components/CustomHeader';
-import { fonts } from '../../utils/fontSize';
+import { border, fonts } from '../../utils/fontSize';
 import { employee_Get } from '../../services/hr';
 
 const Profile = () => {

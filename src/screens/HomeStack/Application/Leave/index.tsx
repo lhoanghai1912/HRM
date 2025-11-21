@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import CustomHeader from '../../../../components/CustomHeader';
 import icons from '../../../../assets/icons';
+import { colors } from '../../../../utils/color';
 // import getLeaveApplications from api file
 
 const PAGE_SIZE = 15;

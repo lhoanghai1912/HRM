@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next';
 import AppInput from '../../components/AppInput';
 import { colors } from '../../utils/color';
 import icons from '../../assets/icons';
-import { fonts } from '../../utils/fontSize';
+import { border, fonts } from '../../utils/fontSize';
 import AppButton from '../../components/AppButton';
 import { navigate } from '../../navigation/RootNavigator';
 import { Screen_Name } from '../../navigation/ScreenName';
