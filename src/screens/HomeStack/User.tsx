@@ -12,6 +12,7 @@ import {
 import { colors, darken } from '../../utils/color';
 import { ms, spacing } from '../../utils/spacing';
 import AppStyles from '../../components/AppStyle';
+import { border } from '../../utils/fontSize';
 
 interface Item {
   id: string;

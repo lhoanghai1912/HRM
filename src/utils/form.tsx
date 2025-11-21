@@ -78,7 +78,7 @@ export const form_itemStack = (t = i18next.t.bind(i18next)) => [
     title: t('label.stack_shift'),
     icon: icons.list,
     bg: '#EAF1FF',
-    screen: Screen_Name.Shift,
+    screen: Screen_Name.Employee_Drawer,
   },
   {
     id: 'payroll',
@@ -86,7 +86,7 @@ export const form_itemStack = (t = i18next.t.bind(i18next)) => [
     icon: icons.list,
     bg: '#FFF0F0',
     // screen: Screen_Name.Payroll, // Đặt tên màn hình đúng với navigation
-    screen: Screen_Name.Employee,
+    screen: Screen_Name.PayRoll_Drawer,
   },
   // {
   //   id: 'recruitment',
@@ -157,33 +157,39 @@ export const form_itemHRM = (t = i18next.t.bind(i18next)) => [
 
 export const form_quickPinItems = (t = i18next.t.bind(i18next)) => [
   {
-    id: 'duAn',
-    title: t('label.hrm_quickPins_projects'),
+    id: 'chamCong',
+    // title: t('label.hrm_quickPins_projects'),
+    title: 'Chấm công',
+
     icon: icons.list,
     bg: '#EAF1FF',
-    screen: Screen_Name.Profile,
+    screen: Screen_Name.Attendance_Drawer,
   },
   {
     id: 'nhanSu',
-    title: t('label.hrm_quickPins_employeeFile'),
+    // title: t('label.hrm_quickPins_employeeFile'),
+    title: 'Nhân sự',
+
     icon: icons.list,
     bg: '#EBFFF5',
-    screen: Screen_Name.Profile,
+    screen: Screen_Name.Employee_Drawer,
   },
   {
-    id: 'congViec',
-    title: t('label.hrm_quickPins_tasks'),
+    id: 'bangLuong',
+    // title: t('label.hrm_quickPins_attendance'),
+    title: 'Bảng lương',
+
     icon: icons.list,
     bg: '#FFEFE5',
-    screen: Screen_Name.Profile,
+    screen: Screen_Name.PayRoll_Drawer,
   },
-  {
-    id: 'quyTrinh',
-    title: t('label.hrm_quickPins_process'),
-    icon: icons.list,
-    bg: '#FFF0F0',
-    screen: Screen_Name.Profile,
-  },
+  // {
+  //   id: 'quyTrinh',
+  //   title: t('label.hrm_quickPins_process'),
+  //   icon: icons.list,
+  //   bg: '#FFF0F0',
+  //   screen: Screen_Name.Profile,
+  // },
 ];
 
 export const form_application = (t = i18next.t.bind(i18next)) => [

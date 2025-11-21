@@ -8,7 +8,7 @@ import icons from '../../assets/icons';
 import { spacing } from '../../utils/spacing';
 import { colors } from '../../utils/color';
 import AppButton from '../../components/AppButton';
-import { fonts } from '../../utils/fontSize';
+import { border, fonts } from '../../utils/fontSize';
 import { password_Change } from '../../services/user';
 import Toast from 'react-native-toast-message';
 import { navigate } from '../../navigation/RootNavigator';

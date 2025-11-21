@@ -1,6 +1,8 @@
 import React from 'react';
 import { Modal, View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { border, weight } from '../../utils/fontSize';
+import { colors } from '../../utils/color';
 
 const ModalPickDate = ({
   visible,

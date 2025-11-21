@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next';
 import { navigate } from '../../navigation/RootNavigator';
 import { Screen_Name } from '../../navigation/ScreenName';
 import images from '../../assets/images';
+import { border } from '../../utils/fontSize';
 
 const Home = () => {
   const { t } = useTranslation();

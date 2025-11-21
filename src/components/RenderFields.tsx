@@ -180,9 +180,9 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
               ]}
             >
               {cfg.label}
-              {customConfig?.isRequired && (
+              {/* {customConfig?.isRequired && (
                 <Text style={{ color: 'red' }}> *</Text>
-              )}
+              )} */}
             </Text>
             <Text
               ellipsizeMode="tail"
@@ -295,6 +295,7 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
         borderRadius: border.radiusExtraLarge,
         backgroundColor: colors.white,
         marginBottom: spacing.medium,
+        zindex: 0,
       } as const;
 
       if (item.type === 'parentFields') {
@@ -371,7 +372,8 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
             borderBottomWidth: expanded ? 0 : 0.7,
             borderBottomColor: colors.underline,
             borderColor: colors.lightGray,
-            backgroundColor: colors.background,
+            zIndex: 10,
+            backgroundColor: colors.background, // Reverting to original background color
           }}
         >
           <View
@@ -384,6 +386,7 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
                 flexDirection: 'row',
                 justifyContent: 'space-between',
                 alignItems: 'center',
+                backgroundColor: colors.background,
               }}
               onPress={() => {
                 console.log('layout', field);
@@ -426,7 +429,9 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
         renderItem={renderItem}
         renderSectionHeader={renderSectionHeader}
         stickySectionHeadersEnabled={true}
-        contentContainerStyle={{ paddingBottom: spacing.medium }}
+        contentContainerStyle={{
+          paddingBottom: spacing.medium,
+        }}
       />
     );
   } catch (error) {

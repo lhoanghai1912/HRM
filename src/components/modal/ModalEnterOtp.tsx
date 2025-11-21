@@ -6,6 +6,7 @@ import { useDispatch } from 'react-redux';
 import { setVerificationToken } from '../../store/reducers/userSlice';
 import { forgot_pw } from '../../services/auth';
 import { colors } from '../../utils/color';
+import { border, weight } from '../../utils/fontSize';
 // import { enterOtp } from '../../services/auth';
 
 interface EnterOtpProp {

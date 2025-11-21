@@ -7,7 +7,7 @@ import {
   View,
 } from 'react-native';
 import { colors } from '../utils/color';
-import { spacing } from '../utils/spacing';
+import { ms, spacing } from '../utils/spacing';
 import icons from '../assets/icons';
 import AppStyles from './AppStyle';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -58,30 +58,29 @@ const CustomHeader: React.FC<CustomHeaderProps> = ({
   };
   return (
     <View style={[styles.header, { paddingTop: inset.top }]}>
-      <View style={[styles.headerItem, { width: '75%' }]}>
+      <View style={[styles.headerItem]}>
         {leftIcon && (
           <TouchableOpacity
             onPress={() => {
               leftPress();
             }}
-            style={{ marginRight: spacing.medium }}
           >
             <Image
               source={leftIcon ? leftIcon : icons.back}
-              style={[AppStyles.icon]}
+              style={[AppStyles.icon, { marginHorizontal: ms(5) }]}
               resizeMode="contain"
             />
           </TouchableOpacity>
         )}
-
-        <Text style={[AppStyles.label, { textAlign: 'left' }]}>{label}</Text>
       </View>
-      <View style={[styles.headerItem, { width: '5%' }]}></View>
+      <Text style={[AppStyles.label, { textAlign: 'center', flex: 1 }]}>
+        {label}
+      </Text>
+      {/* <View style={[styles.headerItem, {}]}></View> */}
       <View
         style={[
           styles.headerItem,
           {
-            width: '20%',
             justifyContent: rightIcon ? 'space-between' : 'flex-end',
           },
         ]}
@@ -90,7 +89,7 @@ const CustomHeader: React.FC<CustomHeaderProps> = ({
           <TouchableOpacity onPress={() => rightPress()}>
             <Image
               source={rightIcon}
-              style={[AppStyles.icon]}
+              style={[AppStyles.icon, { marginHorizontal: ms(5) }]}
               resizeMode="contain"
             />
           </TouchableOpacity>

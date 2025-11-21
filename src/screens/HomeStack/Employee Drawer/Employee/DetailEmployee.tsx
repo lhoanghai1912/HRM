@@ -38,6 +38,7 @@ import ModalProcedurePicker from '../../../../components/modal/ModalProcedurePic
 import AppButton from '../../../../components/AppButton';
 import { colors } from '../../../../utils/color';
 import { validateLayoutForm } from '../../../../utils/helper';
+import { useTranslation } from 'react-i18next';
 
 const DetailEmployee = ({ route }) => {
   const navigation = useNavigation<DrawerNavigationProp<any>>();
@@ -96,7 +97,7 @@ const DetailEmployee = ({ route }) => {
   const organizationPicker = useOrganizationPicker();
   const employeePicker = useEmployeePicker();
   const procedurePicker = useProcedurePicker();
-
+  const { t } = useTranslation();
   useFocusEffect(
     useCallback(() => {
       fetchData();
@@ -309,6 +310,7 @@ const DetailEmployee = ({ route }) => {
         {},
       );
       setValidationErrors(errors);
+
       if (!isValid) {
         Toast.show({
           type: 'error',
@@ -317,6 +319,7 @@ const DetailEmployee = ({ route }) => {
         return;
       }
 
+      // ✔ đúng logic: không có thay đổi gì
       if (changedFields.length === 0 && pickedFiles.length === 0) {
         Toast.show({
           type: 'info',
@@ -324,21 +327,23 @@ const DetailEmployee = ({ route }) => {
         });
         return;
       }
+
       return;
     }
+
     try {
       setLoading(true);
 
       const filesToUpload = [...pickedFiles];
 
+      // Upload file
       if (filesToUpload.length > 0) {
         try {
-          const uploadResult = await uploadFile({
+          await uploadFile({
             id: employeeId,
             type: 'Employee',
             files: filesToUpload,
           });
-          console.log('Upload file result:', uploadResult);
 
           Toast.show({
             type: 'success',
@@ -351,8 +356,22 @@ const DetailEmployee = ({ route }) => {
         }
       }
 
+      // Update field thay đổi
       if (changedFields.length > 0) {
         await updateEmployee(employeeId, changedFields);
+        Toast.show({
+          type: 'success',
+          text1: 'Lưu dữ liệu thành công',
+        });
+      }
+
+      if (changedFields.length === 0 && pickedFiles.length === 0) {
+        Toast.show({
+          type: 'info',
+          text1: 'Không có thay đổi để lưu',
+        });
+        setIsEditMode(false);
+        return;
       }
 
       setChangedFields([]);
@@ -360,12 +379,7 @@ const DetailEmployee = ({ route }) => {
       fetchData();
       fetchEmployeeData();
       fetchAllData();
-      Toast.show({
-        type: 'success',
-        text1: 'Lưu dữ liệu thành công',
-      });
 
-      // Sau khi save xong, chuyển về view mode
       setIsEditMode(false);
     } catch (error) {
       console.error('Error saving data:', error);
@@ -385,11 +399,30 @@ const DetailEmployee = ({ route }) => {
   // 🔹 right icon: nếu đang view → chuyển sang edit; nếu đang edit → gọi save
   const handleRightPress = () => {
     if (isEditMode) {
-      handleSave();
-      setIsEditMode(false);
-    } else {
-      setIsEditMode(true);
+      // 🔥 chạy validate trước khi save
+      const { isValid, errors } = validateLayoutForm(
+        field,
+        formData,
+        customConfigs,
+        {},
+      );
+
+      setValidationErrors(errors);
+
+      if (!isValid) {
+        Toast.show({
+          type: 'error',
+          text1: 'Vui lòng nhập đầy đủ các trường bắt buộc',
+        });
+        return; // ❗ KHÔNG SAVE KHI LỖI
+      }
+
+      handleSave(); // ❗ Save thật sự
+      return;
     }
+
+    // Chuyển sang edit
+    setIsEditMode(true);
   };
 
   const handlers = {
@@ -408,7 +441,8 @@ const DetailEmployee = ({ route }) => {
   return (
     <View style={styles.container}>
       <CustomHeader
-        label="DetailEmployee Screen"
+        // label={`${t('employee.employee_detail')}`}
+        label={`Chi tiết nhân viên`}
         leftIcon={icons.menu}
         leftPress={() => navigation.openDrawer()}
         // ví dụ: dùng icon edit khi view, icon document_focus khi edit

@@ -170,9 +170,9 @@ export default {
     hrm_quickPins_process: 'Quy trình',
 
     stack_employee: 'Nhân sự',
-    stack_attendance: 'Điểm danh',
+    stack_attendance: 'Chấm công',
     stack_payroll: 'Bảng lương',
-    stack_recruitment: 'Tuyển dụng',
+    stack_shift: 'Nhân sự',
 
     basic_profile: 'Thông tin cơ bản',
   },

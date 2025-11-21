@@ -16,8 +16,8 @@ const formattedResources = Object.entries(resources).reduce(
 i18n.use(initReactI18next).init({
   compatibilityJSON: 'v4',
   resources: formattedResources,
-  lng: 'en', // Ngôn ngữ mặc định khi khởi chạy
-  fallbackLng: 'en', // Nếu không tìm thấy key -> dùng tiếng Việt
+  lng: 'vi', // Ngôn ngữ mặc định khi khởi chạy
+  fallbackLng: 'vi', // Nếu không tìm thấy key -> dùng tiếng Việt
   interpolation: {
     escapeValue: false,
   },

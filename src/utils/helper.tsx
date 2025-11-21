@@ -54,40 +54,53 @@ export const validateLayoutForm = (
   customConfigs: CustomConfigItem[] = [],
   extraRules?: {
     [fieldName: string]: (value: any, cfg: FieldConfig) => string | undefined;
-  }, // cho các rule đặc biệt: email, phone,...
+  },
 ): ValidationResult => {
-  const errors: { [fieldName: string]: string } = {};
+  const errors: Record<string, string> = {};
 
-  if (!layout || !layout.pageData) {
+  if (!layout?.pageData) {
     return { isValid: true, errors };
   }
 
-  const getCustomConfig = (fieldName: string) =>
-    customConfigs.find(c => c.fieldName === fieldName)?.config || {};
+  // Helper: lấy customConfig (đã parse JSON string nếu có)
+  const getCustomConfig = (fieldName: string) => {
+    const cfg = customConfigs.find(c => c.fieldName === fieldName)?.config;
+    if (!cfg) return {};
+
+    // nếu là string → parse JSON
+    try {
+      return typeof cfg === 'string' ? JSON.parse(cfg) : cfg;
+    } catch (e) {
+      return {};
+    }
+  };
+
+  // Helper: check empty
+  const isEmptyValue = (value: any) => {
+    return (
+      value === undefined ||
+      value === null ||
+      value === '' ||
+      (Array.isArray(value) && value.length === 0)
+    );
+  };
 
   layout.pageData.forEach(pageItem => {
     pageItem.groupFieldConfigs?.forEach(cfg => {
-      const cfgCustom = getCustomConfig(cfg.fieldName);
-      const isRequired = !!cfgCustom?.isRequired;
+      const customCfg = getCustomConfig(cfg.fieldName);
+      const fieldValue = formData[cfg.fieldName];
 
-      const rawValue = formData[cfg.fieldName];
-
-      const isEmpty =
-        rawValue === undefined ||
-        rawValue === null ||
-        rawValue === '' ||
-        (Array.isArray(rawValue) && rawValue.length === 0);
-
-      if (isRequired && isEmpty) {
+      // 1️⃣ REQUIRED RULE
+      if (customCfg?.isRequired && isEmptyValue(fieldValue)) {
         errors[cfg.fieldName] = `${
           cfg.label || cfg.fieldName
         } không được để trống`;
         return;
       }
 
-      // extraRules cho các rule riêng theo fieldName (optional)
-      if (extraRules && extraRules[cfg.fieldName]) {
-        const msg = extraRules[cfg.fieldName](rawValue, cfg);
+      // 2️⃣ EXTRA RULES
+      if (extraRules?.[cfg.fieldName]) {
+        const msg = extraRules[cfg.fieldName](fieldValue, cfg);
         if (msg) {
           errors[cfg.fieldName] = msg;
         }

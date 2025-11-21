@@ -22,7 +22,7 @@ import { colors } from '../../utils/color';
 import images from '../../assets/images';
 import AppStyles from '../../components/AppStyle';
 import CustomHeader from '../../components/CustomHeader';
-import { fonts } from '../../utils/fontSize';
+import { border, fonts } from '../../utils/fontSize';
 import { employee_Get } from '../../services/hr';
 
 const Profile = () => {
@@ -504,7 +504,11 @@ const Profile = () => {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
-  avatar: { width: ms(80), height: ms(80), borderRadius: border.radiusCircle },
+  avatar: {
+    width: ms(80),
+    height: ms(80),
+    borderRadius: border.radiusCircle,
+  },
   name: { fontSize: fonts.large, fontWeight: '600' },
   code: { fontSize: fonts.normal, color: '#555' },
   title: {

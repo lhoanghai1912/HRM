@@ -15,7 +15,7 @@ import { ms, spacing } from '../../utils/spacing';
 import icons from '../../assets/icons';
 import AppStyles from '../AppStyle';
 import images from '../../assets/images';
-import { fonts } from '../../utils/fontSize';
+import { border, fonts, weight } from '../../utils/fontSize';
 
 const ModalProcedurePicker = ({
   visible,

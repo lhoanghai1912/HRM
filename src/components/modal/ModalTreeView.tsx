@@ -14,6 +14,7 @@ import icons from '../../assets/icons';
 import AppStyles from '../AppStyle';
 import { ScrollView } from 'react-native';
 import { SearchBar } from 'react-native-screens';
+import { border, weight } from '../../utils/fontSize';
 
 const TreePicker = ({
   visible,

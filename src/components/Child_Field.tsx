@@ -6,7 +6,7 @@ import icons from '../assets/icons';
 import { navigate } from '../navigation/RootNavigator';
 import { Screen_Name } from '../navigation/ScreenName';
 import CustomHeader from './CustomHeader';
-import { border, weight } from '../utils/fontSize';
+import { border, fonts, weight } from '../utils/fontSize';
 import { colors } from '../utils/color';
 
 const Child_Field = ({ route }) => {
@@ -48,7 +48,12 @@ const Child_Field = ({ route }) => {
               });
             }}
           >
-            <Text style={{ fontWeight: weight.bold, fontSize: 16 }}>
+            <Text
+              style={{
+                fontWeight: weight.bold,
+                fontSize: fonts.normal,
+              }}
+            >
               {child.name}
             </Text>
             <Image style={[AppStyles.icon]} source={icons.arrow} />

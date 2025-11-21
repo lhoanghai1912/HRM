@@ -16,6 +16,7 @@ import { colors } from '../../utils/color';
 import { TextInput } from 'react-native-gesture-handler';
 
 import icons from '../../assets/icons';
+import { border, weight } from '../../utils/fontSize';
 
 const ModalSelectList = ({
   visible,
