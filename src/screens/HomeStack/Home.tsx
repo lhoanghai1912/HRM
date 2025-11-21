@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     padding: ms(spacing.medium),
     marginBottom: spacing.medium,
-    borderRadius: 20,
+    borderRadius: border.radiusExtraLarge,
   },
 });
 

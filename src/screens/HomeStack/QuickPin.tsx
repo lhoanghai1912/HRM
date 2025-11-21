@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: 8,
+    borderRadius: border.radiusMedium,
     marginBottom: spacing.medium,
   },
   icon: { width: ms(24), height: ms(24), marginRight: spacing.medium },

@@ -65,7 +65,9 @@ const ModalLocation = ({
             }
           />
           <TouchableOpacity style={styles.closeBtn} onPress={onClose}>
-            <Text style={{ color: '#1890ff', fontWeight: 'bold' }}>Đóng</Text>
+            <Text style={{ color: '#1890ff', fontWeight: weight.bold }}>
+              Đóng
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -89,7 +91,7 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   title: {
-    fontWeight: 'bold',
+    fontWeight: weight.bold,
     fontSize: fonts.large,
     marginBottom: spacing.medium,
     textAlign: 'center',

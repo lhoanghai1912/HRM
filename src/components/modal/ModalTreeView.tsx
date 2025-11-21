@@ -82,7 +82,7 @@ const TreePicker = ({
               marginBottom: spacing.small,
               borderWidth: 0.5,
               borderColor: colors.Gray,
-              borderRadius: 10,
+              borderRadius: border.radiusMedium,
             }}
           >
             <Text
@@ -144,7 +144,7 @@ const TreePicker = ({
             </View>
           </ScrollView>
           <TouchableOpacity onPress={onClose} style={styles.closeBtn}>
-            <Text style={{ fontWeight: 'bold', fontSize: 16 }}>Đóng</Text>
+            <Text style={{ fontWeight: weight.bold, fontSize: 16 }}>Đóng</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -162,12 +162,12 @@ const styles = StyleSheet.create({
   },
   container: {
     backgroundColor: colors.background,
-    borderRadius: 16,
+    borderRadius: border.radiusLarge,
     width: '90%',
     maxHeight: '75%',
     minHeight: '10%',
     padding: spacing.medium,
-    shadowColor: '#000',
+    shadowColor: colors.black,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
@@ -180,10 +180,14 @@ const styles = StyleSheet.create({
     marginBottom: spacing.small,
     borderColor: colors.Gray,
     borderWidth: 1,
-    borderRadius: 10,
+    borderRadius: border.radiusMedium,
     paddingHorizontal: spacing.small,
   },
-  wrapContent: { borderWidth: 0.5, borderRadius: 10, borderColor: colors.Gray },
+  wrapContent: {
+    borderWidth: 0.5,
+    borderRadius: border.radiusMedium,
+    borderColor: colors.Gray,
+  },
   mainContent: {
     // flex: 1,
     backgroundColor: colors.white,
@@ -196,7 +200,7 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     flex: 1,
-    borderRadius: 6,
+    borderRadius: border.radiusSmall,
   },
 });
 

@@ -15,7 +15,7 @@ import { ms, spacing } from '../../utils/spacing';
 import icons from '../../assets/icons';
 import AppStyles from '../AppStyle';
 import images from '../../assets/images';
-import { fonts } from '../../utils/fontSize';
+import { border, fonts, weight } from '../../utils/fontSize';
 
 const ModalEmployeePicker = ({
   visible,
@@ -176,12 +176,12 @@ const styles = StyleSheet.create({
   },
   container: {
     backgroundColor: colors.white,
-    borderRadius: 16,
+    borderRadius: border.radiusLarge,
     width: '90%',
     minHeight: '50%',
     maxHeight: '75%',
     padding: spacing.medium,
-    shadowColor: '#000',
+    shadowColor: colors.black,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: weight.bold,
     color: colors.black,
   },
   toolbar: {
@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.small,
     borderColor: colors.Gray,
     borderWidth: 1,
-    borderRadius: 10,
+    borderRadius: border.radiusMedium,
     paddingHorizontal: spacing.small,
   },
   searchInput: {
@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
     // justifyContent: 'space-between',
     alignItems: 'flex-start',
     padding: spacing.medium,
-    borderRadius: 8,
+    borderRadius: border.radiusMedium,
     borderWidth: 1,
     borderColor: colors.Gray,
     marginBottom: spacing.small,

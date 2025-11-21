@@ -344,7 +344,7 @@ export const renderField = (
                 borderColor: colors.Gray,
                 borderWidth: 1,
                 padding: spacing.small,
-                borderRadius: 10,
+                borderRadius: border.radiusMedium,
                 backgroundColor: '#e6f7ff',
               }}
             >
@@ -358,7 +358,7 @@ export const renderField = (
             disabled={mode === 'view' || isReadOnly === true}
             style={{
               borderWidth: 1,
-              borderRadius: 10,
+              borderRadius: border.radiusMedium,
               padding: spacing.small,
               marginBottom: spacing.small,
               backgroundColor: '#e6f7ff', // màu khác biệt
@@ -438,7 +438,7 @@ export const renderField = (
               disabled={mode === 'view' || isReadOnly === true}
               style={{
                 borderWidth: 1,
-                borderRadius: 10,
+                borderRadius: border.radiusMedium,
                 padding: spacing.small,
                 marginBottom: spacing.small,
               }}
@@ -489,7 +489,7 @@ export const renderField = (
           disabled={mode === 'view' || isReadOnly === true}
           style={{
             borderWidth: 1,
-            borderRadius: 10,
+            borderRadius: border.radiusMedium,
             padding: spacing.small,
             marginBottom: spacing.small,
           }}
@@ -674,7 +674,7 @@ export const renderField = (
               if (extraProps.onPickFile) extraProps.onPickFile(data.fieldName);
             }}
           >
-            <Text style={{ fontWeight: 'bold' }}>
+            <Text style={{ fontWeight: weight.bold }}>
               {value && (value.name || value.uri || typeof value === 'string')
                 ? 'Đã chọn file'
                 : 'Chọn file'}
@@ -749,8 +749,8 @@ export const renderField = (
               height: ms(20),
               borderWidth: 1,
               borderColor: colors.Gray,
-              borderRadius: 4,
-              backgroundColor: value ? '#1890ff' : '#fff',
+              borderRadius: border.radiusSmall,
+              backgroundColor: value ? '#1890ff' : colors.white,
               alignItems: 'center',
               justifyContent: 'center',
             }}
@@ -819,7 +819,7 @@ export const renderField = (
             }
             style={{
               borderWidth: 1,
-              borderRadius: 10,
+              borderRadius: border.radiusMedium,
               padding: spacing.small,
               marginBottom: spacing.small,
               backgroundColor: '#e6f7ff',
@@ -863,7 +863,7 @@ export const renderField = (
           }
           style={{
             borderWidth: 1,
-            borderRadius: 10,
+            borderRadius: border.radiusMedium,
             padding: spacing.small,
             marginBottom: spacing.small,
             backgroundColor: '#e6f7ff',
@@ -922,7 +922,7 @@ const styles = StyleSheet.create({
     borderColor: colors.Gray,
     // borderWidth: 1,
     padding: spacing.small,
-    borderRadius: 10,
+    borderRadius: border.radiusMedium,
     backgroundColor: colors.lightGray,
   },
 });

@@ -80,13 +80,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalContainer: {
-    backgroundColor: '#fff',
-    borderRadius: 15,
+    backgroundColor: colors.white,
+    borderRadius: border.radiusLarge,
     padding: spacing.medium,
     width: '60%',
   },
   title: {
-    fontWeight: 'bold',
+    fontWeight: weight.bold,
     fontSize: fonts.normal,
     marginBottom: spacing.medium,
     textAlign: 'center',
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
   },
   closeText: {
     color: '#1A7FEE',
-    fontWeight: 'bold',
+    fontWeight: weight.bold,
     fontSize: 16,
   },
 });

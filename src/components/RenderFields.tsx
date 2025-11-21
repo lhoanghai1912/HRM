@@ -14,7 +14,7 @@ import { navigate } from '../navigation/RootNavigator';
 import { Screen_Name } from '../navigation/ScreenName';
 import { colors } from '../utils/color';
 import { spacing } from '../utils/spacing';
-import { fonts } from '../utils/fontSize';
+import { border, fonts, weight } from '../utils/fontSize';
 import { formatDate } from '../utils/helper';
 
 interface RenderFieldsProps {
@@ -186,7 +186,7 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
             <Text
               ellipsizeMode="tail"
               style={{
-                fontWeight: 'bold',
+                fontWeight: weight.bold,
                 fontSize: fonts.normal,
                 width: `50%`,
                 textAlign: 'right',
@@ -208,7 +208,7 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
               ? {
                   borderWidth: 1,
                   borderColor: 'red',
-                  borderRadius: 4,
+                  borderRadius: border.radiusSmall,
                   padding: 2,
                 }
               : { marginVertical: 4 }
@@ -291,7 +291,7 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
       const itemContainerStyle = {
         padding: spacing.small,
         marginHorizontal: spacing.medium,
-        borderRadius: 20,
+        borderRadius: border.radiusExtraLarge,
         backgroundColor: colors.white,
         marginBottom: spacing.medium,
       } as const;
@@ -334,7 +334,7 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
               <Text
                 style={{
                   fontSize: fonts.normal,
-                  fontWeight: 'bold',
+                  fontWeight: weight.bold,
                 }}
               >
                 {child.name}
@@ -374,7 +374,7 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
         >
           <View
             style={{
-              borderRadius: 20,
+              borderRadius: border.radiusExtraLarge,
             }}
           >
             <TouchableOpacity
@@ -400,7 +400,7 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
             >
               <Text
                 style={{
-                  fontWeight: 'bold',
+                  fontWeight: weight.bold,
                   fontSize: fonts.normal,
                   padding: 8,
                 }}

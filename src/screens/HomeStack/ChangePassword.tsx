@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
   },
   body: {
     backgroundColor: colors.white,
-    borderRadius: 20,
+    borderRadius: border.radiusExtraLarge,
     padding: spacing.medium,
   },
 });

@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
   search: {
     borderWidth: 1,
     borderColor: colors.Gray,
-    borderRadius: 10,
+    borderRadius: border.radiusMedium,
     paddingHorizontal: 12,
     paddingVertical: 10,
   },

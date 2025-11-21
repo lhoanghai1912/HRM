@@ -233,7 +233,9 @@ const ModalPicker = ({
                 )}
               </ScrollView>
               <TouchableOpacity style={styles.doneBtn} onPress={handleDone}>
-                <Text style={{ color: '#fff', fontWeight: 'bold' }}>Xong</Text>
+                <Text style={{ color: colors.white, fontWeight: weight.bold }}>
+                  Xong
+                </Text>
               </TouchableOpacity>
             </View>
           ) : (
@@ -315,7 +317,7 @@ const styles = StyleSheet.create({
     minWidth: '80%',
     // maxWidth: '90%',
     // maxHeight: '70%',
-    shadowColor: '#000',
+    shadowColor: colors.black,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
@@ -360,7 +362,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: spacing.medium,
     marginVertical: spacing.small,
-    borderRadius: 8,
+    borderRadius: border.radiusMedium,
     borderWidth: 1,
     borderColor: colors.Gray,
     minHeight: 44, // Đảm bảo chiều cao tối thiểu cho dễ touch
@@ -382,10 +384,10 @@ const styles = StyleSheet.create({
   checkbox: {
     width: 22,
     height: 22,
-    borderRadius: 6,
+    borderRadius: border.radiusSmall,
     borderWidth: 2,
     borderColor: colors.Gray,
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     marginRight: spacing.medium,
     justifyContent: 'center',
     alignItems: 'center',
@@ -395,8 +397,8 @@ const styles = StyleSheet.create({
     borderColor: '#007AFF',
   },
   checkText: {
-    color: '#fff',
-    fontWeight: 'bold',
+    color: colors.white,
+    fontWeight: weight.bold,
     fontSize: 12,
   },
   doneBtn: {
@@ -404,12 +406,12 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.small,
     paddingHorizontal: spacing.large,
     backgroundColor: '#007AFF',
-    borderRadius: 8,
+    borderRadius: border.radiusMedium,
     alignSelf: 'center',
     minWidth: 80,
   },
   doneBtnText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '600',
     textAlign: 'center',
@@ -418,7 +420,7 @@ const styles = StyleSheet.create({
     marginVertical: spacing.small,
     paddingVertical: spacing.small,
     paddingHorizontal: spacing.medium,
-    borderRadius: 6,
+    borderRadius: border.radiusSmall,
     borderWidth: 1,
     borderColor: colors.Gray,
     alignSelf: 'center',

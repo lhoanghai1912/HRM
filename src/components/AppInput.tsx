@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
   input: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: 15,
+    borderRadius: border.radiusLarge,
     paddingHorizontal: spacing.medium,
     color: '999999',
     fontSize: fonts.normal,

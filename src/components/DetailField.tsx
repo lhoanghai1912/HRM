@@ -18,7 +18,7 @@ const Detail_Field = ({ route }) => {
     <View
       style={{
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: colors.white,
       }}
     >
       <CustomHeader
@@ -39,7 +39,7 @@ const Detail_Field = ({ route }) => {
             flex: 1,
             // padding: spacing.medium,
             // borderWidth: 1,
-            // borderRadius: 10,
+            // borderRadius: border.radiusMedium,
             // borderColor: colors.Gray,
           }}
         >

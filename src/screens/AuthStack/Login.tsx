@@ -223,7 +223,7 @@ const LoginScreen = () => {
               padding: spacing.small,
               borderWidth: 1,
               borderColor: colors.Gray,
-              borderRadius: 50,
+              borderRadius: border.radiusCircle,
               marginRight: spacing.medium,
             }}
             onPress={() =>
@@ -242,7 +242,7 @@ const LoginScreen = () => {
               padding: spacing.small,
               borderWidth: 1,
               borderColor: colors.Gray,
-              borderRadius: 50,
+              borderRadius: border.radiusCircle,
               marginRight: spacing.medium,
             }}
             onPress={() => handleGoogleLogin()}
@@ -256,7 +256,7 @@ const LoginScreen = () => {
                 padding: spacing.small,
                 borderWidth: 1,
                 borderColor: colors.Gray,
-                borderRadius: 50,
+                borderRadius: border.radiusCircle,
               }}
               onPress={() =>
                 Toast.show({

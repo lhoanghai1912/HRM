@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import { colors } from '../utils/color';
 import { spacing } from '../utils/spacing';
-import { fonts } from '../utils/fontSize';
+import { border, fonts } from '../utils/fontSize';
 
 interface AppButtonProps {
   // key?: number;
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: colors.button,
-    borderRadius: 30,
+    borderRadius: border.radiusExtraLarge,
     justifyContent: 'center',
     alignContent: 'center',
     paddingVertical: spacing.small,
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
   buttonDisabled: {
     color: colors.black,
     backgroundColor: colors.buttonDisable,
-    borderRadius: 30,
+    borderRadius: border.radiusExtraLarge,
     justifyContent: 'center',
     alignContent: 'center',
     paddingVertical: spacing.medium,

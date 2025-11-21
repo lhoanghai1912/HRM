@@ -3,19 +3,19 @@ import { spacing } from '../../../utils/spacing';
 import { colors } from '../../../utils/color';
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
+  container: { flex: 1, backgroundColor: colors.white },
   toolbar: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: spacing.medium,
     paddingVertical: spacing.small,
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     borderBottomWidth: 1,
     borderBottomColor: '#e5e7eb',
   },
 
   tableHeader: {},
-  title: { fontSize: 20, fontWeight: 'bold', color: '#222' },
+  title: { fontSize: 20, fontWeight: weight.bold, color: '#222' },
   searchInput: {
     flex: 1,
     paddingHorizontal: spacing.medium,
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   },
   tableRow: {
     flexDirection: 'row',
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     paddingHorizontal: 8,
     paddingVertical: 8,
     borderBottomWidth: 1,
@@ -56,8 +56,8 @@ const styles = StyleSheet.create({
     height: 20,
     borderWidth: 1,
     borderColor: colors.Gray,
-    borderRadius: 4,
-    backgroundColor: '#fff',
+    borderRadius: border.radiusSmall,
+    backgroundColor: colors.white,
   },
   cell: {
     color: '#222',
@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
   },
   headerCell: {
-    fontWeight: 'bold',
+    fontWeight: weight.bold,
     color: '#374151',
     paddingHorizontal: spacing.small,
     textAlign: 'center',
@@ -92,11 +92,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#e5e7eb',
     marginVertical: 8,
-    borderRadius: 6,
+    borderRadius: border.radiusSmall,
   },
   loadMoreText: {
     color: '#f97316',
-    fontWeight: 'bold',
+    fontWeight: weight.bold,
   },
 });
 

@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { fonts } from '../utils/fontSize';
+import { border, fonts, weight } from '../utils/fontSize';
 import { colors } from '../utils/color';
 import { ms, spacing } from '../utils/spacing';
 
@@ -8,7 +8,7 @@ const AppStyles = StyleSheet.create({
     fontSize: fonts.xlarge,
     color: colors.black,
     textAlign: 'left',
-    fontWeight: 500,
+    fontWeight: weight.bold,
     marginBottom: spacing.small,
   },
   label: {
@@ -23,14 +23,14 @@ const AppStyles = StyleSheet.create({
   },
   input: {
     height: 50,
-    backgroundColor: '#fff',
-    borderRadius: 10,
+    backgroundColor: colors.white,
+    borderRadius: border.radiusMedium,
     paddingHorizontal: spacing.medium,
     verticalAlign: 'middle',
     fontSize: fonts.normal,
     borderWidth: 1,
     borderColor: colors.Gray,
-    shadowColor: '#000',
+    shadowColor: colors.black,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 6,
@@ -40,14 +40,14 @@ const AppStyles = StyleSheet.create({
   disable: {
     opacity: 0.5,
     height: 50,
-    backgroundColor: '#fff',
-    borderRadius: 10,
+    backgroundColor: colors.white,
+    borderRadius: border.radiusMedium,
     paddingHorizontal: spacing.medium,
     verticalAlign: 'middle',
     fontSize: fonts.normal,
     borderWidth: 1,
     borderColor: colors.Gray,
-    shadowColor: '#000',
+    shadowColor: colors.black,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 6,
@@ -57,7 +57,7 @@ const AppStyles = StyleSheet.create({
   avartar: {
     width: ms(50),
     height: ms(50),
-    borderRadius: 500,
+    borderRadius: border.radiusCircle,
   },
   text: {
     fontSize: fonts.normal,
@@ -112,10 +112,10 @@ const AppStyles = StyleSheet.create({
     top: 90, // Tùy chỉnh tùy theo chiều cao input
     left: 0,
     right: 0,
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     borderWidth: 1,
     borderColor: colors.Gray,
-    borderRadius: 6,
+    borderRadius: border.radiusSmall,
     zIndex: 100,
   },
   dropdownItem: {

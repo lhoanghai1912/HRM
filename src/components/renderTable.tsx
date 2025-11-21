@@ -15,6 +15,7 @@ import AppStyles from './AppStyle';
 import { colors } from '../utils/color';
 import { Image } from 'react-native';
 import icons from '../assets/icons';
+import { border } from '../utils/fontSize';
 
 interface RenderTableProps {
   layoutFields: any[];
@@ -289,7 +290,7 @@ const styles = StyleSheet.create({
     right: 20,
     backgroundColor: colors.primary || '#1976D2',
     padding: 12,
-    borderRadius: 30,
+    borderRadius: border.radiusExtraLarge,
     elevation: 5,
   },
 });
