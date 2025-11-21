@@ -52,8 +52,8 @@ const LoginScreen = () => {
       const res = await login(username, password);
       console.log('login res', res);
       dispatch(setToken({ token: res.data.accessToken }));
-      // const user = await getMe();
-      // console.log('user getme', user);
+      const user = await getMe();
+      console.log('user getme', user);
       dispatch(setUserData({ userData: res.data.user }));
       Toast.show({
         type: 'success',

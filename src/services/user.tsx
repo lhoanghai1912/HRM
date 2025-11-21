@@ -10,6 +10,7 @@ interface UploadImageParams {
 export const getMe = async () => {
   try {
     const res = await apiClient.get('User/get-me');
+    console.log('data getme', res.data);
     return res.data;
   } catch (error) {
     console.log('Error fetching getme:', error);

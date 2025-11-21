@@ -1,6 +1,6 @@
 import { DrawerNavigationProp } from '@react-navigation/drawer';
-import { useNavigation } from '@react-navigation/native';
-import React, { useEffect, useMemo, useState } from 'react';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   View,
@@ -14,7 +14,11 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
-import { employee_Update, employeeAvatar_Update } from '../../services/user';
+import {
+  employee_Update,
+  employeeAvatar_Update,
+  getMe,
+} from '../../services/user';
 import icons from '../../assets/icons';
 import { ms, spacing } from '../../utils/spacing';
 import { launchImageLibrary } from 'react-native-image-picker';
@@ -38,20 +42,16 @@ const Profile = () => {
   const [originalEmployee, setOriginalEmployee] = useState<any>();
   const [loading, setLoading] = useState(false);
   // Fetch employee data
-  useEffect(() => {
-    if (userData?.employeeId) {
+  useFocusEffect(
+    useCallback(() => {
       fetchEmployee();
-    }
-  }, [userData.employeeId]);
+    }, []),
+  );
 
   const fetchEmployee = async () => {
     try {
-      const res = await employee_Get(userData.employeeId);
+      const res = await getMe();
       console.log('Fetched employee data:', res);
-      if (!editingSection) {
-        setEmployee(res.employee);
-        setOriginalEmployee(res.employee);
-      }
     } catch (error) {
       console.error('Error fetching employee data:', error);
     }
