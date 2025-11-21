@@ -10,7 +10,7 @@ const tableStyles = StyleSheet.create({
     marginHorizontal: spacing.small,
     borderWidth: hair, // ⬅️ viền ngoài
     borderColor: colors.Gray,
-    borderRadius: 6,
+    borderRadius: border.radiusSmall,
     overflow: 'hidden',
     position: 'relative', // ⬅️ cần để overlay tuyệt đối
   },
@@ -45,7 +45,7 @@ const tableStyles = StyleSheet.create({
     alignSelf: 'center',
     paddingHorizontal: 8,
     // paddingVertical: 4,
-    borderRadius: 999,
+    borderRadius: border.radiusCircle,
   },
   badgeActive: { backgroundColor: '#E6F8EB' },
   badgeInactive: { backgroundColor: '#FDECEC' },

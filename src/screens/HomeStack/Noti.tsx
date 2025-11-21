@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: fonts.normal,
-    fontWeight: 'bold',
+    fontWeight: weight.bold,
     color: colors.black,
   },
 });

@@ -15,6 +15,7 @@ import { forgot_pw, login } from '../services/auth';
 import { setToken } from '../store/reducers/userSlice';
 import { navigate } from '../navigation/RootNavigator';
 import { Screen_Name } from '../navigation/ScreenName';
+import { border } from '../utils/fontSize';
 
 interface Props {
   navigation: any;
@@ -224,7 +225,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 0,
     borderColor: colors.Gray,
-    borderRadius: 25,
+    borderRadius: border.radiusExtraLarge,
     overflow: 'hidden',
     backgroundColor: '#F4F5F5',
     paddingHorizontal: spacing.medium,

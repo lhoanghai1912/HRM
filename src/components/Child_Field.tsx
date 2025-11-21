@@ -6,6 +6,8 @@ import icons from '../assets/icons';
 import { navigate } from '../navigation/RootNavigator';
 import { Screen_Name } from '../navigation/ScreenName';
 import CustomHeader from './CustomHeader';
+import { border, weight } from '../utils/fontSize';
+import { colors } from '../utils/color';
 
 const Child_Field = ({ route }) => {
   const navigation = useNavigation();
@@ -13,7 +15,7 @@ const Child_Field = ({ route }) => {
     route.params;
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#fff' }}>
+    <View style={{ flex: 1, backgroundColor: colors.white }}>
       <CustomHeader
         label="Detail Appointment"
         leftIcon={icons.back}
@@ -28,7 +30,7 @@ const Child_Field = ({ route }) => {
               marginBottom: 16,
               borderWidth: 1,
               borderColor: '#ccc',
-              borderRadius: 8,
+              borderRadius: border.radiusMedium,
               padding: 12,
               backgroundColor: '#f9f9f9',
               flexDirection: 'row',
@@ -46,7 +48,7 @@ const Child_Field = ({ route }) => {
               });
             }}
           >
-            <Text style={{ fontWeight: 'bold', fontSize: 16 }}>
+            <Text style={{ fontWeight: weight.bold, fontSize: 16 }}>
               {child.name}
             </Text>
             <Image style={[AppStyles.icon]} source={icons.arrow} />

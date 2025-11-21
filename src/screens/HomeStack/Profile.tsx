@@ -504,7 +504,7 @@ const Profile = () => {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
-  avatar: { width: ms(80), height: ms(80), borderRadius: 50 },
+  avatar: { width: ms(80), height: ms(80), borderRadius: border.radiusCircle },
   name: { fontSize: fonts.large, fontWeight: '600' },
   code: { fontSize: fonts.normal, color: '#555' },
   title: {
@@ -516,7 +516,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     elevation: 4,
-    shadowColor: '#000',
+    shadowColor: colors.black,
     shadowOpacity: 0.08,
     shadowRadius: 6,
     shadowOffset: { width: 0, height: 3 },
@@ -539,7 +539,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.medium,
     paddingVertical: spacing.small,
     marginBottom: spacing.medium,
-    borderRadius: 15,
+    borderRadius: border.radiusLarge,
     borderWidth: 1,
     borderColor: colors.Gray,
   },
@@ -582,14 +582,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.small,
     paddingVertical: ms(8),
     fontSize: fonts.normal,
-    backgroundColor: '#FFF',
+    backgroundColor: colors.white,
     color: colors.black,
   },
   cancelButton: {
     paddingHorizontal: spacing.small,
     paddingVertical: ms(4),
     backgroundColor: '#f5f5f5',
-    borderRadius: 8,
+    borderRadius: border.radiusMedium,
     marginRight: spacing.small,
   },
   cancelButtonText: {
@@ -600,12 +600,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.small,
     paddingVertical: ms(4),
     backgroundColor: colors.primary,
-    borderRadius: 8,
+    borderRadius: border.radiusMedium,
     marginRight: spacing.small,
   },
   saveButtonText: {
     fontSize: fonts.small,
-    color: '#fff',
+    color: colors.white,
     fontWeight: '600',
   },
 });

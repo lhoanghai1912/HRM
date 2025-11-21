@@ -165,12 +165,12 @@ const styles = StyleSheet.create({
   },
   container: {
     backgroundColor: colors.white,
-    borderRadius: 16,
+    borderRadius: border.radiusLarge,
     width: '90%',
     minHeight: '50%',
     maxHeight: '75%',
     padding: spacing.medium,
-    shadowColor: '#000',
+    shadowColor: colors.black,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: weight.bold,
     color: colors.black,
   },
   toolbar: {
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.small,
     borderColor: colors.Gray,
     borderWidth: 1,
-    borderRadius: 10,
+    borderRadius: border.radiusMedium,
     paddingHorizontal: spacing.small,
   },
   searchInput: {
@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
   },
   procedureItem: {
     padding: spacing.small,
-    borderRadius: 8,
+    borderRadius: border.radiusMedium,
     borderWidth: 1,
     borderColor: colors.Gray,
     marginBottom: spacing.small,
@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: spacing.medium,
     marginVertical: spacing.small,
-    borderRadius: 8,
+    borderRadius: border.radiusMedium,
     borderWidth: 1,
     borderColor: colors.Gray,
     minHeight: 44, // Đảm bảo chiều cao tối thiểu cho dễ touch

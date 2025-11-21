@@ -39,14 +39,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalContent: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     padding: 20,
-    borderRadius: 10,
+    borderRadius: border.radiusMedium,
     alignItems: 'center',
     minWidth: 280,
   },
   title: {
-    fontWeight: 'bold',
+    fontWeight: weight.bold,
     fontSize: 16,
     marginBottom: 12,
   },

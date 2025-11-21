@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
   input: {
     borderWidth: 1,
     borderColor: colors.Gray,
-    borderRadius: 8,
+    borderRadius: border.radiusMedium,
     padding: spacing.medium,
     marginVertical: spacing.medium,
     fontSize: 16,
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
     height: 50,
     borderWidth: 1,
     borderColor: colors.Gray,
-    borderRadius: 8,
+    borderRadius: border.radiusMedium,
     marginHorizontal: 6,
     fontSize: 24,
     textAlign: 'center',

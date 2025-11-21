@@ -247,13 +247,17 @@ function findPath(nodes: TreeNode[], id: Id): TreeNode[] | null {
 }
 
 const styles = StyleSheet.create({
-  container: { borderWidth: 1, borderColor: colors.Gray, borderRadius: 10 },
+  container: {
+    borderWidth: 1,
+    borderColor: colors.Gray,
+    borderRadius: border.radiusMedium,
+  },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 8,
     paddingHorizontal: 10,
-    borderRadius: 8,
+    borderRadius: border.radiusMedium,
   },
   rowPressed: { backgroundColor: '#F8FAFC' },
   chev: { width: 16, textAlign: 'center', color: '#64748B' },
@@ -262,7 +266,7 @@ const styles = StyleSheet.create({
   labelHit: {
     backgroundColor: '#FEF9C3',
     paddingHorizontal: 4,
-    borderRadius: 4,
+    borderRadius: border.radiusSmall,
   },
   cbBox: { marginRight: 6 },
   cbTxt: { fontSize: 16 },

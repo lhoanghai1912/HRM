@@ -134,13 +134,13 @@ const styles = StyleSheet.create({
   modalContent: {
     backgroundColor: 'white',
     padding: 20,
-    borderRadius: 10,
+    borderRadius: border.radiusMedium,
     alignItems: 'center',
   },
   title: {
     fontSize: 18,
     marginBottom: 20,
-    fontWeight: 'bold',
+    fontWeight: weight.bold,
   },
   otpContainer: {
     flexDirection: 'row',

@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: fonts.normal,
-    fontWeight: 'bold',
+    fontWeight: weight.bold,
     color: colors.black,
   },
   bodyItem: {
@@ -66,17 +66,17 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     padding: ms(spacing.medium),
     marginBottom: spacing.medium,
-    borderRadius: 20,
+    borderRadius: border.radiusExtraLarge,
   },
   section: {
     marginHorizontal: ms(spacing.medium),
     backgroundColor: colors.white,
     padding: spacing.medium,
-    borderRadius: 8,
+    borderRadius: border.radiusMedium,
   },
   sectionTitle: {
     fontSize: fonts.normal,
-    fontWeight: 'bold',
+    fontWeight: weight.bold,
     marginBottom: spacing.medium,
     color: colors.black,
   },
