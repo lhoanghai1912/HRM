@@ -94,13 +94,13 @@ const CustomHeader: React.FC<CustomHeaderProps> = ({
             />
           </TouchableOpacity>
         )}
-        <TouchableOpacity onPress={() => setShowUser(true)}>
+        {/* <TouchableOpacity onPress={() => setShowUser(true)}>
           <Image
             source={icons.username}
             style={AppStyles.icon}
             resizeMode="contain"
           />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
       <User
         visible={showUser}

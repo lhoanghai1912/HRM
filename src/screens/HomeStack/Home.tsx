@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import AppButton from '../../components/AppButton';
 import { logout } from '../../store/reducers/userSlice';
@@ -9,22 +9,30 @@ import icons from '../../assets/icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import AppStyles from '../../components/AppStyle';
 import CustomHeader from '../../components/CustomHeader';
-import { form_itemHRM, form_itemStack } from '../../utils/form';
+import { form_itemHRM, form_itemStack, form_user } from '../../utils/form';
 import { useTranslation } from 'react-i18next';
 import { navigate } from '../../navigation/RootNavigator';
 import { Screen_Name } from '../../navigation/ScreenName';
 import images from '../../assets/images';
 import { border } from '../../utils/fontSize';
+import User from './User';
 
 const Home = () => {
   const { t } = useTranslation();
   const { userData } = useSelector((state: any) => state.user);
-
+  const [showUser, setShowUser] = useState(false);
+  const [modalLanguage, setModalLanguage] = useState(false);
+  const dispatch = useDispatch();
   console.log('userData', userData);
 
   return (
     <View style={styles.container}>
-      <CustomHeader label={userData?.employee?.fullName} Home={true} />
+      <CustomHeader
+        label={userData?.employee?.fullName}
+        Home={true}
+        rightIcon={icons.username}
+        rightPress={() => setShowUser(true)}
+      />
       <View style={styles.bodyItem}>
         <Text style={AppStyles.label}>HRM</Text>
         <View style={styles.grid}>
@@ -32,7 +40,12 @@ const Home = () => {
             <TouchableOpacity
               key={item.id}
               style={[styles.item, { backgroundColor: item.bg }]}
-              onPress={() => item.screen && navigate(item.screen)}
+              onPress={() =>
+                // item.screen === Screen_Name.Attendance_Drawer
+                //   ? item.screen &&
+                //     navigate(Screen_Name.BottomAttendTab_Navigator)
+                item.screen && navigate(item.screen)
+              }
             >
               <Image
                 source={item.icon}
@@ -45,8 +58,29 @@ const Home = () => {
               </Text>
             </TouchableOpacity>
           ))}
+          <TouchableOpacity
+            onPress={() =>
+              navigate(Screen_Name.BottomAttendTab_Navigator, {
+                screen: Screen_Name.Attendance_Drawer,
+              })
+            }
+          >
+            <Image source={icons.apple} style={AppStyles.icon} />
+          </TouchableOpacity>
         </View>
       </View>
+      <User
+        visible={showUser}
+        onClose={() => setShowUser(false)}
+        items={form_user(t, setModalLanguage, dispatch)}
+        title="Chọn nhanh"
+        onSelect={(item: any) => {
+          if (item.action) {
+            item.action();
+          }
+          setShowUser(false);
+        }}
+      />
     </View>
   );
 };

@@ -1,6 +1,9 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Screen_Name } from './ScreenName';
-import { BottomTabNavigator } from './BottomTabNavigator';
+import {
+  BottomAttendTabNavigator,
+  BottomTabNavigator,
+} from './BottomTabNavigator';
 
 import Profile from '../screens/HomeStack/Profile';
 import Menu from '../screens/HomeStack/Menu';
@@ -10,54 +13,35 @@ import OrnStruct from '../screens/HomeStack/OrgStruct';
 import ChangePassword from '../screens/HomeStack/ChangePassword';
 import AddEmployee from '../screens/HomeStack/AddEmployee';
 import { AttendanceDrawer, EmployeeDrawer } from './DrawerNavigator';
+import { useNavigationState } from '@react-navigation/native';
+import HomeStack from './HomeStack';
 
 const Stack = createNativeStackNavigator();
 
 const HomeNavigator = () => {
+  // const currentRoute = useNavigationState(state => {
+  //   const route = state.routes[state.index];
+  //   return route?.name;
+  // });
+  // const useAttendTab = currentRoute === Screen_Name.Attendance_Drawer;
+
   return (
-    <Stack.Navigator
-      id={undefined}
-      screenOptions={{ headerShown: false, animation: 'slide_from_right' }}
-      initialRouteName={Screen_Name.BottomTab_Navigator}
-    >
-      <Stack.Screen
-        name={Screen_Name.BottomTab_Navigator}
-        component={BottomTabNavigator}
-      />
-
-      {/* <Stack.Screen
-        name={Screen_Name.Drawer_Navigator}
-        component={DrawerNavigator}
-      /> */}
-
-      <Stack.Screen
-        name={Screen_Name.Employee_Drawer}
-        component={EmployeeDrawer}
-      />
-
-      <Stack.Screen
-        name={Screen_Name.Attendance_Drawer}
-        component={AttendanceDrawer}
-      />
-      {/* <Stack.Screen name={Screen_Name.Notification} component={Notifications} />
-      <Stack.Screen name={Screen_Name.Menu} component={Menu} />
-      <Stack.Screen name={Screen_Name.AddEmployee} component={AddEmployee} />
-      <Stack.Screen name={Screen_Name.OrnStruct} component={OrnStruct} />
-      <Stack.Screen name={Screen_Name.Profile} component={Profile} />
-      <Stack.Screen
-        name={Screen_Name.ChangePassword}
-        component={ChangePassword}
-      /> */}
-
-      {/* <Stack.Screen name={Screen_Name.Profile} component={Profile} />
-      <Stack.Screen name={Screen_Name.Profile} component={Profile} />
-      <Stack.Screen name={Screen_Name.Profile} component={Profile} /> */}
-
-      {/* <Stack.Screen name={Screen_Name.AddForm} component={AddForm} />
-      <Stack.Screen name={Screen_Name.PayRoll} component={PayRoll} />
-      <Stack.Screen name={Screen_Name.QuickPin} component={QuickPin} />
-      <Stack.Screen name={Screen_Name.TimeSheet} component={TimeSheet} /> */}
-    </Stack.Navigator>
+    <>
+      <Stack.Navigator
+        id={undefined}
+        screenOptions={{ headerShown: false, animation: 'slide_from_right' }}
+        initialRouteName={Screen_Name.BottomTab_Navigator}
+      >
+        <Stack.Screen
+          name={Screen_Name.BottomTab_Navigator}
+          component={BottomTabNavigator}
+        />
+        <Stack.Screen
+          name={Screen_Name.BottomAttendTab_Navigator}
+          component={BottomAttendTabNavigator}
+        />
+      </Stack.Navigator>
+    </>
   );
 };
 export default HomeNavigator;

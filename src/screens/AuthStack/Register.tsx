@@ -236,19 +236,6 @@ const RegisterScreen = () => {
             </Text>
           </TouchableOpacity>
         </View>
-
-        {/* <TouchableOpacity
-          onPress={() => navigate(Screen_Name.BottomTab_Navigator)}
-        >
-          <Text
-            style={[
-              AppStyles.text,
-              { alignSelf: 'center', color: colors.blue },
-            ]}
-          >
-            {t('message.guest')}
-          </Text>
-        </TouchableOpacity> */}
       </View>
       <ModalEnterOtp
         visible={modalEnterOtp}

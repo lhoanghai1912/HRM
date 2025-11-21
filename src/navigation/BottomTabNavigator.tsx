@@ -11,11 +11,17 @@ import HomeStack from './HomeStack';
 import QuickPin from '../screens/HomeStack/QuickPin';
 import { navigate } from './RootNavigator';
 import Profile from '../screens/HomeStack/Profile';
-import Attendance from '../screens/HomeStack/Check_InOut';
+import Attendance from '../screens/HomeStack/Attendance Drawer/Attendance Drawer';
+import {
+  AttendanceDrawer,
+  AttendanceStack,
+  EmployeeDrawer,
+  EmployeeStack,
+} from './DrawerNavigator';
 
 const Tab = createBottomTabNavigator();
 
-export const BottomTabNavigator = ({ navigation }) => {
+export const BottomTabNavigator = ({}) => {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const [showQuick, setShowQuick] = useState(false);
@@ -86,4 +92,61 @@ export const BottomTabNavigator = ({ navigation }) => {
   );
 };
 
-export default BottomTabNavigator;
+export const BottomAttendTabNavigator = () => {
+  const { t } = useTranslation();
+  const insets = useSafeAreaInsets();
+  const [showQuick, setShowQuick] = useState(false);
+
+  return (
+    <>
+      <Tab.Navigator
+        id={undefined}
+        screenOptions={({ route }) => ({
+          headerShown: false,
+          tabBarShowLabel: true,
+          tabBarStyle: {
+            paddingVertical: spacing.medium,
+            paddingBottom: ms(spacing.medium + insets.bottom),
+            height: ms(49 + insets.bottom),
+          },
+          tabBarIcon: ({ focused }) => {
+            const iconMap = {
+              [Screen_Name.Attendance]: focused ? icons.home_focus : icons.home,
+              [Screen_Name.Profile]: focused ? icons.add_focus : icons.add,
+              [Screen_Name.Employee]: focused
+                ? icons.username_focus
+                : icons.username,
+            };
+            return (
+              <Image
+                source={iconMap[route.name]}
+                style={{ width: ms(24), height: ms(24) }}
+                resizeMode="contain"
+              />
+            );
+          },
+        })}
+      >
+        {/* NÚT HOME – navigate ra màn Home */}
+        <Tab.Screen
+          name={Screen_Name.Attendance}
+          component={AttendanceStack}
+          options={{
+            tabBarButton: props => (
+              <TouchableOpacity
+                style={props.style}
+                onPress={() => navigate(Screen_Name.Home)} // ⭐ quay về HomeStack
+              >
+                {props.children}
+              </TouchableOpacity>
+            ),
+          }}
+        />
+
+        <Tab.Screen name={Screen_Name.Profile} component={Profile} />
+
+        <Tab.Screen name={Screen_Name.Employee} component={EmployeeStack} />
+      </Tab.Navigator>
+    </>
+  );
+};

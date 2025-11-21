@@ -4,13 +4,12 @@ import ChangePassword from '../screens/HomeStack/ChangePassword';
 import Details_Shift from '../screens/HomeStack/Shift';
 import Menu from '../screens/HomeStack/Menu';
 import QuickPin from '../screens/HomeStack/QuickPin';
-import Leave from '../screens/HomeStack/Application/Leave';
-import Remote from '../screens/HomeStack/Application/Remote';
-import Attendance from '../screens/HomeStack/Check_InOut';
-import Attendance_Update from '../screens/HomeStack/Application/Attendance_Update';
-import Detail_Late_Early from '../screens/HomeStack/Application/Late_Early/Detail';
+import Leave from '../screens/HomeStack/Attendance Drawer/Leave';
+import Remote from '../screens/HomeStack/Attendance Drawer/Remote';
+import Attendance from '../screens/HomeStack/Attendance Drawer/Attendance Drawer';
+import Attendance_Update from '../screens/HomeStack/Attendance Drawer/Attendance_Update';
+import Detail_Late_Early from '../screens/HomeStack/Attendance Drawer/Late_Early/Detail';
 import DetailField from '../components/DetailField';
-// import { AttendanceDrawer } from './DrawerNavigator';
 
 export const Screen_Name = {
   //AuthStack
@@ -73,6 +72,7 @@ export const Screen_Name = {
   Splash: 'Splash',
   Loading: 'Loading',
   BottomTab_Navigator: 'BottomTab_Navigator',
+  BottomAttendTab_Navigator: 'BottomAttendTab_Navigator',
   Drawer_Navigator: 'Drawer_Navigator',
 
   Test: 'Test',

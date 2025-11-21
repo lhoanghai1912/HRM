@@ -1,46 +1,66 @@
+import React from 'react';
+import { View } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { useNavigationState } from '@react-navigation/native';
+
 import { Screen_Name } from './ScreenName';
-import Home from '../screens/HomeStack/Home';
-import Profile from '../screens/HomeStack/Profile';
-import Menu from '../screens/HomeStack/Menu';
-import AddEmployee from '../screens/HomeStack/AddEmployee';
-import OrnStruct from '../screens/HomeStack/OrgStruct';
-import ChangePassword from '../screens/HomeStack/ChangePassword';
-import Notifications from '../screens/HomeStack/Noti';
-import Attendance from '../screens/HomeStack/Check_InOut';
+
+import { AttendanceDrawer, EmployeeDrawer } from './DrawerNavigator';
 import {
-  AttendanceDrawer,
-  EmployeeDrawer,
-  PayRollDrawer,
-} from './DrawerNavigator';
-import Details_Shift from '../screens/HomeStack/Shift/Details';
-import Shift from '../screens/HomeStack/Shift';
-import Test from '../screens/HomeStack/Employee Drawer/Employee/DetailEmployee';
+  BottomAttendTabNavigator,
+  BottomTabNavigator,
+} from './BottomTabNavigator';
 
 const Stack = createNativeStackNavigator();
 
-const HomeStack = () => (
-  <Stack.Navigator id={undefined} screenOptions={{ headerShown: false }}>
-    <Stack.Screen name="HomeMain" component={Home} />
-    <Stack.Screen name={Screen_Name.Profile} component={Profile} />
-    <Stack.Screen name={Screen_Name.Menu} component={Menu} />
-    <Stack.Screen name={Screen_Name.AddEmployee} component={AddEmployee} />
-    <Stack.Screen name={Screen_Name.OrnStruct} component={OrnStruct} />
-    <Stack.Screen
-      name={Screen_Name.ChangePassword}
-      component={ChangePassword}
-    />
-    <Stack.Screen name={Screen_Name.Notification} component={Notifications} />
+const HomeNavigator = () => {
+  // Lấy route hiện tại
+  const currentRoute = useNavigationState(state => {
+    const route = state.routes[state.index];
+    return route?.name;
+  });
 
-    <Stack.Screen name={Screen_Name.Attendance} component={AttendanceDrawer} />
-    <Stack.Screen name={Screen_Name.Shift} component={EmployeeDrawer} />
-    <Stack.Screen
-      name={Screen_Name.Employee_Drawer}
-      component={EmployeeDrawer}
-    />
-    <Stack.Screen name={Screen_Name.PayRoll_Drawer} component={PayRollDrawer} />
-    {/* <Stack.Screen name={Screen_Name.Test} component={Test} /> */}
-  </Stack.Navigator>
-);
+  // Khi mở AttendanceDrawer → dùng bottomAttendTab
+  const isAttendanceMode = currentRoute === Screen_Name.Attendance_Drawer;
 
-export default HomeStack;
+  return (
+    <View style={{ flex: 1 }}>
+      {/* MAIN STACK */}
+      <View style={{ flex: 1 }}>
+        <Stack.Navigator
+          id={undefined}
+          screenOptions={{ headerShown: false }}
+          initialRouteName={Screen_Name.BottomTab_Navigator}
+        >
+          {/* HOME */}
+          <Stack.Screen
+            name={Screen_Name.BottomTab_Navigator}
+            component={BottomTabNavigator}
+          />
+
+          {/* DRAWERS */}
+          <Stack.Screen
+            name={Screen_Name.Employee_Drawer}
+            component={EmployeeDrawer}
+          />
+
+          <Stack.Screen
+            name={Screen_Name.Attendance_Drawer}
+            component={AttendanceDrawer}
+          />
+        </Stack.Navigator>
+      </View>
+
+      {/* DYNAMIC TAB BAR */}
+      <View style={{ height: 60 }}>
+        {isAttendanceMode ? (
+          <BottomAttendTabNavigator />
+        ) : (
+          <BottomTabNavigator />
+        )}
+      </View>
+    </View>
+  );
+};
+
+export default HomeNavigator;

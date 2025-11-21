@@ -6,13 +6,23 @@ import { ms, spacing } from '../../utils/spacing';
 import { fonts } from '../../utils/fontSize';
 import CustomHeader from '../../components/CustomHeader';
 import AppStyles from '../../components/AppStyle';
+import icons from '../../assets/icons';
+import { useNavigation } from '@react-navigation/native';
+import { DrawerNavigationProp } from '@react-navigation/drawer';
 
 const PayRoll = () => {
   const { t } = useTranslation();
+  const navigation = useNavigation<DrawerNavigationProp<any>>();
 
   return (
     <View style={styles.container}>
-      <CustomHeader label={'Pay roll'} />
+      <CustomHeader
+        label={'Pay roll'}
+        leftIcon={icons.menu}
+        leftPress={() => {
+          navigation.openDrawer();
+        }}
+      />
       <Text style={AppStyles.label}>{'Pay roll'}</Text>
     </View>
   );

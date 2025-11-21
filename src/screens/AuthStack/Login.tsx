@@ -67,61 +67,10 @@ const LoginScreen = () => {
   };
   console.log('userdata', userData);
 
-  const handleGoogleLogin = async () => {
-    // try {``
-    //   setLoading(true);
-    //   await GoogleSignin.hasPlayServices();``
-    //   const userInfo = await GoogleSignin.signIn();
-    //   const idToken = userInfo?.data?.idToken || '';
-    //   const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-    //   const userCredential = await auth().signInWithCredential(
-    //     googleCredential,
-    //   );
-    //   const firebaseIdToken = await userCredential.user.getIdToken();
-    //   console.log('firebaseIdToken', firebaseIdToken);
-    //   const res = await loginFirebase(firebaseIdToken);
-    //   dispatch(setToken({ token: res.token }));
-    //   dispatch(setUserId({ userId: res.id }));
-    //   console.log('token', res.token);
-    //   navigate(Screen_Name.BottomTab_Navigator);
-    //   console.log(userInfo);
-    // } catch (error) {
-    // } finally {
-    //   setLoading(false);
-    // }
-  };
+  const handleGoogleLogin = async () => {};
 
   const handleFacebookLogin = async () => {
     try {
-      // const result = await LoginManager.logInWithPermissions([
-      //   'public_profile',
-      //   'email',
-      // ]);
-      // console.log('result', result);
-
-      // if (result.isCancelled) return;
-
-      // const data = await AccessToken.getCurrentAccessToken();
-      // console.log('data', data);
-      // if (!data) return;
-
-      // const facebookCredential = auth.FacebookAuthProvider.credential(
-      //   data.accessToken,
-      // );
-      // console.log('facebookCredential', facebookCredential);
-
-      // const userCredential = await auth().signInWithCredential(
-      //   facebookCredential,
-      // );
-      // console.log('facebook userCredential', userCredential);
-
-      // const firebaseIdToken = await userCredential.user.getIdToken();
-
-      // const res = await loginFirebase(firebaseIdToken);
-      // console.log('facebook loginFirebase res', res);
-
-      // dispatch(setToken({ token: res.token }));
-      // navigate(Screen_Name.BottomTab_Navigator);
       Toast.show({
         type: 'info',
         text2: `${t('message.comming_soon')}`,
@@ -292,18 +241,7 @@ const LoginScreen = () => {
             { width: '60%', alignSelf: 'center', marginBottom: spacing.medium },
           ]}
         />
-        {/* <TouchableOpacity
-          onPress={() => navigate(Screen_Name.BottomTab_Navigator)}
-        >
-          <Text
-            style={[
-              AppStyles.text,
-              { alignSelf: 'center', color: colors.blue },
-            ]}
-          >
-            {t('message.guest')}
-          </Text>
-        </TouchableOpacity> */}
+
         <View>
           <TouchableOpacity
             style={styles.language}
