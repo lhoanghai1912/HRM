@@ -4,13 +4,10 @@ import ChangePassword from '../screens/HomeStack/ChangePassword';
 import Details_Shift from '../screens/HomeStack/Shift';
 import Menu from '../screens/HomeStack/Menu';
 import QuickPin from '../screens/HomeStack/QuickPin';
-import Leave from '../screens/HomeStack/Application/Leave';
-import Remote from '../screens/HomeStack/Application/Remote';
-import Attendance from '../screens/HomeStack/Check_InOut';
-import Attendance_Update from '../screens/HomeStack/Application/Attendance_Update';
-import Detail_Late_Early from '../screens/HomeStack/Application/Late_Early/Detail';
+
 import DetailField from '../components/DetailField';
 import PayRoll from '../screens/HomeStack/PayRoll';
+import App from '../App';
 // import { AttendanceDrawer } from './DrawerNavigator';
 
 export const Screen_Name = {
@@ -22,7 +19,6 @@ export const Screen_Name = {
 
   Home: 'Home',
   Profile: 'Profile',
-  TimeSheet: 'TimeSheet',
   PayRoll: 'PayRoll',
   QuickPin: 'QuickPin',
   AddForm: 'AddForm',
@@ -39,7 +35,6 @@ export const Screen_Name = {
   Appointment_Drawer: 'Appointment_Drawer',
   PayRoll_Drawer: 'PayRoll_Drawer',
   // Attendance
-  Attendance: 'Attendance',
 
   //Employee
   Employee: 'Employee',
@@ -57,18 +52,13 @@ export const Screen_Name = {
   Shift: 'Shift',
   Details_Shift: 'Details_Shift',
 
-  PayRoll_Drawer: 'PayRoll_Drawer',
-
-  //Application
+  //Attendance
+  Attendance: 'Attendance',
+  CheckInOut: 'CheckInOut',
   Application: 'Application',
-  Leave: 'Leave',
-  Late_Early: 'Late_Early',
-  Overtime: 'Overtime',
-  Business_Trip: 'Trip',
-  Remote: 'Remote',
-  Attendance_Update: 'Attendance_Update',
-  Shift_Update: 'Shift_Update',
-  Detail_Late_Early: 'Detail_Late_Early',
+  TimeSheet: 'TimeSheet',
+  Application_List: 'Application_List',
+  Application_Create: 'Application_Create',
 
   //Other
   Splash: 'Splash',

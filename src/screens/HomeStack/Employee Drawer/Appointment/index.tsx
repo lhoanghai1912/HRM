@@ -82,7 +82,7 @@ const Appointment = ({}) => {
   return (
     <View style={styles.container}>
       <CustomHeader
-        label="Appointment Application"
+        label="Appointment Attendance"
         leftIcon={icons.menu}
         leftPress={() => navigation.openDrawer()}
       />

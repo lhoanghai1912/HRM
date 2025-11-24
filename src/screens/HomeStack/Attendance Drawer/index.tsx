@@ -10,9 +10,8 @@ const Attendance = () => {
 
   return (
     <View style={styles.container}>
-      <Text>Attendance</Text>
       <CustomHeader
-        label="DetailEmployee Screen"
+        label="Đơn, chế độ "
         leftIcon={icons.menu}
         leftPress={() => navigation.openDrawer()}
       />

@@ -16,8 +16,12 @@ import {
 const Stack = createNativeStackNavigator();
 
 const HomeStack = () => (
-  <Stack.Navigator id={undefined} screenOptions={{ headerShown: false }}>
-    <Stack.Screen name="HomeMain" component={Home} />
+  <Stack.Navigator
+    id={undefined}
+    screenOptions={{ headerShown: false }}
+    initialRouteName={Screen_Name.Home}
+  >
+    <Stack.Screen name={Screen_Name.Home} component={Home} />
 
     <Stack.Screen
       name={Screen_Name.Attendance_Drawer}

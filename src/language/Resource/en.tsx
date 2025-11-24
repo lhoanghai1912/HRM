@@ -191,7 +191,7 @@ export default {
 
     form_detail_late_early_created_by: 'Applicant',
     form_detail_late_early_org: 'Org Struct',
-    form_detail_late_early_application_date: 'Application date',
+    form_detail_late_early_application_date: 'Attendance date',
     form_detail_late_early_from_date: 'From date',
     form_detail_late_early_to_date: 'To date',
     form_detail_late_early_applies_days: 'Applies days',

@@ -32,7 +32,7 @@ const Home = () => {
             <TouchableOpacity
               key={item.id}
               style={[styles.item, { backgroundColor: item.bg }]}
-              onPress={() => item.screen && navigate(item.screen)}
+              onPress={() => navigate(item.screen)}
             >
               <Image
                 source={item.icon}
@@ -46,6 +46,9 @@ const Home = () => {
             </TouchableOpacity>
           ))}
         </View>
+        {/* <TouchableOpacity onPress={() => navigate(Screen_Name.Drawer_Navigator, { screen: Screen_Name.Attendance_Drawer })}>
+          <Image source={icons.apple} style={AppStyles.icon}></Image>
+        </TouchableOpacity> */}
       </View>
     </View>
   );

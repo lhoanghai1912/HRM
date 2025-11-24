@@ -204,7 +204,7 @@ const Contract = ({}) => {
   return (
     <View style={styles.container}>
       <CustomHeader
-        label="Contract Application"
+        label="Contract Attendance"
         leftIcon={icons.menu}
         leftPress={() => navigation.openDrawer()}
       />
@@ -248,25 +248,6 @@ const Contract = ({}) => {
         cellStyle={styles.cell}
       />
       {/* Table */}
-      <RenderTable
-        layoutFields={layoutFields}
-        data={contract}
-        keyExtractor={item => item.Id.toString()}
-        onRowPress={item =>
-          navigate(Screen_Name.Details_Contract, { id: item.Id })
-        }
-        loading={loading}
-        loadingMore={loadingMore}
-        refreshing={refreshing}
-        noMoreData={noMoreData}
-        onRefresh={handleRefresh}
-        onLoadMore={handleLoadMore}
-        emptyMessage="Không có dữ liệu"
-        style={styles.table}
-        tableRowStyle={styles.tableRow}
-        headerStyle={styles.tableRowHeader}
-        cellStyle={styles.cell}
-      />
 
       {(loading || refreshing) && (
         <View

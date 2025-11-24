@@ -72,6 +72,19 @@ const CustomHeader: React.FC<CustomHeaderProps> = ({
             />
           </TouchableOpacity>
         )}
+        {leftIcon1 && (
+          <TouchableOpacity
+            onPress={() => {
+              leftPress1();
+            }}
+          >
+            <Image
+              source={leftIcon1 ? leftIcon1 : icons.back}
+              style={[AppStyles.icon, { marginHorizontal: ms(5) }]}
+              resizeMode="contain"
+            />
+          </TouchableOpacity>
+        )}
       </View>
       <Text style={[AppStyles.label, { textAlign: 'center', flex: 1 }]}>
         {label}
@@ -136,6 +149,7 @@ const styles = StyleSheet.create({
   headerItem: {
     flexDirection: 'row',
     alignItems: 'center',
+    width: '25%',
   },
 });
 export default CustomHeader;

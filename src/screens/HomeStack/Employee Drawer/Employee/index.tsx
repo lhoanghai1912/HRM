@@ -73,7 +73,7 @@ const Employee = ({}) => {
   return (
     <View style={styles.container}>
       <CustomHeader
-        label="Employee Application"
+        label="Employee Attendance"
         leftIcon={icons.menu}
         leftPress={() => navigation.openDrawer()}
       />
