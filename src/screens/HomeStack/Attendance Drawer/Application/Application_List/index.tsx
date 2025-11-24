@@ -21,7 +21,9 @@ const ListApplication = () => {
   const renderItem = ({ item }) => (
     <TouchableOpacity
       style={[styles.itemBox, { backgroundColor: item.bg }]}
-      onPress={() => navigate(item.screen, { label: item.title })}
+      onPress={() =>
+        navigate(item.screen, { label: item.title, status: 'view' })
+      }
     >
       <Image source={item.icon} style={AppStyles.icon} />
       <Text numberOfLines={2} style={(AppStyles.text, styles.title)}>
