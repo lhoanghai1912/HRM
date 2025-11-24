@@ -30,6 +30,14 @@ import ListApplication from '../screens/HomeStack/Attendance Drawer/Application/
 import Application from '../screens/HomeStack/Attendance Drawer/Application';
 import CreateApplication from '../screens/HomeStack/Attendance Drawer/Application/Application_Create';
 import TimeSheet from '../screens/HomeStack/TimeSheet';
+import Attendance_Update from '../screens/HomeStack/Attendance Drawer/Application/Application_List/Attendance_Update/Attendance_Update';
+import Business_Trip from '../screens/HomeStack/Attendance Drawer/Application/Application_List/Business_Trip/Business_Trip';
+import Late_Early from '../screens/HomeStack/Attendance Drawer/Application/Application_List/Late_Early/Late_Early';
+import Leave from '../screens/HomeStack/Attendance Drawer/Application/Application_List/Leave/Leave';
+import Overtime from '../screens/HomeStack/Attendance Drawer/Application/Application_List/Overtime/Overtime';
+import Remote from '../screens/HomeStack/Attendance Drawer/Application/Application_List/Remote/Remote';
+import Shift_Update from '../screens/HomeStack/Attendance Drawer/Application/Application_List/Shift_Update/Shift_Update';
+import TimeKeeping_App from '../screens/HomeStack/Attendance Drawer/Application/Application_List/TimeKeeping_App/TimeKeeping_App';
 // import BottomTabNavigator from './BottomTabNavigator';
 
 const Tab = createBottomTabNavigator();
@@ -83,7 +91,7 @@ export function AttendanceTabs() {
       <Tab.Screen name={Screen_Name.Home} component={Attendance} />
       <Tab.Screen
         name={Screen_Name.Application_List}
-        component={ListApplication}
+        component={ListApplicationStack}
       />
       <Tab.Screen
         name={Screen_Name.Application_Create}
@@ -164,6 +172,33 @@ export const ContractStack = () => (
     <Stack.Screen name={Screen_Name.Child_Field} component={Child_Field} />
     <Stack.Screen name={Screen_Name.Detail_Group} component={DetailGroup} />
     <Stack.Screen name={Screen_Name.Group} component={Group} />
+  </Stack.Navigator>
+);
+
+export const ListApplicationStack = () => (
+  <Stack.Navigator
+    id={undefined}
+    screenOptions={{ headerShown: false }}
+    initialRouteName={Screen_Name.Application_List}
+  >
+    <Stack.Screen
+      name={Screen_Name.Application_List}
+      component={ListApplication}
+    />
+    <Stack.Screen
+      name={Screen_Name.Attendance_Update}
+      component={Attendance_Update}
+    />
+    <Stack.Screen name={Screen_Name.Business_Trip} component={Business_Trip} />
+    <Stack.Screen name={Screen_Name.Late_Early} component={Late_Early} />
+    <Stack.Screen name={Screen_Name.Leave} component={Leave} />
+    <Stack.Screen name={Screen_Name.Overtime} component={Overtime} />
+    <Stack.Screen name={Screen_Name.Remote} component={Remote} />
+    <Stack.Screen name={Screen_Name.Shift_Update} component={Shift_Update} />
+    <Stack.Screen
+      name={Screen_Name.TimeKeeping_App}
+      component={TimeKeeping_App}
+    />
   </Stack.Navigator>
 );
 

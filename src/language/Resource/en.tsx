@@ -179,6 +179,7 @@ export default {
     hrm_application_bussiness_trip: 'Business trip application',
     hrm_application_update_shift: 'Shift change application',
     hrm_application_update_attendance: 'Attendance change application',
+    hrm_application_timekeeping: 'Timekeeping on App',
 
     stack_employee: 'Employee',
     stack_shift: 'Shift',

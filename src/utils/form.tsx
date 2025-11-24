@@ -5,6 +5,7 @@ import { Linking } from 'react-native';
 import { link } from './constants';
 import { navigate } from '../navigation/RootNavigator';
 import { logout } from '../store/reducers/userSlice';
+import { colors } from './color';
 
 export type GetAllParams = {
   Page?: string; // Trang hiện tại
@@ -197,51 +198,51 @@ export const form_application = (t = i18next.t.bind(i18next)) => [
     id: 'leave',
     title: t('label.hrm_application_leave'),
     icon: icons.list,
-    bg: '#EAF1FF',
+    bg: colors.blue,
     screen: Screen_Name.Leave,
   },
   {
     id: 'lateEarly',
     title: t('label.hrm_application_late_early'),
     icon: icons.list,
-    bg: '#EBFFF5',
+    bg: colors.darkGray,
     screen: Screen_Name.Late_Early,
   },
   {
     id: 'overTime',
     title: t('label.hrm_application_over_time'),
     icon: icons.list,
-    bg: '#FFEFE5',
+    bg: colors.secondary,
     screen: Screen_Name.Overtime,
   },
-  {
-    id: 'remote',
-    title: t('label.hrm_application_remote'),
-    icon: icons.list,
-    bg: '#EAF1FF',
-    screen: Screen_Name.Remote,
-  },
-  {
-    id: 'attendanceChange',
-    title: t('label.hrm_application_update_attendance'),
-    icon: icons.list,
-    bg: '#EBFFF5',
-    screen: Screen_Name.Attendance_Update,
-  },
-  {
-    id: 'shiftChange',
-    title: t('label.hrm_application_update_shift'),
-    icon: icons.list,
-    bg: '#FFAFE5',
-    screen: Screen_Name.Shift_Update,
-  },
-  {
-    id: 'trip',
-    title: t('label.hrm_application_bussiness_trip'),
-    icon: icons.list,
-    bg: '#FBEFE5',
-    screen: Screen_Name.Business_Trip,
-  },
+  // {
+  //   id: 'remote',
+  //   title: t('label.hrm_application_remote'),
+  //   icon: icons.list,
+  //   bg: '#EAF1FF',
+  //   screen: Screen_Name.Remote,
+  // },
+  // {
+  //   id: 'attendanceChange',
+  //   title: t('label.hrm_application_update_attendance'),
+  //   icon: icons.list,
+  //   bg: '#EBFFF5',
+  //   screen: Screen_Name.Attendance_Update,
+  // },
+  // {
+  //   id: 'shiftChange',
+  //   title: t('label.hrm_application_update_shift'),
+  //   icon: icons.list,
+  //   bg: '#FFAFE5',
+  //   screen: Screen_Name.Shift_Update,
+  // },
+  // {
+  //   id: 'trip',
+  //   title: t('label.hrm_application_bussiness_trip'),
+  //   icon: icons.list,
+  //   bg: '#FBEFE5',
+  //   screen: Screen_Name.Business_Trip,
+  // },
 ];
 
 // form fields

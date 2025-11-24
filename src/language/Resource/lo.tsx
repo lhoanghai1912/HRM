@@ -176,6 +176,15 @@ export default {
     hrm_quickPins_tasks: 'ວຽກ',
     hrm_quickPins_process: 'ຂະບວນການ',
 
+    hrm_application_leave: 'ຄໍາຮ້ອງຂໍພັກ',
+    hrm_application_late_early: 'ຄໍາຮ້ອງຂໍມາສາຍ / ໄປໄວ',
+    hrm_application_over_time: 'ຄໍາຮ້ອງຂໍເຮັດວຽກເພີ່ມ',
+    hrm_application_remote: 'ຄໍາຮ້ອງຂໍເຮັດວຽກອອນລາຍ',
+    hrm_application_bussiness_trip: 'ຄໍາຮ້ອງຂໍໄປເຮັດວຽກນອກສະຖານທີ່',
+    hrm_application_update_shift: 'ຄໍາຮ້ອງຂໍປ່ຽນກົດເຮັດວຽກ',
+    hrm_application_update_attendance: 'ຄໍາຮ້ອງຂໍປັບປຸງຂໍ້ມູນເຂົ້າ-ອອກ',
+    hrm_application_timekeeping: 'ບັນທຶກເວລາເຮັດວຽກຜ່ານແອັບ',
+
     stack_employee: 'ພະນັກງານ',
     stack_attendance: 'ການເຂົ້າຮ່ວມ',
     stack_payroll: 'ເງິນເດືອນ',

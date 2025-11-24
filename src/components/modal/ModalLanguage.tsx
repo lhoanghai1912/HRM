@@ -21,6 +21,8 @@ const LanguageModal = ({
   languages,
 }: LanguageModalProps) => {
   const { t, i18n } = useTranslation();
+  console.log('languages', languages);
+  console.log('selectedLanguage', selectedLanguage);
 
   return (
     <Modal
@@ -37,7 +39,7 @@ const LanguageModal = ({
             <Pressable
               key={lang.code}
               onPress={() => onSelectLanguage(lang.code)}
-              style={({ pressed }) => [
+              style={[
                 styles.languageItem,
                 {
                   backgroundColor:

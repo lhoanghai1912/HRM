@@ -60,6 +60,15 @@ export const Screen_Name = {
   Application_List: 'Application_List',
   Application_Create: 'Application_Create',
 
+  Leave: 'Leave',
+  Late_Early: 'Late_Early',
+  Overtime: 'Overtime',
+  Remote: 'Remote',
+  Attendance_Update: 'Attendance_Update',
+  Shift_Update: 'Shift_Update',
+  Business_Trip: 'Business_Trip',
+  TimeKeeping_App: 'TimeKeeping_App',
+
   //Other
   Splash: 'Splash',
   Loading: 'Loading',

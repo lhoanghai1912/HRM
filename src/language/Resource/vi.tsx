@@ -174,6 +174,15 @@ export default {
     stack_payroll: 'Bảng lương',
     stack_shift: 'Nhân sự',
 
+    hrm_application_leave: 'Đơn xin nghỉ',
+    hrm_application_late_early: 'Đơn đi muộn / về sớm',
+    hrm_application_over_time: 'Đơn làm thêm giờ',
+    hrm_application_remote: 'Đơn làm việc từ xa',
+    hrm_application_bussiness_trip: 'Đơn công tác',
+    hrm_application_update_shift: 'Đơn đổi ca làm việc',
+    hrm_application_update_attendance: 'Đơn cập nhật chấm công',
+    hrm_application_timekeeping: 'Chấm công trên ứng dụng',
+
     basic_profile: 'Thông tin cơ bản',
   },
 };
