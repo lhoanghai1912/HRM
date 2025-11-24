@@ -10,6 +10,7 @@ import Attendance from '../screens/HomeStack/Check_InOut';
 import Attendance_Update from '../screens/HomeStack/Application/Attendance_Update';
 import Detail_Late_Early from '../screens/HomeStack/Application/Late_Early/Detail';
 import DetailField from '../components/DetailField';
+import PayRoll from '../screens/HomeStack/PayRoll';
 // import { AttendanceDrawer } from './DrawerNavigator';
 
 export const Screen_Name = {
@@ -36,7 +37,7 @@ export const Screen_Name = {
   Employee_Drawer: 'Employee_Drawer',
   Attendance_Drawer: 'Attendance_Drawer',
   Appointment_Drawer: 'Appointment_Drawer',
-
+  PayRoll_Drawer: 'PayRoll_Drawer',
   // Attendance
   Attendance: 'Attendance',
 

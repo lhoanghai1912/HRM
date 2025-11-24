@@ -10,14 +10,7 @@ import Shift from '../screens/HomeStack/Shift';
 import Details_Shift from '../screens/HomeStack/Shift/Details';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Application from '../screens/HomeStack/Application';
-import Leave from '../screens/HomeStack/Application/Leave';
-import Attendance_Update from '../screens/HomeStack/Application/Attendance_Update';
-import Late_Early from '../screens/HomeStack/Application/Late_Early';
-import Overtime from '../screens/HomeStack/Application/OverTime';
-import Remote from '../screens/HomeStack/Application/Remote';
-import Business_Trip from '../screens/HomeStack/Application/Trip';
-import Shift_Update from '../screens/HomeStack/Application/Shift_Update';
-import Detail_Late_Early from '../screens/HomeStack/Application/Late_Early/Detail';
+
 import Employee from '../screens/HomeStack/Employee Drawer/Employee';
 
 import DetailEmployee from '../screens/HomeStack/Employee Drawer/Employee/DetailEmployee';
@@ -27,7 +20,6 @@ import GroupDetail from '../screens/HomeStack/Employee Drawer/Group/DetailGroup'
 import Group from '../screens/HomeStack/Employee Drawer/Group';
 import DetailAppointment from '../screens/HomeStack/Employee Drawer/Appointment/DetailAppointment';
 import Appointment from '../screens/HomeStack/Employee Drawer/Appointment';
-import DetailField from '../components/DetailField';
 import Child_Field from '../components/Child_Field';
 import Detail_Field from '../components/DetailField';
 import PayRoll from '../screens/HomeStack/PayRoll';
@@ -95,10 +87,7 @@ export const PayRollDrawer = () => (
     })}
   >
     <Drawer.Screen name={Screen_Name.PayRoll_Drawer} component={PayRoll} />
-    <Drawer.Screen
-      name={Screen_Name.Application}
-      component={ApplicationStack}
-    />
+    <Drawer.Screen name={Screen_Name.Attendance} component={AttendanceStack} />
   </Drawer.Navigator>
 );
 
@@ -207,28 +196,14 @@ export const ShiftStack = () => (
   </Stack.Navigator>
 );
 
-export const ApplicationStack = () => (
+export const AttendanceStack = () => (
   <Stack.Navigator
     id={undefined}
     screenOptions={{ headerShown: false }}
-    initialRouteName={Screen_Name.Application}
+    initialRouteName={Screen_Name.Attendance}
   >
-    <Stack.Screen name={Screen_Name.Application} component={Application} />
-    <Stack.Screen name={Screen_Name.Leave} component={Leave} />
-    <Stack.Screen name={Screen_Name.Late_Early} component={Late_Early} />
-    <Stack.Screen name={Screen_Name.Overtime} component={Overtime} />
-    <Stack.Screen name={Screen_Name.Remote} component={Remote} />
-    <Stack.Screen name={Screen_Name.Business_Trip} component={Business_Trip} />
-    <Stack.Screen name={Screen_Name.Shift_Update} component={Shift_Update} />
+    <Stack.Screen name={Screen_Name.Attendance} component={Attendance} />
 
-    <Stack.Screen
-      name={Screen_Name.Attendance_Update}
-      component={Attendance_Update}
-    />
-    <Stack.Screen
-      name={Screen_Name.Detail_Late_Early}
-      component={Detail_Late_Early}
-    />
     {/* Add other application-related screens here */}
   </Stack.Navigator>
 );

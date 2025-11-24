@@ -10,8 +10,6 @@ import { useTranslation } from 'react-i18next';
 import HomeStack from './HomeStack';
 import QuickPin from '../screens/HomeStack/QuickPin';
 import { navigate } from './RootNavigator';
-import Profile from '../screens/HomeStack/Profile';
-import Attendance from '../screens/HomeStack/Check_InOut';
 
 const Tab = createBottomTabNavigator();
 

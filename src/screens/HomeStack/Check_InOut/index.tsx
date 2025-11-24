@@ -3,6 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import CustomHeader from '../../../components/CustomHeader';
 import { useNavigation } from '@react-navigation/native';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
+import icons from '../../../assets/icons';
 
 const Attendance = () => {
   const navigation = useNavigation<DrawerNavigationProp<any>>();
@@ -10,6 +11,8 @@ const Attendance = () => {
   return (
     <View style={styles.container}>
       <CustomHeader
+        leftIcon={icons.menu}
+        leftPress={() => navigation.openDrawer()}
         label="Attendance"
         Home={false}
         rightPress={() => {

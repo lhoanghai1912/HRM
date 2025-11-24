@@ -5,12 +5,12 @@ import icons from '../../../assets/icons';
 import { useNavigation } from '@react-navigation/native';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 
-const Application = () => {
+const Attendance = () => {
   const navigation = useNavigation<DrawerNavigationProp<any>>();
 
   return (
     <View style={styles.container}>
-      <Text>Application</Text>
+      <Text>Attendance</Text>
       <CustomHeader
         label="DetailEmployee Screen"
         leftIcon={icons.menu}
@@ -27,4 +27,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Application;
+export default Attendance;
