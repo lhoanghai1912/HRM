@@ -26,7 +26,7 @@ export default function Leave({ route }) {
         }}
       />
       <Text>
-        {t('label.hrm_application_leave')} {status}
+        {t('label.hrm_application_leave')} {mode}
       </Text>
     </View>
   );

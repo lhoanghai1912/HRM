@@ -26,7 +26,7 @@ export default function Late_Early({ route }) {
         }}
       />
       <Text>
-        {t('label.hrm_application_late_early')} {status}
+        {t('label.hrm_application_late_early')} {mode}
       </Text>
     </View>
   );

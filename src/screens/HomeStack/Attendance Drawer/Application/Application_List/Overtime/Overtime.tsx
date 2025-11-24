@@ -26,7 +26,7 @@ export default function Overtime({ route }) {
         }}
       />
       <Text>
-        {t('label.hrm_application_over_time')} {status}
+        {t('label.hrm_application_over_time')} {mode}
       </Text>
     </View>
   );
