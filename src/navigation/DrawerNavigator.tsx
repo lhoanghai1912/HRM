@@ -26,6 +26,11 @@ import { AttendanceTabs, ContractTabs, EmployeeTabs, PayrollTabs } from './Tab';
 import Home from '../screens/HomeStack/Home';
 import HomeStack from './HomeStack';
 import { border } from '../utils/fontSize';
+import QuickPin from '../screens/HomeStack/QuickPin';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { form_application } from '../utils/form';
+import { navigate } from './RootNavigator';
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
@@ -211,42 +216,52 @@ const Stack = createNativeStackNavigator();
 //   </Stack.Navigator>
 // );
 
-export const AttendanceDrawer = () => (
-  <Drawer.Navigator
-    id={undefined}
-    screenOptions={({ route }) => ({
-      headerShown: false,
-      drawerStyle: { width: '60%' },
-      drawerActiveTintColor: colors.blue,
-      drawerActiveBackgroundColor: colors.blue,
-      drawerLabelStyle: { color: 'black' },
-      drawerItemStyle: { borderRadius: border.radiusExtraLarge },
+export const AttendanceDrawer = () => {
+  const [showQuick, setShowQuick] = useState(false);
+  const { t } = useTranslation();
 
-      drawerIcon: ({ focused }) => {
-        const iconMap = {
-          [Screen_Name.Home]: focused ? icons.home_focus : icons.home,
-          [Screen_Name.Attendance]: focused ? icons.home_focus : icons.home,
-          [Screen_Name.Employee]: focused ? icons.home_focus : icons.home,
-          [Screen_Name.PayRoll]: focused ? icons.home_focus : icons.home,
-        };
+  return (
+    <>
+      <Drawer.Navigator
+        id={undefined}
+        screenOptions={({ route }) => ({
+          headerShown: false,
+          drawerStyle: { width: '60%' },
+          drawerActiveTintColor: colors.blue,
+          drawerActiveBackgroundColor: colors.blue,
+          drawerLabelStyle: { color: 'black' },
+          drawerItemStyle: { borderRadius: border.radiusExtraLarge },
 
-        return (
-          <Image
-            source={iconMap[route.name]}
-            style={{ width: ms(24), height: ms(24) }}
-            resizeMode="contain"
-          />
-        );
-      },
-    })}
-    initialRouteName={Screen_Name.Attendance}
-  >
-    <Drawer.Screen name={Screen_Name.Home} component={HomeStack} />
-    <Drawer.Screen name={Screen_Name.Attendance} component={AttendanceTabs} />
-    <Drawer.Screen name={Screen_Name.Employee} component={EmployeeTabs} />
-    <Drawer.Screen name={Screen_Name.PayRoll} component={PayrollTabs} />
-  </Drawer.Navigator>
-);
+          drawerIcon: ({ focused }) => {
+            const iconMap = {
+              [Screen_Name.Home]: focused ? icons.home_focus : icons.home,
+              [Screen_Name.Attendance]: focused ? icons.home_focus : icons.home,
+              [Screen_Name.Employee]: focused ? icons.home_focus : icons.home,
+              [Screen_Name.PayRoll]: focused ? icons.home_focus : icons.home,
+            };
+
+            return (
+              <Image
+                source={iconMap[route.name]}
+                style={{ width: ms(24), height: ms(24) }}
+                resizeMode="contain"
+              />
+            );
+          },
+        })}
+        initialRouteName={Screen_Name.Attendance}
+      >
+        <Drawer.Screen name={Screen_Name.Home} component={HomeStack} />
+        <Drawer.Screen
+          name={Screen_Name.Attendance}
+          component={AttendanceTabs}
+        />
+        <Drawer.Screen name={Screen_Name.Employee} component={EmployeeTabs} />
+        <Drawer.Screen name={Screen_Name.PayRoll} component={PayrollTabs} />
+      </Drawer.Navigator>
+    </>
+  );
+};
 
 export const EmployeeDrawer = () => (
   <Drawer.Navigator

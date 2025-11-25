@@ -6,7 +6,7 @@ import Profile from '../screens/HomeStack/Profile';
 import PayRoll from '../screens/HomeStack/PayRoll';
 import Employee from '../screens/HomeStack/Employee Drawer/Employee';
 import icons from '../assets/icons';
-import { Image, Settings, View } from 'react-native';
+import { Image, Settings, TouchableOpacity, View } from 'react-native';
 import { ms } from '../utils/spacing';
 import Contract from '../screens/HomeStack/Employee Drawer/Contract';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -19,7 +19,7 @@ import DetailContract from '../screens/HomeStack/Employee Drawer/Contract/Detail
 import Home from '../screens/HomeStack/Home';
 import HomeNavigator from './HomeNavigator';
 import { navigate } from './RootNavigator';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
   getFocusedRouteNameFromRoute,
   useNavigation,
@@ -38,6 +38,10 @@ import Overtime from '../screens/HomeStack/Attendance Drawer/Application/Applica
 import Remote from '../screens/HomeStack/Attendance Drawer/Application/Application_List/Remote/Remote';
 import Shift_Update from '../screens/HomeStack/Attendance Drawer/Application/Application_List/Shift_Update/Shift_Update';
 import TimeKeeping_App from '../screens/HomeStack/Attendance Drawer/Application/Application_List/TimeKeeping_App/TimeKeeping_App';
+import QuickPin from '../screens/HomeStack/QuickPin';
+import { form_application } from '../utils/form';
+import { useTranslation } from 'react-i18next';
+import App from '../App';
 // import BottomTabNavigator from './BottomTabNavigator';
 
 const Tab = createBottomTabNavigator();
@@ -46,66 +50,102 @@ const Stack = createNativeStackNavigator();
 export function AttendanceTabs() {
   const navigation = useNavigation();
   const route = useRoute();
-
+  const { t } = useTranslation();
+  const [showQuick, setShowQuick] = useState(false);
   // ---- LẤY ROUTE HIỆN TẠI CORRECT ----
 
   return (
-    <Tab.Navigator
-      id={undefined}
-      screenOptions={({ route }) => ({
-        headerShown: false,
-        tabBarIcon: ({ focused }) => {
-          const iconMap = {
-            [Screen_Name.Home]: focused ? icons.home_focus : icons.home,
-            [Screen_Name.Application_List]: focused
-              ? icons.document_focus
-              : icons.document,
-            [Screen_Name.Application_Create]: focused
-              ? icons.add_focus
-              : icons.add,
-            [Screen_Name.TimeSheet]: focused
-              ? icons.calendar_focus
-              : icons.calendar,
-            abc: focused ? icons.apple : icons.apple,
-          };
+    <>
+      <Tab.Navigator
+        id={undefined}
+        screenOptions={({ route }) => ({
+          headerShown: false,
+          tabBarIcon: ({ focused }) => {
+            const iconMap = {
+              [Screen_Name.Home]: focused ? icons.home_focus : icons.home,
+              [Screen_Name.Application_List]: focused
+                ? icons.document_focus
+                : icons.document,
+              [Screen_Name.Application_Create]: focused
+                ? icons.add_focus
+                : icons.add,
+              [Screen_Name.TimeSheet]: focused
+                ? icons.calendar_focus
+                : icons.calendar,
+              abc: focused ? icons.apple : icons.apple,
+            };
 
-          return (
-            <Image
-              source={iconMap[route.name]}
-              style={
-                route.name === Screen_Name.Application_Create
-                  ? {
-                      width: ms(45),
-                      height: ms(45),
-                      position: 'absolute',
-                      bottom: '25%',
-                    }
-                  : { width: ms(24), height: ms(24) }
-              }
-            />
-          );
-        },
-      })}
-      initialRouteName={Screen_Name.Home}
-    >
-      <Tab.Screen name={Screen_Name.Home} component={Attendance} />
-      <Tab.Screen
-        name={Screen_Name.Application_List}
-        component={ListApplicationStack}
-      />
-      <Tab.Screen
-        name={Screen_Name.Application_Create}
-        component={CreateApplication}
-      />
-      <Tab.Screen name={Screen_Name.TimeSheet} component={TimeSheet} />
-      <Tab.Screen
-        name="abc"
-        component={View}
-        listeners={{
-          tabPress: (e: any) => e.preventDefault?.(),
+            return (
+              <Image
+                source={iconMap[route.name]}
+                style={
+                  route.name === Screen_Name.Application_Create
+                    ? {
+                        width: ms(45),
+                        height: ms(45),
+                        position: 'absolute',
+                        bottom: '25%',
+                      }
+                    : { width: ms(24), height: ms(24) }
+                }
+              />
+            );
+          },
+        })}
+        initialRouteName={Screen_Name.Home}
+      >
+        <Tab.Screen name={Screen_Name.Home} component={Attendance} />
+        <Tab.Screen
+          name={Screen_Name.Application_List}
+          component={ListApplicationStack}
+        />
+
+        <Tab.Screen
+          name={Screen_Name.Application_Create}
+          component={ApplicationCreateStack}
+          options={{
+            tabBarButton: props => (
+              <TouchableOpacity
+                activeOpacity={0.8}
+                accessibilityRole="button"
+                onPress={() => setShowQuick(true)}
+                style={props.style}
+              >
+                {props.children}
+              </TouchableOpacity>
+            ),
+          }}
+          listeners={{
+            tabPress: (e: any) => e.preventDefault(),
+          }}
+        />
+        <Tab.Screen name={Screen_Name.TimeSheet} component={TimeSheet} />
+        <Tab.Screen
+          name="abc"
+          component={View}
+          listeners={{
+            tabPress: (e: any) => e.preventDefault?.(),
+          }}
+        />
+      </Tab.Navigator>
+      <QuickPin
+        visible={showQuick}
+        onClose={() => setShowQuick(false)}
+        items={form_application(t)}
+        title="Chọn nhanh"
+        onSelect={(screen, item) => {
+          console.log('Selected Screen:', screen);
+          console.log('Selected Item:', item);
+          console.log('Item Title:', item.title);
+
+          setShowQuick(false);
+          navigate(Screen_Name.Application_Create, {
+            screen: screen,
+            params: { label: item.title, status: 'create' },
+          }); // 👈 chỉ navigate Drawer thôi
         }}
       />
-    </Tab.Navigator>
+    </>
   );
 }
 
@@ -193,6 +233,21 @@ export const ListApplicationStack = () => (
     <Stack.Screen name={Screen_Name.Late_Early} component={Late_Early} />
     <Stack.Screen name={Screen_Name.Leave} component={Leave} />
     <Stack.Screen name={Screen_Name.Overtime} component={Overtime} />
+    <Stack.Screen name={Screen_Name.Remote} component={Remote} />
+    <Stack.Screen name={Screen_Name.Shift_Update} component={Shift_Update} />
+    <Stack.Screen
+      name={Screen_Name.TimeKeeping_App}
+      component={TimeKeeping_App}
+    />
+  </Stack.Navigator>
+);
+
+export const ApplicationCreateStack = () => (
+  <Stack.Navigator id={undefined} screenOptions={{ headerShown: false }}>
+    <Stack.Screen name={Screen_Name.Leave} component={Leave} />
+    <Stack.Screen name={Screen_Name.Overtime} component={Overtime} />
+    <Stack.Screen name={Screen_Name.Business_Trip} component={Business_Trip} />
+    <Stack.Screen name={Screen_Name.Late_Early} component={Late_Early} />
     <Stack.Screen name={Screen_Name.Remote} component={Remote} />
     <Stack.Screen name={Screen_Name.Shift_Update} component={Shift_Update} />
     <Stack.Screen
