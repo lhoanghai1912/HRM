@@ -13,7 +13,7 @@ const AppStyles = StyleSheet.create({
   },
   label: {
     fontSize: fonts.large,
-    color: '#333',
+    color: colors.black,
   },
   line: {
     marginVertical: spacing.small,

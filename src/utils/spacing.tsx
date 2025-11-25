@@ -29,7 +29,7 @@ export const SPACING = 16;
 export const RADIUS = 5;
 
 export const spacing = {
-  small: ms(8),
+  small: ms(7),
   medium: ms(16),
   large: ms(24),
   xlarge: ms(32),

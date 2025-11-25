@@ -32,6 +32,7 @@ interface CustomHeaderProps {
   leftPress1?: () => void;
   rightIcon?: ImageRequireSource;
   rightPress?: () => void;
+  profileIcon?: ImageRequireSource;
 }
 
 const CustomHeader: React.FC<CustomHeaderProps> = ({
@@ -43,6 +44,7 @@ const CustomHeader: React.FC<CustomHeaderProps> = ({
   leftPress1,
   rightIcon,
   rightPress,
+  profileIcon,
 }) => {
   const { t } = useTranslation();
   const [showUser, setShowUser] = useState(false);
@@ -94,7 +96,8 @@ const CustomHeader: React.FC<CustomHeaderProps> = ({
         style={[
           styles.headerItem,
           {
-            justifyContent: rightIcon ? 'space-between' : 'flex-end',
+            justifyContent:
+              rightIcon && profileIcon ? 'space-between' : 'flex-end',
           },
         ]}
       >
@@ -107,13 +110,15 @@ const CustomHeader: React.FC<CustomHeaderProps> = ({
             />
           </TouchableOpacity>
         )}
-        <TouchableOpacity onPress={() => setShowUser(true)}>
-          <Image
-            source={icons.username}
-            style={AppStyles.icon}
-            resizeMode="contain"
-          />
-        </TouchableOpacity>
+        {profileIcon && (
+          <TouchableOpacity onPress={() => setShowUser(true)}>
+            <Image
+              source={icons.username}
+              style={AppStyles.icon}
+              resizeMode="contain"
+            />
+          </TouchableOpacity>
+        )}
       </View>
       <User
         visible={showUser}
@@ -149,7 +154,7 @@ const styles = StyleSheet.create({
   headerItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    width: '25%',
+    width: '15%',
   },
 });
 export default CustomHeader;
