@@ -260,7 +260,7 @@ export const EmployeeDrawer = () => (
     }}
     initialRouteName={Screen_Name.Employee}
   >
-    <Drawer.Screen name={Screen_Name.Home} component={HomeStack} />
+    <Drawer.Screen name={Screen_Name.HomeStack} component={HomeStack} />
     <Drawer.Screen name={Screen_Name.Attendance} component={AttendanceTabs} />
     <Drawer.Screen name={Screen_Name.Employee} component={EmployeeTabs} />
     <Drawer.Screen name={Screen_Name.PayRoll} component={PayrollTabs} />

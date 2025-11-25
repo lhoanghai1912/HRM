@@ -4,7 +4,7 @@ import store from '../store';
 import Toast from 'react-native-toast-message';
 
 const apiClient = axios.create({
-  baseURL: 'http://160.30.252.13:183/api',
+  baseURL: 'https://pos.foxai.com.vn:184/api/',
   timeout: 10000,
   headers: {
     Accept: 'application/json',

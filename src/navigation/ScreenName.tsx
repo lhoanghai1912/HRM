@@ -18,6 +18,7 @@ export const Screen_Name = {
   ForgotPassword: 'ForgotPassword',
 
   Home: 'Home',
+  HomeStack: 'HomeStack',
   Profile: 'Profile',
   PayRoll: 'PayRoll',
   QuickPin: 'QuickPin',

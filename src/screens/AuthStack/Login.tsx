@@ -46,82 +46,41 @@ const LoginScreen = () => {
   const [loading, setLoading] = useState(false);
   const [modalLanguage, setModalLanguage] = useState(false);
   const { userData } = useSelector((state: any) => state.user);
+  // const [loginText, setLoginText] = useState('');
   const handleLogin = async () => {
     try {
       setLoading(true);
       const res = await login(username, password);
       console.log('login res', res);
-      dispatch(setToken({ token: res.data.accessToken }));
-      // const user = await getMe();
-      // console.log('user getme', user);
-      dispatch(setUserData({ userData: res.data.user }));
-      Toast.show({
-        type: 'success',
-        text1: `${t('message.welcome')} `,
-        text2: `${t('message.welcome_back')} ${res.profile.fullName}`,
-      });
+
+      if (res?.success) {
+        await dispatch(setToken({ token: res.data.accessToken }));
+        await dispatch(setUserData({ userData: res.data.user }));
+      } else {
+        Toast.show({
+          type: 'error',
+          text2: `Lỗi: }`,
+        });
+      }
+
+      // setLoginText('success');
     } catch (error) {
+      Toast.show({
+        type: 'error',
+        text2: `Lỗi: ${error}`,
+      });
+
+      // setLoginText(error);
     } finally {
       setLoading(false);
     }
   };
   console.log('userdata', userData);
 
-  const handleGoogleLogin = async () => {
-    // try {``
-    //   setLoading(true);
-    //   await GoogleSignin.hasPlayServices();``
-    //   const userInfo = await GoogleSignin.signIn();
-    //   const idToken = userInfo?.data?.idToken || '';
-    //   const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-    //   const userCredential = await auth().signInWithCredential(
-    //     googleCredential,
-    //   );
-    //   const firebaseIdToken = await userCredential.user.getIdToken();
-    //   console.log('firebaseIdToken', firebaseIdToken);
-    //   const res = await loginFirebase(firebaseIdToken);
-    //   dispatch(setToken({ token: res.token }));
-    //   dispatch(setUserId({ userId: res.id }));
-    //   console.log('token', res.token);
-    //   navigate(Screen_Name.BottomTab_Navigator);
-    //   console.log(userInfo);
-    // } catch (error) {
-    // } finally {
-    //   setLoading(false);
-    // }
-  };
+  const handleGoogleLogin = async () => {};
 
   const handleFacebookLogin = async () => {
     try {
-      // const result = await LoginManager.logInWithPermissions([
-      //   'public_profile',
-      //   'email',
-      // ]);
-      // console.log('result', result);
-
-      // if (result.isCancelled) return;
-
-      // const data = await AccessToken.getCurrentAccessToken();
-      // console.log('data', data);
-      // if (!data) return;
-
-      // const facebookCredential = auth.FacebookAuthProvider.credential(
-      //   data.accessToken,
-      // );
-      // console.log('facebookCredential', facebookCredential);
-
-      // const userCredential = await auth().signInWithCredential(
-      //   facebookCredential,
-      // );
-      // console.log('facebook userCredential', userCredential);
-
-      // const firebaseIdToken = await userCredential.user.getIdToken();
-
-      // const res = await loginFirebase(firebaseIdToken);
-      // console.log('facebook loginFirebase res', res);
-
-      // dispatch(setToken({ token: res.token }));
-      // navigate(Screen_Name.BottomTab_Navigator);
       Toast.show({
         type: 'info',
         text2: `${t('message.comming_soon')}`,
@@ -216,6 +175,10 @@ const LoginScreen = () => {
           </Text>
           <View style={[AppStyles.line, { width: '35%', flex: 1 }]} />
         </View>
+        {/* <Text style={[AppStyles.text, { backgroundColor: 'red' }]}>
+          {' '}
+          {loginText}
+        </Text> */}
         <View style={styles.iconGroup}>
           {/* Facebook button: luôn hiển thị trên Android/iOS */}
           <TouchableOpacity

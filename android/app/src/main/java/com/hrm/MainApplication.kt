@@ -1,4 +1,4 @@
-package com.batdongsan
+package com.hrm
 
 import android.app.Application
 import com.facebook.react.PackageList

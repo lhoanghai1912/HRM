@@ -1,4 +1,4 @@
-package com.batdongsan
+package com.hrm
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
