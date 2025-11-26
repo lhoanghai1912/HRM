@@ -5,6 +5,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  ViewStyle,
 } from 'react-native';
 import { colors } from '../utils/color';
 import { ms, spacing } from '../utils/spacing';
@@ -33,6 +34,7 @@ interface CustomHeaderProps {
   rightIcon?: ImageRequireSource;
   rightPress?: () => void;
   profileIcon?: ImageRequireSource;
+  style?: ViewStyle;
 }
 
 const CustomHeader: React.FC<CustomHeaderProps> = ({
@@ -45,6 +47,7 @@ const CustomHeader: React.FC<CustomHeaderProps> = ({
   rightIcon,
   rightPress,
   profileIcon,
+  style,
 }) => {
   const { t } = useTranslation();
   const [showUser, setShowUser] = useState(false);
@@ -59,7 +62,7 @@ const CustomHeader: React.FC<CustomHeaderProps> = ({
     setModalLanguage(false);
   };
   return (
-    <View style={[styles.header, { paddingTop: inset.top }]}>
+    <View style={[styles.header, style, { paddingTop: inset.top }]}>
       <View style={[styles.headerItem]}>
         {leftIcon && (
           <TouchableOpacity

@@ -390,16 +390,17 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
               }}
               onPress={() => {
                 console.log('layout', field);
+                console.log('section', parent);
 
-                if (parent.groupType !== 2 || isGroupDetail) {
-                  toggleSection(parent.id);
-                } else {
+                if (parent.groupType === 2 && !isGroupDetail) {
                   navigate(Screen_Name.Group, {
                     id,
                     groupLabel: parent.label,
                     groupConfig: parent,
                     layout: field,
                   });
+                } else {
+                  toggleSection(parent.id);
                 }
               }}
             >

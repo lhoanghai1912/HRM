@@ -8,10 +8,12 @@ import QuickPin from '../screens/HomeStack/QuickPin';
 import DetailField from '../components/DetailField';
 import PayRoll from '../screens/HomeStack/PayRoll';
 import App from '../App';
+import { useTranslation } from 'react-i18next';
 // import { AttendanceDrawer } from './DrawerNavigator';
 
 export const Screen_Name = {
   //AuthStack
+
   Login: 'Login',
   Register: 'Register',
   SetPassword: 'SetPassword',
@@ -57,7 +59,7 @@ export const Screen_Name = {
   Attendance: 'Attendance',
   CheckInOut: 'CheckInOut',
   Application: 'Application',
-  TimeSheet: 'TimeSheet',
+  TimeSheet: 'Timesheet',
   Application_List: 'Application_List',
   Application_Create: 'Application_Create',
 

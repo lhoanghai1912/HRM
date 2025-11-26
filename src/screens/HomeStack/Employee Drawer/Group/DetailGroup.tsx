@@ -40,15 +40,8 @@ import { lo } from '../../../../language/Resource';
 
 const DetailGroup = ({ route }) => {
   const navigation = useNavigation<DrawerNavigationProp<any>>();
-  const {
-    id,
-    employeeId,
-    parent,
-    dataPrev,
-    isGroupDetail,
-    status,
-    layoutPrev,
-  } = route.params;
+  const { id, objectId, parent, dataPrev, isGroupDetail, status, layoutPrev } =
+    route.params;
 
   // Basic states
   const [field, setField] = useState<any>();
@@ -97,6 +90,13 @@ const DetailGroup = ({ route }) => {
   const organizationPicker = useOrganizationPicker();
   const employeePicker = useEmployeePicker();
   const procedurePicker = useProcedurePicker();
+  const [isEditMode, setIsEditMode] = useState(
+    status === 'create' || status === 'edit',
+  );
+  const [validationErrors, setValidationErrors] = useState<{
+    [fieldName: string]: string;
+  }>({});
+
   const filteredField = field
     ? {
         ...field,
@@ -110,6 +110,15 @@ const DetailGroup = ({ route }) => {
     : null;
 
   console.log('route', route.params);
+
+  const handleRightPress = () => {
+    if (isEditMode) {
+      // TODO: validate giống DetailEmployee nếu bạn muốn
+      handleSave();
+    } else {
+      setIsEditMode(true);
+    }
+  };
 
   // Fetch functions
   useFocusEffect(
@@ -337,11 +346,11 @@ const DetailGroup = ({ route }) => {
         console.log('Data being sent:', {
           groupConfig: parent,
           itemId: id,
-          employeeId: employeeId,
+          objectId: objectId,
           fields: changedFields,
         });
 
-        await updateDataGroup(parent, id, employeeId, changedFields);
+        await updateDataGroup(parent, id, objectId, changedFields);
       }
 
       setChangedFields([]);
@@ -389,25 +398,23 @@ const DetailGroup = ({ route }) => {
         label={parent?.name}
         leftIcon={icons.menu}
         leftPress={() => navigation.openDrawer()}
-        rightIcon={icons.document_focus}
-        rightPress={handleSave}
+        rightIcon={isEditMode ? icons.document_focus : icons.edit}
+        rightPress={handleRightPress}
       />
 
-      <ScrollView style={styles.scrollView}>
-        {/* Render tất cả fields một lần như DetailEmployee */}
-
-        <RenderFields
-          field={filteredField}
-          formData={formData}
-          expandedSections={expandedSections}
-          customConfigs={customConfigs}
-          toggleSection={toggleSection}
-          handleChange={handleChange}
-          handlers={handlers}
-          id={id}
-          isGroupDetail={isGroupDetail}
-        />
-      </ScrollView>
+      <RenderFields
+        field={filteredField || field} // ✅ chỉ render group vừa ấn + các group con
+        formData={formData}
+        expandedSections={expandedSections}
+        customConfigs={customConfigs}
+        toggleSection={toggleSection}
+        handleChange={handleChange}
+        handlers={handlers}
+        id={objectId}
+        isGroupDetail={true} // ✅ đang ở màn detail group
+        isEditMode={isEditMode}
+        validationErrors={validationErrors}
+      />
 
       {/* Date Picker */}
       <DatePicker

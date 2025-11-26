@@ -228,288 +228,301 @@ export default function Leave({ navigation, route }) {
   return (
     <View style={styles.container}>
       <CustomHeader
-        label={` ${isView ? 'Chi tiết' : 'Tạo mới'} ${label.toLowerCase()}`}
+        label={` ${isView ? t(`Detail`) : t(`Create`)} ${label.toLowerCase()}`}
         leftIcon={icons.back}
         leftPress={() => navigate(Screen_Name.Application_List)}
         rightIcon={mode === 'create' ? null : icons.add}
         rightPress={() => handleSave()}
         profileIcon={icons.username}
       />
-      <ScrollView contentContainerStyle={styles.content}>
-        {/* Mã NV + Tên NV (đều là text ở cả 2 mode) */}
-        {/* {renderLabelValue('Mã nhân viên', form.employeeCode, true)}
+      <View>
+        <ScrollView contentContainerStyle={styles.content}>
+          {/* Mã NV + Tên NV (đều là text ở cả 2 mode) */}
+          {/* {renderLabelValue('Mã nhân viên', form.employeeCode, true)}
         {renderLabelValue('Tên nhân viên', form.employeeName, true)} */}
 
-        {/* Loại chế độ */}
-        {isView
-          ? renderLabelValue('Loại chế độ', data.leaveType || 'Nghỉ phép', true)
-          : renderSelectPicker(
-              'Loại chế độ',
-              true,
-              () => {
-                setPickerVisible(true);
-                setActivePicker('leaveType');
-                setLabelPicker('Loại chế độ');
-                setPickerData(leaveTypeData);
-              },
-              form.leaveType?.value || '',
-            )}
-        {/* <View style={{ marginTop: spacing.medium }}> */}
-        {!isView ? (
-          <>
-            {renderLabelValue('Số ngày phép còn lại', form.remainDays, true)}
-            {renderLabelValue('Số ngày nghỉ tối đa', form.maxDays, true)}
-          </>
-        ) : (
-          <></>
-        )}
-        {/* </View> */}
-
-        {/* Các field riêng của màn create */}
-        {!isView && (
-          <>
-            {/* Từ */}
+          {/* Loại chế độ */}
+          {isView
+            ? renderLabelValue(
+                'Loại chế độ',
+                data.leaveType || 'Nghỉ phép',
+                true,
+              )
+            : renderSelectPicker(
+                'Loại chế độ',
+                true,
+                () => {
+                  setPickerVisible(true);
+                  setActivePicker('leaveType');
+                  setLabelPicker('Loại chế độ');
+                  setPickerData(leaveTypeData);
+                },
+                form.leaveType?.value || '',
+              )}
+          {/* <View style={{ marginTop: spacing.medium }}> */}
+          {!isView ? (
             <>
-              <View style={styles.rowLabel}>
-                <Text
-                  numberOfLines={1}
-                  ellipsizeMode="tail"
-                  style={[AppStyles.text, styles.label]}
-                >
-                  Từ
-                </Text>
-                <Text style={[AppStyles.text, styles.required]}> *</Text>
-              </View>
-
-              <View style={styles.row}>
-                <TouchableOpacity
-                  onPress={() => {
-                    setPickerVisible(true);
-                    setActivePicker('fromShift');
-
-                    setLabelPicker('Ca làm việc');
-                    setPickerData(leaveShiftData);
-                  }}
-                  style={[
-                    styles.input,
-                    {
-                      marginRight: spacing.small,
-                      flex: 0.4,
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                    },
-                  ]}
-                >
-                  <Text
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
-                    style={[styles.value]}
-                  >
-                    {form.fromShift.value || 'Chọn ca'}
-                  </Text>
-                  <Image style={[AppStyles.icon, {}]} source={icons.down} />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[
-                    styles.input,
-                    { marginRight: spacing.small, flex: 1 },
-                  ]}
-                  onPress={() => {
-                    handleOpenCalendar('fromDate'),
-                      console.log('calenDarField', calendarField);
-                  }}
-                >
-                  <Text
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
-                    style={[AppStyles.text]}
-                  >
-                    {form.fromDate || 'Chọn ngày ...'}
-                  </Text>
-                </TouchableOpacity>
-              </View>
+              {renderLabelValue('Số ngày phép còn lại', form.remainDays, true)}
+              {renderLabelValue('Số ngày nghỉ tối đa', form.maxDays, true)}
             </>
+          ) : (
+            <></>
+          )}
+          {/* </View> */}
 
-            {/* Đến */}
+          {/* Các field riêng của màn create */}
+          {!isView && (
             <>
-              <View style={styles.rowLabel}>
-                <Text style={[AppStyles.text, styles.label]}>Đến</Text>
-                <Text style={[AppStyles.text, styles.required]}> *</Text>
-              </View>
-
-              <View style={styles.row}>
-                <TouchableOpacity
-                  onPress={() => {
-                    setPickerVisible(true);
-                    setActivePicker('toShift');
-
-                    setLabelPicker('Ca làm việc');
-                    setPickerData(leaveShiftData);
-                  }}
-                  style={[
-                    styles.input,
-                    {
-                      marginRight: spacing.small,
-                      flex: 0.4,
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                    },
-                  ]}
-                >
+              {/* Từ */}
+              <>
+                <View style={styles.rowLabel}>
                   <Text
                     numberOfLines={1}
                     ellipsizeMode="tail"
-                    style={[styles.value]}
+                    style={[AppStyles.text, styles.label]}
                   >
-                    {form.toShift.value || 'Chọn ca'}
+                    Từ
                   </Text>
-                  <Image style={[AppStyles.icon, {}]} source={icons.down} />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[
-                    styles.input,
-                    { marginRight: spacing.small, flex: 1 },
-                  ]}
-                  onPress={() => {
-                    handleOpenCalendar('toDate'),
-                      console.log('calenDarField', calendarField);
-                  }}
-                >
-                  <Text
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
-                    style={[AppStyles.text]}
+                  <Text style={[AppStyles.text, styles.required]}> *</Text>
+                </View>
+
+                <View style={styles.row}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setPickerVisible(true);
+                      setActivePicker('fromShift');
+
+                      setLabelPicker('Ca làm việc');
+                      setPickerData(leaveShiftData);
+                    }}
+                    style={[
+                      styles.input,
+                      {
+                        marginRight: spacing.small,
+                        flex: 0.4,
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                      },
+                    ]}
                   >
-                    {form.toDate || 'Chọn ngày ...'}
-                  </Text>
-                </TouchableOpacity>
-              </View>
+                    <Text
+                      numberOfLines={1}
+                      ellipsizeMode="tail"
+                      style={[styles.value]}
+                    >
+                      {form.fromShift.value || 'Chọn ca'}
+                    </Text>
+                    <Image style={[AppStyles.icon, {}]} source={icons.down} />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[
+                      styles.input,
+                      { marginRight: spacing.small, flex: 1 },
+                    ]}
+                    onPress={() => {
+                      handleOpenCalendar('fromDate'),
+                        console.log('calenDarField', calendarField);
+                    }}
+                  >
+                    <Text
+                      numberOfLines={1}
+                      ellipsizeMode="tail"
+                      style={[AppStyles.text]}
+                    >
+                      {form.fromDate || 'Chọn ngày ...'}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </>
+
+              {/* Đến */}
+              <>
+                <View style={styles.rowLabel}>
+                  <Text style={[AppStyles.text, styles.label]}>Đến</Text>
+                  <Text style={[AppStyles.text, styles.required]}> *</Text>
+                </View>
+
+                <View style={styles.row}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setPickerVisible(true);
+                      setActivePicker('toShift');
+
+                      setLabelPicker('Ca làm việc');
+                      setPickerData(leaveShiftData);
+                    }}
+                    style={[
+                      styles.input,
+                      {
+                        marginRight: spacing.small,
+                        flex: 0.4,
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                      },
+                    ]}
+                  >
+                    <Text
+                      numberOfLines={1}
+                      ellipsizeMode="tail"
+                      style={[styles.value]}
+                    >
+                      {form.toShift.value || 'Chọn ca'}
+                    </Text>
+                    <Image style={[AppStyles.icon, {}]} source={icons.down} />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[
+                      styles.input,
+                      { marginRight: spacing.small, flex: 1 },
+                    ]}
+                    onPress={() => {
+                      handleOpenCalendar('toDate'),
+                        console.log('calenDarField', calendarField);
+                    }}
+                  >
+                    <Text
+                      numberOfLines={1}
+                      ellipsizeMode="tail"
+                      style={[AppStyles.text]}
+                    >
+                      {form.toDate || 'Chọn ngày ...'}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </>
             </>
-          </>
-        )}
-        {renderLabelValue('Số ngày nghỉ', form.days || '0', true)}
+          )}
+          {renderLabelValue('Số ngày nghỉ', form.days || '0', true)}
 
-        {/* Phần Từ / Đến / Số ngày nghỉ ở màn view */}
-        {isView && (
-          <>
-            {renderLabelValue(
-              'Từ',
-              `${data.fromShift?.value || 'Ca sáng'}  ${
-                data.fromDate || '16/05/2025'
-              }`,
-              true,
-            )}
-            {renderLabelValue(
-              'Đến',
-              `${data.toShift?.value || 'Ca chiều'}  ${
-                data.toDate || '16/05/2025'
-              }`,
-              true,
-            )}
-            {renderLabelValue('Số ngày nghỉ', data.days || '02', true)}
-          </>
-        )}
+          {/* Phần Từ / Đến / Số ngày nghỉ ở màn view */}
+          {isView && (
+            <>
+              {renderLabelValue(
+                'Từ',
+                `${data.fromShift?.value || 'Ca sáng'}  ${
+                  data.fromDate || '16/05/2025'
+                }`,
+                true,
+              )}
+              {renderLabelValue(
+                'Đến',
+                `${data.toShift?.value || 'Ca chiều'}  ${
+                  data.toDate || '16/05/2025'
+                }`,
+                true,
+              )}
+              {renderLabelValue('Số ngày nghỉ', data.days || '02', true)}
+            </>
+          )}
 
-        {/* Trạng thái */}
-        {isView && (
-          <View style={[styles.field, styles.row]}>
-            <Text style={[AppStyles.text, styles.label]}>Trạng thái</Text>
-            <View style={styles.statusBadge}>
-              <Text style={[AppStyles.text, styles.statusText]}>Đã duyệt</Text>
-            </View>
-          </View>
-        )}
-
-        {/* Lý do */}
-        {isView ? (
-          renderLabelValue('Lý do', data.reason || 'Không lí do ', true)
-        ) : (
-          <View style={{ marginBottom: spacing.medium }}>
-            {renderLabelInput('Lý do', true, 'reason', 'Nhập lý do...')}
-          </View>
-        )}
-
-        {/* Đính kèm */}
-        {isView ? (
-          <View>
-            {renderLabelValue('Đính kèm', data.reason || 'Tệp đính kèm', true)}
-          </View>
-        ) : (
-          <>
+          {/* Trạng thái */}
+          {isView && (
             <View style={[styles.field, styles.row]}>
-              <Text style={[AppStyles.text, styles.label]}>Đính kèm</Text>
-              <TouchableOpacity style={styles.attachBtn}>
-                <Text style={[AppStyles.text, styles.attachText]}>
-                  Chọn file
+              <Text style={[AppStyles.text, styles.label]}>Trạng thái</Text>
+              <View style={styles.statusBadge}>
+                <Text style={[AppStyles.text, styles.statusText]}>
+                  Đã duyệt
                 </Text>
+              </View>
+            </View>
+          )}
+
+          {/* Lý do */}
+          {isView ? (
+            renderLabelValue('Lý do', data.reason || 'Không lí do ', true)
+          ) : (
+            <View style={{ marginBottom: spacing.medium }}>
+              {renderLabelInput('Lý do', true, 'reason', 'Nhập lý do...')}
+            </View>
+          )}
+
+          {/* Đính kèm */}
+          {isView ? (
+            <View>
+              {renderLabelValue(
+                'Đính kèm',
+                data.reason || 'Tệp đính kèm',
+                true,
+              )}
+            </View>
+          ) : (
+            <>
+              <View style={[styles.field, styles.row]}>
+                <Text style={[AppStyles.text, styles.label]}>Đính kèm</Text>
+                <TouchableOpacity style={styles.attachBtn}>
+                  <Text style={[AppStyles.text, styles.attachText]}>
+                    Chọn file
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </>
+          )}
+
+          {/* Timeline ở dưới màn view */}
+          {isView && (
+            <View style={styles.timeline}>
+              <View style={styles.timelineItem}>
+                <View style={styles.iconCircle} />
+                <View style={styles.timelineText}>
+                  <Text style={[AppStyles.text, styles.timelineTitle]}>
+                    Phê duyệt
+                  </Text>
+                  <Text style={[AppStyles.text, styles.timelineDesc]}>
+                    Ducpv 18/05/2025 8:33
+                  </Text>
+                </View>
+              </View>
+
+              <View style={styles.timelineItem}>
+                <View style={styles.iconCircle} />
+                <View style={styles.timelineText}>
+                  <Text style={[AppStyles.text, styles.timelineTitle]}>
+                    Gửi đơn
+                  </Text>
+                  <Text style={[AppStyles.text, styles.timelineDesc]}>
+                    AnhPQ 18/05/2025 10:50
+                  </Text>
+                </View>
+              </View>
+            </View>
+          )}
+
+          {/* Nút nộp đơn ở màn create */}
+          {!isView && (
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                paddingHorizontal: spacing.medium,
+                paddingBottom: spacing.medium,
+              }}
+            >
+              <TouchableOpacity
+                style={styles.submitBtn}
+                onPress={() => {
+                  handleReset();
+                  // setMode('view');
+                }}
+              >
+                <Text style={[AppStyles.text, styles.submitText]}>Reset</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.submitBtn}
+                onPress={() => {
+                  handleSave();
+                  setMode('view');
+                }}
+              >
+                <Text style={[AppStyles.text, styles.submitText]}>Nộp đơn</Text>
               </TouchableOpacity>
             </View>
-          </>
-        )}
+          )}
+        </ScrollView>
+      </View>
 
-        {/* Timeline ở dưới màn view */}
-        {isView && (
-          <View style={styles.timeline}>
-            <View style={styles.timelineItem}>
-              <View style={styles.iconCircle} />
-              <View style={styles.timelineText}>
-                <Text style={[AppStyles.text, styles.timelineTitle]}>
-                  Phê duyệt
-                </Text>
-                <Text style={[AppStyles.text, styles.timelineDesc]}>
-                  Ducpv 18/05/2025 8:33
-                </Text>
-              </View>
-            </View>
-
-            <View style={styles.timelineItem}>
-              <View style={styles.iconCircle} />
-              <View style={styles.timelineText}>
-                <Text style={[AppStyles.text, styles.timelineTitle]}>
-                  Gửi đơn
-                </Text>
-                <Text style={[AppStyles.text, styles.timelineDesc]}>
-                  AnhPQ 18/05/2025 10:50
-                </Text>
-              </View>
-            </View>
-          </View>
-        )}
-
-        {/* Nút nộp đơn ở màn create */}
-      </ScrollView>
-      {!isView && (
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            paddingHorizontal: spacing.medium,
-            paddingBottom: spacing.medium,
-          }}
-        >
-          <TouchableOpacity
-            style={styles.submitBtn}
-            onPress={() => {
-              handleReset();
-              // setMode('view');
-            }}
-          >
-            <Text style={[AppStyles.text, styles.submitText]}>Reset</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.submitBtn}
-            onPress={() => {
-              handleSave();
-              setMode('view');
-            }}
-          >
-            <Text style={[AppStyles.text, styles.submitText]}>Nộp đơn</Text>
-          </TouchableOpacity>
-        </View>
-      )}
       <ModalPicker
         visible={pickerVisible}
         data={pickerData}
@@ -536,7 +549,7 @@ export default function Leave({ navigation, route }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f5f5fborder.radiusMedium' },
+  container: { flex: 1 },
   header: {
     height: spacing.small,
     justifyContent: 'center',
@@ -551,6 +564,8 @@ const styles = StyleSheet.create({
   content: {
     padding: spacing.medium,
     paddingBottom: spacing.large,
+    backgroundColor: colors.white,
+    borderRadius: border.radiusMedium,
   },
   row: {
     flexDirection: 'row',
@@ -619,6 +634,7 @@ const styles = StyleSheet.create({
     borderRadius: border.radiusMedium,
     backgroundColor: '#1abc60',
     marginRight: spacing.small,
+    justifyContent: 'center',
   },
   timelineText: { flex: 1 },
   timelineTitle: {},

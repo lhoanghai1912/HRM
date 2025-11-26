@@ -83,7 +83,7 @@ export const form_itemStack = (t = i18next.t.bind(i18next)) => [
   },
   {
     id: 'payroll',
-    title: t('label.hrm_menu_payroll'), // Lương
+    title: t('label.menu_payroll'), // Lương
     icon: icons.list,
     bg: '#FFF0F0',
     // screen: Screen_Name.Payroll, // Đặt tên màn hình đúng với navigation
@@ -102,55 +102,55 @@ export const form_itemStack = (t = i18next.t.bind(i18next)) => [
 export const form_itemHRM = (t = i18next.t.bind(i18next)) => [
   {
     id: 'donTu',
-    title: t('label.hrm_menu_requests'),
+    title: t('label.menu_requests'),
     icon: icons.list,
     bg: '#EAF1FF',
   },
   {
     id: 'tuyenDung',
-    title: t('label.hrm_menu_recruitment'),
+    title: t('label.menu_recruitment'),
     icon: icons.list,
     bg: '#FFEFE5',
   },
   {
     id: 'nhanSu',
-    title: t('label.hrm_menu_human'),
+    title: t('label.menu_human'),
     icon: icons.list,
     bg: '#E8FFF0',
   },
   {
     id: 'danhGia',
-    title: t('label.hrm_menu_evaluation'),
+    title: t('label.menu_evaluation'),
     icon: icons.list,
     bg: '#FFF7E5',
   },
   {
     id: 'daoTao',
-    title: t('label.hrm_menu_training'),
+    title: t('label.menu_training'),
     icon: icons.list,
     bg: '#FFECEC',
   },
   {
     id: 'chamCong',
-    title: t('label.hrm_menu_attendance'),
+    title: t('label.menu_attendance'),
     icon: icons.list,
     bg: '#EDF6FF',
   },
   {
     id: 'bangLuong',
-    title: t('label.hrm_menu_payroll'),
+    title: t('label.menu_payroll'),
     icon: icons.list,
     bg: '#FFF0F0',
   },
   {
     id: 'kpi',
-    title: t('label.hrm_menu_kpi'),
+    title: t('label.menu_kpi'),
     icon: icons.list,
     bg: '#EBFFF5',
   },
   {
     id: 'okr',
-    title: t('label.hrm_menu_okr'),
+    title: t('label.menu_okr'),
     icon: icons.list,
     bg: '#FFF9EB',
   },
@@ -159,7 +159,7 @@ export const form_itemHRM = (t = i18next.t.bind(i18next)) => [
 export const form_quickPinItems = (t = i18next.t.bind(i18next)) => [
   {
     id: 'chamCong',
-    // title: t('label.hrm_quickPins_projects'),
+    // title: t('label.quickPins_projects'),
     title: 'Chấm công',
 
     icon: icons.list,
@@ -168,7 +168,7 @@ export const form_quickPinItems = (t = i18next.t.bind(i18next)) => [
   },
   {
     id: 'nhanSu',
-    // title: t('label.hrm_quickPins_employeeFile'),
+    // title: t('label.quickPins_employeeFile'),
     title: 'Nhân sự',
 
     icon: icons.list,
@@ -177,7 +177,7 @@ export const form_quickPinItems = (t = i18next.t.bind(i18next)) => [
   },
   {
     id: 'bangLuong',
-    // title: t('label.hrm_quickPins_attendance'),
+    // title: t('label.quickPins_attendance'),
     title: 'Bảng lương',
 
     icon: icons.list,
@@ -186,7 +186,7 @@ export const form_quickPinItems = (t = i18next.t.bind(i18next)) => [
   },
   // {
   //   id: 'quyTrinh',
-  //   title: t('label.hrm_quickPins_process'),
+  //   title: t('label.quickPins_process'),
   //   icon: icons.list,
   //   bg: '#FFF0F0',
   //   screen: Screen_Name.Profile,
@@ -196,49 +196,49 @@ export const form_quickPinItems = (t = i18next.t.bind(i18next)) => [
 export const form_application = (t = i18next.t.bind(i18next)) => [
   {
     id: 'leave',
-    title: t('label.hrm_application_leave'),
+    title: t('label.application_leave'),
     icon: icons.list,
     bg: colors.blue,
     screen: Screen_Name.Leave,
   },
   {
     id: 'lateEarly',
-    title: t('label.hrm_application_late_early'),
+    title: t('label.application_late_early'),
     icon: icons.list,
     bg: colors.darkGray,
     screen: Screen_Name.Late_Early,
   },
   {
     id: 'overTime',
-    title: t('label.hrm_application_over_time'),
+    title: t('label.application_over_time'),
     icon: icons.list,
     bg: colors.secondary,
     screen: Screen_Name.Overtime,
   },
   // {
   //   id: 'remote',
-  //   title: t('label.hrm_application_remote'),
+  //   title: t('label.application_remote'),
   //   icon: icons.list,
   //   bg: '#EAF1FF',
   //   screen: Screen_Name.Remote,
   // },
   // {
   //   id: 'attendanceChange',
-  //   title: t('label.hrm_application_update_attendance'),
+  //   title: t('label.application_update_attendance'),
   //   icon: icons.list,
   //   bg: '#EBFFF5',
   //   screen: Screen_Name.Attendance_Update,
   // },
   // {
   //   id: 'shiftChange',
-  //   title: t('label.hrm_application_update_shift'),
+  //   title: t('label.application_update_shift'),
   //   icon: icons.list,
   //   bg: '#FFAFE5',
   //   screen: Screen_Name.Shift_Update,
   // },
   // {
   //   id: 'trip',
-  //   title: t('label.hrm_application_bussiness_trip'),
+  //   title: t('label.application_bussiness_trip'),
   //   icon: icons.list,
   //   bg: '#FBEFE5',
   //   screen: Screen_Name.Business_Trip,

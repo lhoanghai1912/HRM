@@ -449,7 +449,7 @@ const DetailContract = ({ route }) => {
           handleChange={handleChange}
           handlers={handlers}
           id={contractId}
-          isGroupDetail={true}
+          isGroupDetail={false}
           isEditMode={isEditMode}
           validationErrors={validationErrors}
         />

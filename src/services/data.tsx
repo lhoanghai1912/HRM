@@ -4344,6 +4344,8 @@ export const uploadFile = async ({
 
 export const getData_Group = async (data: any) => {
   try {
+    console.log('data send', data);
+
     const response = await apiClient.post(
       `Dictionary/config/data-group`,
       data,
@@ -4440,14 +4442,14 @@ export const getAppoint = async appointId => {
 export const updateDataGroup = async (
   groupConfig: any,
   itemId: string,
-  employeeId: string,
+  objectId: string,
   fields: any[],
 ) => {
   try {
     const payload = {
       groupConfig,
       itemId,
-      employeeId,
+      objectId,
       fields,
     };
     const response = await apiClient.post(

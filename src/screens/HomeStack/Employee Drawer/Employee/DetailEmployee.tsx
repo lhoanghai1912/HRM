@@ -466,7 +466,7 @@ const DetailEmployee = ({ route }) => {
           handleChange={handleChange}
           handlers={handlers}
           id={employeeId}
-          isGroupDetail={true}
+          isGroupDetail={false}
           isEditMode={isEditMode}
           validationErrors={validationErrors}
         />

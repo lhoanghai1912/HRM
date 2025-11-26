@@ -36,12 +36,12 @@ const Group = ({ route }) => {
     try {
       setLoading(true);
       console.log('data to fetch', {
-        employeeId: id,
+        objectId: id,
         groupConfig: groupConfig,
       });
 
       const response = await getData_Group({
-        employeeId: id,
+        objectId: id,
         groupConfig: groupConfig,
       });
       console.log('Fetched group data:', response);
@@ -87,12 +87,12 @@ const Group = ({ route }) => {
         rightPress={() => {
           navigate(Screen_Name.Detail_Group, {
             id: null,
-            employeeId: id,
+            objectId: id,
             parent: route?.params?.groupConfig,
-            dataPrev: null, // Không có data => tạo mới
+            dataPrev: null, // có data => xem/sửa
             isGroupDetail: true,
-            status: 'create', // Đánh dấu tạo mới
-            layoutPrev: layout, // Truyền layout từ màn trước
+            status: 'create',
+            layoutPrev: layout,
           });
         }}
       />
@@ -141,12 +141,12 @@ const Group = ({ route }) => {
                 onRowPress={item => {
                   navigate(Screen_Name.Detail_Group, {
                     id: item?.id,
-                    employeeId: id,
+                    objectId: id,
                     parent: route?.params?.groupConfig,
-                    dataPrev: item, // Có data => xem/sửa
+                    dataPrev: item, // có data => xem/sửa
                     isGroupDetail: true,
-                    status: 'hasData', // Đánh dấu có dữ liệu
-                    layoutPrev: layout, // Truyền layout từ màn trước
+                    status: 'view',
+                    layoutPrev: layout,
                   });
                 }}
               />
