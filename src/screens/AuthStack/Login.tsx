@@ -116,13 +116,13 @@ const LoginScreen = () => {
       <View style={styles.body}>
         <Text style={AppStyles.title}>{t('button.login')}</Text>
         <View>
-          <AppInput
+          {/* <AppInput
             leftIcon={icons.company}
             value={company}
             placeholder={t('label.company')}
             onChangeText={setCompany}
             style={{ fontSize: fonts.normal }}
-          />
+          /> */}
           <AppInput
             leftIcon={icons.mail}
             value={username}

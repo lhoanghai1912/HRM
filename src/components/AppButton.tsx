@@ -63,7 +63,9 @@ const AppButton: React.FC<AppButtonProps> = ({
             textStyle,
 
             {
-              color: disabled ? colors.black : textStyle?.color || colors.white,
+              color:
+                // disabled ? colors.black : textStyle?.color ||
+                colors.white,
             },
           ]}
         >
@@ -94,13 +96,13 @@ const styles = StyleSheet.create({
   },
 
   buttonDisabled: {
-    color: colors.black,
     backgroundColor: colors.buttonDisable,
     borderRadius: border.radiusExtraLarge,
     justifyContent: 'center',
     alignContent: 'center',
-    paddingVertical: spacing.medium,
+    paddingVertical: spacing.small,
     paddingHorizontal: spacing.medium,
+    shadowColor: colors.primary,
   },
   buttonText: {
     color: colors.white,

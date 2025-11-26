@@ -1,4 +1,5 @@
 // app/utils/colors.ts
+import { green } from 'react-native-reanimated/lib/typescript/Colors';
 import tinycolor from 'tinycolor2';
 
 export const colors = {
@@ -18,6 +19,7 @@ export const colors = {
   button: '#095286',
   buttonDisable: '#F0EFF4',
   default: '#F2F2F2',
+  green: '#0E771E',
 };
 export const darken = (color: string, amount: number = 20) => {
   return tinycolor(color).darken(amount).toHexString();

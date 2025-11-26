@@ -1,30 +1,28 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
-import AppButton from '../../components/AppButton';
-import { logout } from '../../store/reducers/userSlice';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { ms, spacing } from '../../utils/spacing';
 import { colors, darken } from '../../utils/color';
 import icons from '../../assets/icons';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import AppStyles from '../../components/AppStyle';
 import CustomHeader from '../../components/CustomHeader';
-import { form_itemHRM, form_itemStack } from '../../utils/form';
+import { form_itemStack } from '../../utils/form';
 import { useTranslation } from 'react-i18next';
 import { navigate } from '../../navigation/RootNavigator';
-import { Screen_Name } from '../../navigation/ScreenName';
-import images from '../../assets/images';
 import { border } from '../../utils/fontSize';
 
 const Home = () => {
-  const { t } = useTranslation();
   const { userData } = useSelector((state: any) => state.user);
-
+  const { t } = useTranslation();
   console.log('userData', userData);
 
   return (
     <View style={styles.container}>
-      <CustomHeader label={userData?.employee?.fullName} Home={true} />
+      <CustomHeader
+        label={userData?.employee?.fullName}
+        Home={true}
+        profileIcon={icons.settings}
+      />
       <View style={styles.bodyItem}>
         <Text style={AppStyles.label}>HRM</Text>
         <View style={styles.grid}>

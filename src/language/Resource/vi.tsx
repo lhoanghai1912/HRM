@@ -14,6 +14,7 @@ export default {
     comming_soon: 'Tính năng sắp ra mắt!',
     save_success: 'Lưu thành công successfully 🎉',
 
+    valid: 'Vui lòng thỏa mãn các điều kiện',
     valid_notEnough: 'Vui lòng nhập đủ thông tin',
     valid_password_dif: 'Mật khẩu mới phải khác mật khẩu hiện tại',
     valid_password_length: 'Mật khẩu phải có ít nhất 8 ký tự',

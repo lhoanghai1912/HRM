@@ -233,6 +233,7 @@ export default function Leave({ navigation, route }) {
         leftPress={() => navigate(Screen_Name.Application_List)}
         rightIcon={mode === 'create' ? null : icons.add}
         rightPress={() => handleSave()}
+        profileIcon={icons.username}
       />
       <ScrollView contentContainerStyle={styles.content}>
         {/* Mã NV + Tên NV (đều là text ở cả 2 mode) */}

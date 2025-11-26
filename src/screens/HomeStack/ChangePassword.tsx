@@ -13,6 +13,7 @@ import { password_Change } from '../../services/user';
 import Toast from 'react-native-toast-message';
 import { navigate } from '../../navigation/RootNavigator';
 import { Screen_Name } from '../../navigation/ScreenName';
+import CustomHeader from '../../components/CustomHeader';
 
 const ChangePassword = ({ navigation }) => {
   const [currentPassword, setCurrentPassword] = useState('');
@@ -45,20 +46,22 @@ const ChangePassword = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <NavBar title="Change Password" onPress={() => navigation.goBack()} />
+      <CustomHeader
+        label={t('button.change_pw')}
+        leftIcon={icons.back}
+        leftPress={() => navigation.goBack()}
+      />
       <View style={styles.body}>
-        <Text
+        {/* <Text
           style={{
             textAlign: 'center',
             fontSize: fonts.xlarge,
             marginBottom: spacing.small,
           }}
         >
-          Change password
-        </Text>
-        <Text style={{ textAlign: 'center', marginBottom: spacing.medium }}>
-          Allow the validate bellow
-        </Text>
+          {t('button.change_pw')}
+        </Text> */}
+
         <View>
           <AppInput
             label={t('label.password_current')}
@@ -89,6 +92,9 @@ const ChangePassword = ({ navigation }) => {
             value={confirmPassword}
           />
         </View>
+        <Text style={{ textAlign: 'center', marginBottom: spacing.medium }}>
+          {t('message.valid')}
+        </Text>
         <View style={{ marginBottom: spacing.large }}>
           <View style={{ flexDirection: 'row' }}>
             <Image
@@ -176,14 +182,18 @@ const ChangePassword = ({ navigation }) => {
             </Text>
           </View>
         </View>
-        {/* <View
-        style={{
-          borderWidth: 0.5,
-          marginBottom: spacing.medium,
-        }}
-      /> */}
-        <View style={{ marginBottom: spacing.xlarge }}>
+        <View
+          style={{
+            marginBottom: spacing.xxxlarge,
+            alignItems: 'center',
+          }}
+        >
           <AppButton
+            customStyle={{
+              backgroundColor: colors.primary,
+              width: '60%',
+            }}
+            // textStyle={{ color: colors.red }}
             title={t('button.confirm')}
             onPress={() => handleConfirm()}
             disabled={!isValid}
@@ -211,12 +221,12 @@ const ChangePassword = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
   },
   body: {
-    backgroundColor: colors.white,
-    borderRadius: border.radiusExtraLarge,
+    marginHorizontal: spacing.medium,
+    borderRadius: border.radiusMedium,
     padding: spacing.medium,
+    // backgroundColor: colors.red,
   },
 });
 

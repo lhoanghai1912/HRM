@@ -32,6 +32,11 @@ const HomeStack = () => (
       component={EmployeeDrawer}
     />
     <Stack.Screen name={Screen_Name.PayRoll_Drawer} component={PayRollDrawer} />
+    <Stack.Screen name={Screen_Name.Profile} component={Profile} />
+    <Stack.Screen
+      name={Screen_Name.ChangePassword}
+      component={ChangePassword}
+    />
   </Stack.Navigator>
 );
 

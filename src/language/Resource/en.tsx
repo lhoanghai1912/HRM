@@ -14,6 +14,7 @@ export default {
     comming_soon: 'Feature coming soon!',
     save_success: 'Saved successfully 🎉',
 
+    valid: 'Please allow the validation',
     valid_notEnough: 'Please enter enough information',
     valid_password_dif: 'New password must be different from current password',
     valid_password_length: 'Password must be at least 8 characters',
