@@ -20,6 +20,7 @@ export const colors = {
   buttonDisable: '#F0EFF4',
   default: '#F2F2F2',
   green: '#0E771E',
+  orange: '#FCA326',
 };
 export const darken = (color: string, amount: number = 20) => {
   return tinycolor(color).darken(amount).toHexString();

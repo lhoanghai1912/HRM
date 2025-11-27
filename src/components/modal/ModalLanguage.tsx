@@ -21,8 +21,6 @@ const LanguageModal = ({
   languages,
 }: LanguageModalProps) => {
   const { t, i18n } = useTranslation();
-  console.log('languages', languages);
-  console.log('selectedLanguage', selectedLanguage);
 
   return (
     <Modal

@@ -219,5 +219,10 @@ export default {
     form_detail_late_early_last_modified_by: 'Người duyệt',
     form_detail_late_early_last_relative_employee: 'Người liên quan',
     form_detail_late_early_status: 'Status',
+
+    timeSheet_full: 'Full',
+    timeSheet_lack: 'Lack',
+    timeSheet_unPaid: 'Unpaid leave',
+    timeSheet_paid: 'Paid leave',
   },
 };

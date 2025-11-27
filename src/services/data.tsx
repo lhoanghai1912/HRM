@@ -4177,7 +4177,6 @@ export const getLayout = async (layout: string) => {
       `ConfigLayout/layout-field-config?layout=${layout}`,
     );
     const data = await response.data;
-    console.log('Layout data fetched:', data);
 
     return data;
   } catch (error) {
@@ -4227,14 +4226,10 @@ export const getPickerData = async (
 };
 
 export const updateEmployee = async (id: string, fields: any[]) => {
-  console.log('updateEmployee called with:', { id, fields });
-
   try {
     const formData = new FormData();
     // Fields phải là chuỗi JSON, có thể là mảng phẳng hoặc lồng mảng nếu backend yêu cầu
     formData.append('Fields', JSON.stringify(fields));
-
-    console.log('FormData to update employee:', formData);
 
     const response = await apiClient.put(`Employee/${id}`, formData, {
       headers: {
@@ -4249,11 +4244,7 @@ export const updateEmployee = async (id: string, fields: any[]) => {
 };
 
 export const updateContract = async (id: string, fields: any[]) => {
-  console.log('updateContract called with:', { id, fields });
-
   try {
-    console.log('FormData to update contract:', fields);
-
     const response = await apiClient.put(`Contract/${id}`, fields, {
       headers: {
         'Content-Type': 'application/json',
@@ -4301,21 +4292,6 @@ export const uploadFile = async ({
       formData.append('Files', fileObj as any);
     });
 
-    console.log('=== Upload File Request ===');
-    console.log('URL:', `ConfigLayout/upload-file/${id}?type=${type}`);
-    console.log('Models:', JSON.stringify(models));
-    console.log('Files count:', files.length);
-    console.log(
-      'Files details:',
-      files.map((f, i) => ({
-        index: i,
-        fieldName: f.fieldName,
-        fileName: f.file.name,
-        fileType: f.file.type,
-        fileSize: f.file.size,
-      })),
-    );
-
     const response = await apiClient.post(
       `ConfigLayout/upload-file/${id}?type=${type}`,
       formData,
@@ -4325,10 +4301,6 @@ export const uploadFile = async ({
         },
       },
     );
-
-    console.log('=== Upload File Response ===');
-    console.log('Status:', response.status);
-    console.log('Data:', response.data);
 
     return response.data;
   } catch (error) {
@@ -4344,8 +4316,6 @@ export const uploadFile = async ({
 
 export const getData_Group = async (data: any) => {
   try {
-    console.log('data send', data);
-
     const response = await apiClient.post(
       `Dictionary/config/data-group`,
       data,
@@ -4355,7 +4325,6 @@ export const getData_Group = async (data: any) => {
         },
       },
     );
-    console.log('getData_Group response:', response.data);
 
     return response.data;
   } catch (error) {
@@ -4370,12 +4339,6 @@ export const getLocation = async (
   provinceId = null,
 ) => {
   try {
-    console.log('getLocation called with:', {
-      paramQuery,
-      countryId,
-      provinceId,
-    });
-
     const response = await apiClient.post('/Dictionary/location', {
       paramQuery: {
         page: paramQuery.page || 1,
@@ -4410,7 +4373,6 @@ export const getProcedure = async (payload: any, option: string) => {
         accept: '*/*',
       },
     });
-    console.log('getProcedure response:', response.data);
 
     return response.data;
   } catch (error) {
@@ -4474,7 +4436,6 @@ export const getOrganizationTree = async (search?: string) => {
     const response = await apiClient.get('OrgStruct', {
       params: { Search: search },
     });
-    console.log('Organization tree response:', response.data);
 
     return response.data;
   } catch (error) {

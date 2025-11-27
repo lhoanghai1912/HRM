@@ -20,7 +20,6 @@ import { navigate } from '../../../../navigation/RootNavigator';
 import { Screen_Name } from '../../../../navigation/ScreenName';
 import { ms, spacing } from '../../../../utils/spacing';
 import AppStyles from '../../../../components/AppStyle';
-import { ScrollView } from 'react-native-gesture-handler';
 import RenderTable from '../../../../components/renderTable';
 
 const Group = ({ route }) => {
@@ -29,8 +28,6 @@ const Group = ({ route }) => {
   const [groupData, setGroupData] = React.useState([]);
   const { groupConfig, groupLabel, id, layout } = route.params;
   const flatListRef = useRef<FlatList>(null);
-
-  console.log('route', route.params);
 
   const fetchGroupData = async () => {
     try {
@@ -53,10 +50,6 @@ const Group = ({ route }) => {
       setLoading(false);
     }
   };
-  console.log('groupData', groupData);
-  console.log('groupConfig', groupConfig);
-
-  console.log('layout', layout);
 
   useFocusEffect(
     useCallback(() => {
@@ -64,13 +57,16 @@ const Group = ({ route }) => {
     }, [id, groupConfig]),
   );
 
-  console.log(
-    'groupFieldConfigs',
-    layout?.pageData.filter(cfg => cfg.parentId === groupConfig.id),
-  );
-  const fields = layout?.pageData.filter(
-    cfg => cfg.parentId === groupConfig.id,
-  );
+  const fields = layout?.pageData.filter(cfg => {
+    if (cfg.parentId === groupConfig.id) {
+      // Case 1: when parentId matches
+      return true;
+    } else if (cfg.id === groupConfig.id) {
+      // Case 2: when cfg.id matches groupConfig.id
+      return true;
+    }
+    return false;
+  });
 
   const layoutFields =
     fields?.flatMap(group => group.groupFieldConfigs || []) || [];

@@ -185,5 +185,10 @@ export default {
     application_timekeeping: 'Chấm công trên ứng dụng',
 
     basic_profile: 'Thông tin cơ bản',
+
+    timeSheet_full: 'Đủ công',
+    timeSheet_lack: 'Thiếu công',
+    timeSheet_unPaid: 'Nghỉ không phép',
+    timeSheet_paid: 'Nghỉ phép',
   },
 };
