@@ -91,7 +91,12 @@ const CustomHeader: React.FC<CustomHeaderProps> = ({
           </TouchableOpacity>
         )}
       </View>
-      <Text style={[AppStyles.label, { textAlign: 'center', flex: 1 }]}>
+      <Text
+        style={[
+          AppStyles.label,
+          { textAlign: 'center', flex: 1, color: colors.primary },
+        ]}
+      >
         {label}
       </Text>
       {/* <View style={[styles.headerItem, {}]}></View> */}
@@ -113,15 +118,15 @@ const CustomHeader: React.FC<CustomHeaderProps> = ({
             />
           </TouchableOpacity>
         )}
-        {/* {profileIcon && ( */}
-        <TouchableOpacity onPress={() => setShowUser(true)}>
-          <Image
-            source={icons.username}
-            style={AppStyles.icon}
-            resizeMode="contain"
-          />
-        </TouchableOpacity>
-        {/* )} */}
+        {profileIcon && (
+          <TouchableOpacity onPress={() => setShowUser(true)}>
+            <Image
+              source={icons.username}
+              style={AppStyles.icon}
+              resizeMode="contain"
+            />
+          </TouchableOpacity>
+        )}
       </View>
       <User
         visible={showUser}

@@ -21,6 +21,12 @@ const AppStyles = StyleSheet.create({
     borderWidth: 0.7,
     width: '100%',
   },
+  row: {
+    marginTop: spacing.medium,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
   input: {
     height: 50,
     backgroundColor: colors.white,

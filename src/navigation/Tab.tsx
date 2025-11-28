@@ -29,7 +29,7 @@ import AddEmployee from '../screens/HomeStack/AddEmployee';
 import ListApplication from '../screens/HomeStack/Attendance Drawer/Application/Application_List';
 import Application from '../screens/HomeStack/Attendance Drawer/Application';
 import CreateApplication from '../screens/HomeStack/Attendance Drawer/Application/Application_Create';
-import TimeSheet from '../screens/HomeStack/TimeSheet';
+import TimeSheet from '../screens/HomeStack/Attendance Drawer/TimeSheet';
 import Attendance_Update from '../screens/HomeStack/Attendance Drawer/Application/Application_List/Attendance_Update/Attendance_Update';
 import Business_Trip from '../screens/HomeStack/Attendance Drawer/Application/Application_List/Business_Trip/Business_Trip';
 import Late_Early from '../screens/HomeStack/Attendance Drawer/Application/Application_List/Late_Early/Late_Early';
@@ -42,6 +42,7 @@ import QuickPin from '../screens/HomeStack/QuickPin';
 import { form_application } from '../utils/form';
 import { useTranslation } from 'react-i18next';
 import App from '../App';
+import DetailTimeSheet from '../screens/HomeStack/Attendance Drawer/TimeSheet/detail';
 // import BottomTabNavigator from './BottomTabNavigator';
 
 const Tab = createBottomTabNavigator();
@@ -119,7 +120,7 @@ export function AttendanceTabs() {
             tabPress: (e: any) => e.preventDefault(),
           }}
         />
-        <Tab.Screen name={Screen_Name.TimeSheet} component={TimeSheet} />
+        <Tab.Screen name={Screen_Name.TimeSheet} component={TimeSheetStack} />
         <Tab.Screen
           name="abc"
           component={View}
@@ -238,6 +239,20 @@ export const ListApplicationStack = () => (
     <Stack.Screen
       name={Screen_Name.TimeKeeping_App}
       component={TimeKeeping_App}
+    />
+  </Stack.Navigator>
+);
+
+export const TimeSheetStack = () => (
+  <Stack.Navigator
+    id={undefined}
+    screenOptions={{ headerShown: false }}
+    initialRouteName={Screen_Name.TimeSheet}
+  >
+    <Stack.Screen name={Screen_Name.TimeSheet} component={TimeSheet} />
+    <Stack.Screen
+      name={Screen_Name.Detail_TimeSheet}
+      component={DetailTimeSheet}
     />
   </Stack.Navigator>
 );

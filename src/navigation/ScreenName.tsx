@@ -71,6 +71,7 @@ export const Screen_Name = {
   Shift_Update: 'Shift_Update',
   Business_Trip: 'Business_Trip',
   TimeKeeping_App: 'TimeKeeping_App',
+  Detail_TimeSheet: 'Detail_TimeSheet',
 
   //Other
   Splash: 'Splash',
