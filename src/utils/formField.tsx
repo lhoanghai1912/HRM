@@ -357,13 +357,15 @@ export const renderField = (
         return (
           <TouchableOpacity
             disabled={mode === 'view' || isReadOnly === true}
-            style={{
-              borderWidth: 1,
-              borderRadius: border.radiusMedium,
-              padding: spacing.small,
-              marginBottom: spacing.small,
-              backgroundColor: '#e6f7ff', // màu khác biệt
-            }}
+            style={[
+              {
+                borderWidth: 1,
+                borderRadius: border.radiusMedium,
+                padding: spacing.small,
+                marginBottom: spacing.small,
+                backgroundColor: '#e6f7ff', // màu khác biệt
+              },
+            ]}
             onPress={() => {
               if (extraProps.onPickSelectOne)
                 extraProps.onPickSelectOne(
@@ -437,12 +439,15 @@ export const renderField = (
           <>
             <TouchableOpacity
               disabled={mode === 'view' || isReadOnly === true}
-              style={{
-                borderWidth: 1,
-                borderRadius: border.radiusMedium,
-                padding: spacing.small,
-                marginBottom: spacing.small,
-              }}
+              style={[
+                AppStyles.row,
+                {
+                  borderWidth: 1,
+                  borderRadius: border.radiusMedium,
+                  padding: spacing.small,
+                  marginBottom: spacing.small,
+                },
+              ]}
               onPress={() => {
                 if (extraProps.onPickSelectOne)
                   extraProps.onPickSelectOne(
@@ -476,6 +481,7 @@ export const renderField = (
                   return 'Chọn...';
                 })()}
               </Text>
+              <Image source={icons.down} style={AppStyles.icon} />
             </TouchableOpacity>
           </>
         );
@@ -488,12 +494,15 @@ export const renderField = (
       ) : (
         <TouchableOpacity
           disabled={mode === 'view' || isReadOnly === true}
-          style={{
-            borderWidth: 1,
-            borderRadius: border.radiusMedium,
-            padding: spacing.small,
-            marginBottom: spacing.small,
-          }}
+          style={[
+            AppStyles.row,
+            {
+              borderWidth: 1,
+              borderRadius: border.radiusMedium,
+              padding: spacing.small,
+              marginBottom: spacing.small,
+            },
+          ]}
           onPress={() => {
             if (extraProps.onPickSelectMulti) {
               // Parse value hiện tại thành array id
@@ -574,6 +583,7 @@ export const renderField = (
               return 'Chọn...';
             })()}
           </Text>
+          <Image source={icons.down} style={AppStyles.icon} />
         </TouchableOpacity>
       );
     case 'date':
