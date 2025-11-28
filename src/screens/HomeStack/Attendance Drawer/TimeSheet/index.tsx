@@ -528,7 +528,14 @@ const TimeSheet = () => {
             </Text>
           </TouchableOpacity>
         </View>
-        <View style={[styles.row, styles.section, styles.legendRow]}>
+        <View
+          style={[
+            styles.row,
+            styles.section,
+            styles.legendRow,
+            { paddingHorizontal: spacing.medium },
+          ]}
+        >
           {legendItems.map(item => (
             <View style={[styles.row, styles.legendItem]} key={item.key}>
               <View style={[styles.dot, { backgroundColor: item.color }]} />
