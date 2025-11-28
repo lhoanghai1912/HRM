@@ -91,13 +91,24 @@ const Contract = ({}) => {
         leftPress={() => navigation.openDrawer()}
       />
 
-      <View style={styles.toolbar}>
-        <TextInput
-          placeholder="Tìm kiếm"
-          value={searchInput}
-          style={styles.searchInput}
-          onChangeText={setSearchInput}
-        />
+      <View style={[styles.toolbar]}>
+        <View style={[styles.searchInput, AppStyles.row, { marginTop: 0 }]}>
+          <TextInput
+            placeholder="Tìm kiếm"
+            value={searchInput}
+            onChangeText={setSearchInput}
+          />
+          <TouchableOpacity
+            onPress={() => {
+              setSearchInput(''), setSearchQuery('');
+            }}
+          >
+            <Image
+              source={searchInput ? icons.clear : null}
+              style={AppStyles.icon}
+            />
+          </TouchableOpacity>
+        </View>
         <TouchableOpacity onPress={() => setSearchQuery(searchInput)}>
           <Image source={icons.search} style={AppStyles.icon} />
         </TouchableOpacity>

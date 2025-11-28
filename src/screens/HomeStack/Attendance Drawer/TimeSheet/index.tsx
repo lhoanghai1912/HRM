@@ -443,8 +443,10 @@ const TimeSheet = () => {
           onPress={() => handleSelectDate(dateMoment)}
         >
           <View style={styles.listDate}>
-            <Text>{dateMoment.format('DD-MM-YYYY')}</Text>
-            <Text>{dayLabel}</Text>
+            <Text style={{ fontFamily: 'InterVariable' }}>
+              {dateMoment.format('DD/MM/YYYY')}
+            </Text>
+            <Text style={{ fontFamily: 'InterVariable' }}>{dayLabel}</Text>
           </View>
           <View style={styles.listContentWrapper}>
             <Text>{type}</Text>
@@ -592,10 +594,10 @@ const styles = StyleSheet.create({
   listCard: {
     borderRadius: border.radiusSmall,
     marginTop: spacing.medium,
-    padding: spacing.small,
+    padding: spacing.medium,
     borderWidth: 1,
     marginHorizontal: spacing.small,
-    borderColor: colors.border,
+    borderColor: colors.darkGray,
   },
   listDate: {
     backgroundColor: colors.darkGray,
@@ -606,7 +608,7 @@ const styles = StyleSheet.create({
   listContentWrapper: {
     flex: 1,
     marginHorizontal: spacing.medium,
-    alignItems: 'center',
+    alignItems: 'flex-start',
   },
   section: {
     marginTop: spacing.medium,

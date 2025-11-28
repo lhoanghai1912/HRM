@@ -1,6 +1,6 @@
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -28,7 +28,8 @@ const Group = ({ route }) => {
   const [groupData, setGroupData] = React.useState([]);
   const { groupConfig, groupLabel, id, layout } = route.params;
   const flatListRef = useRef<FlatList>(null);
-
+  const [searchInput, setSearchInput] = useState(''); // Input tạm thời
+  const [searchQuery, setSearchQuery] = useState(''); // Query thực tế để gọi API
   const fetchGroupData = async () => {
     try {
       setLoading(true);
@@ -92,13 +93,27 @@ const Group = ({ route }) => {
           });
         }}
       />
-      <View style={styles.toolbar}>
-        <TextInput
-          placeholder="Tìm kiếm"
-          // value={searchInput}
-          style={styles.searchInput}
-          // onChangeText={setSearchInput}
-        />
+      <View style={[styles.toolbar]}>
+        <View style={[styles.searchInput, AppStyles.row, { marginTop: 0 }]}>
+          <TextInput
+            placeholder="Tìm kiếm"
+            value={searchInput}
+            onChangeText={setSearchInput}
+          />
+          <TouchableOpacity
+            onPress={() => {
+              setSearchInput(''), setSearchQuery('');
+            }}
+          >
+            <Image
+              source={searchInput ? icons.clear : null}
+              style={AppStyles.icon}
+            />
+          </TouchableOpacity>
+        </View>
+        <TouchableOpacity onPress={() => setSearchQuery(searchInput)}>
+          <Image source={icons.search} style={AppStyles.icon} />
+        </TouchableOpacity>
       </View>
       <View style={styles.footer}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
