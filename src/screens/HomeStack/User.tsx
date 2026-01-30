@@ -9,10 +9,10 @@ import {
   Image,
   Pressable,
 } from 'react-native';
-import { colors, darken } from '../../utils/color';
 import { ms, spacing } from '../../utils/spacing';
 import AppStyles from '../../components/AppStyle';
 import { border } from '../../utils/fontSize';
+import { useColors } from '../../hooks/useColors';
 
 interface Item {
   id: string;
@@ -35,6 +35,7 @@ const User: React.FC<Props> = ({
   onSelect,
   title = 'User',
 }) => {
+  const colors = useColors();
   return (
     <Modal
       visible={visible}

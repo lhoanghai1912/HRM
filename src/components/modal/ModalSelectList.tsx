@@ -12,11 +12,11 @@ import AppButton from '../AppButton';
 import { useTranslation } from 'react-i18next';
 import AppStyles from '../AppStyle';
 import { spacing } from '../../utils/spacing';
-import { colors } from '../../utils/color';
 import { TextInput } from 'react-native-gesture-handler';
 
 import icons from '../../assets/icons';
 import { border, weight } from '../../utils/fontSize';
+import { useColors } from '../../hooks/useColors';
 
 const ModalSelectList = ({
   visible,
@@ -33,6 +33,7 @@ const ModalSelectList = ({
   onSelected,
 }) => {
   const { t } = useTranslation();
+  const colors = useColors();
   const [searchValue, setSearchValue] = React.useState('');
 
   // Hàm xử lý khi ấn nút search
@@ -74,12 +75,16 @@ const ModalSelectList = ({
                   {
                     display: searchValue ? 'flex' : 'none',
                     marginRight: spacing.small,
+                    tintColor: colors.text,
                   },
                 ]}
               />
             </TouchableOpacity>
             <TouchableOpacity onPress={handleSearch}>
-              <Image source={icons.search} style={AppStyles.icon} />
+              <Image
+                source={icons.search}
+                style={[AppStyles.icon, { tintColor: colors.text }]}
+              />
             </TouchableOpacity>
           </View>
           <FlatList
@@ -118,9 +123,7 @@ const styles = StyleSheet.create({
   toolbar: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.background,
     marginBottom: spacing.small,
-    borderColor: colors.Gray,
     borderWidth: 1,
     borderRadius: border.radiusMedium,
     paddingHorizontal: spacing.small,
@@ -134,14 +137,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  addButtonText: { color: colors.white, fontWeight: weight.bold, fontSize: 16 },
+  addButtonText: { color: '#ffffff', fontWeight: weight.bold, fontSize: 16 },
   searchInput: {
     flex: 1,
     // paddingHorizontal: spacing.medium,
     borderRadius: border.radiusSmall,
   },
   modalContent: {
-    backgroundColor: colors.white,
     padding: spacing.medium,
     borderRadius: border.radiusMedium,
     maxHeight: '80%',
@@ -157,9 +159,8 @@ const styles = StyleSheet.create({
   flatList: {
     flexGrow: 0,
     borderWidth: 1,
-    borderColor: colors.Gray,
     borderRadius: border.radiusMedium,
-    backgroundColor: colors.white,
+
     padding: spacing.small,
   },
   buttonContainer: {

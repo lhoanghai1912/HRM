@@ -11,18 +11,19 @@ import {
 import CustomHeader from '../../../../../../components/CustomHeader';
 import icons from '../../../../../../assets/icons';
 import AppStyles from '../../../../../../components/AppStyle';
-import { ms, spacing } from '../../../../../../utils/spacing';
+import { spacing } from '../../../../../../utils/spacing';
 import { useTranslation } from 'react-i18next';
-import { border, fonts, weight } from '../../../../../../utils/fontSize';
-import { colors } from '../../../../../../utils/color';
 import { navigate } from '../../../../../../navigation/RootNavigator';
 import { Screen_Name } from '../../../../../../navigation/ScreenName';
 import ModalPicker from '../../../../../../components/modal/ModalPicker';
-import { lo } from '../../../../../../language/Resource';
 import ModalCalendar from '../../../../../../components/modal/ModalCalendar';
+import { createStyles } from './styles';
+import useColors from '../../../../../../hooks/useColors';
 
 export default function Leave({ navigation, route }) {
   const { t } = useTranslation();
+  const colors = useColors();
+  const styles = createStyles(colors);
 
   const { label, status } = route.params;
   const [mode, setMode] = useState(route.params.status);
@@ -73,7 +74,6 @@ export default function Leave({ navigation, route }) {
   const [calendarVisible, setCalendarVisible] = useState(false);
   const [calendarField, setCalendarField] = useState(null);
   const [calendarValue, setCalendarValue] = useState<string>(''); // yyyy-MM-dd
-
   const isView = mode === 'view';
 
   const handleChange = (key: string, value: any) => {
@@ -136,7 +136,10 @@ export default function Leave({ navigation, route }) {
         <Text style={[styles.value]}>
           {value || `Chọn ${label.toLowerCase()}`}
         </Text>
-        <Image style={[AppStyles.icon, {}]} source={icons.down} />
+        <Image
+          style={[AppStyles.icon, { tintColor: colors.text }]}
+          source={icons.down}
+        />
       </View>
     </TouchableOpacity>
   );
@@ -313,7 +316,10 @@ export default function Leave({ navigation, route }) {
                     >
                       {form.fromShift.value || 'Chọn ca'}
                     </Text>
-                    <Image style={[AppStyles.icon, {}]} source={icons.down} />
+                    <Image
+                      style={[AppStyles.icon, { tintColor: colors.text }]}
+                      source={icons.down}
+                    />
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={[
@@ -370,7 +376,10 @@ export default function Leave({ navigation, route }) {
                     >
                       {form.toShift.value || 'Chọn ca'}
                     </Text>
-                    <Image style={[AppStyles.icon, {}]} source={icons.down} />
+                    <Image
+                      style={[AppStyles.icon, { tintColor: colors.text }]}
+                      source={icons.down}
+                    />
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={[
@@ -547,110 +556,3 @@ export default function Leave({ navigation, route }) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1 },
-  header: {
-    height: spacing.small,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-  },
-  headerTitle: {
-    fontSize: fonts.large,
-    fontWeight: weight.bold,
-    color: '#2b5fd9',
-  },
-  content: {
-    padding: spacing.medium,
-    paddingBottom: spacing.large,
-    backgroundColor: colors.white,
-    borderRadius: border.radiusMedium,
-  },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    borderBottomWidth: 1,
-    borderColor: colors.underline,
-    paddingVertical: spacing.small,
-    marginBottom: spacing.medium,
-  },
-  rowLabel: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  label: { fontSize: ms(fonts.normal + 0), color: colors.black },
-  required: { color: 'red', fontSize: fonts.normal },
-  value: {},
-  valueBold: { fontWeight: weight.bold },
-  field: { marginBottom: spacing.medium },
-  input: {
-    borderWidth: 1,
-    borderColor: '#d0d0d0',
-    borderRadius: spacing.small,
-    paddingHorizontal: 10,
-    paddingVertical: spacing.small,
-    fontSize: fonts.normal,
-    backgroundColor: '#fff',
-  },
-  textArea: {
-    minHeight: border.radiusMedium,
-    textAlignVertical: 'top',
-  },
-  flex1: { flex: 1 },
-  statusBadge: {
-    alignSelf: 'flex-start',
-    backgroundColor: '#1abc60',
-    paddingHorizontal: spacing.medium,
-    paddingVertical: spacing.small,
-    borderRadius: spacing.small,
-  },
-  statusText: {
-    fontSize: spacing.medium,
-    color: '#fff',
-    fontWeight: weight.bold,
-  },
-  attachBtn: {
-    alignSelf: 'flex-start',
-    borderWidth: 1,
-    borderColor: '#2b5fd9',
-    borderRadius: spacing.small,
-    paddingHorizontal: spacing.medium,
-    paddingVertical: spacing.small,
-  },
-  attachText: { fontSize: fonts.normal, color: '#2b5fd9' },
-  timeline: {
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderColor: '#e0e0e0',
-    paddingTop: spacing.medium,
-  },
-  timelineItem: {
-    flexDirection: 'row',
-  },
-  iconCircle: {
-    width: ms(10),
-    height: ms(10),
-    borderRadius: border.radiusMedium,
-    backgroundColor: '#1abc60',
-    marginRight: spacing.small,
-    justifyContent: 'center',
-  },
-  timelineText: { flex: 1 },
-  timelineTitle: {},
-  timelineDesc: {},
-  submitBtn: {
-    marginBottom: spacing.large,
-    backgroundColor: '#2b5fd9',
-    paddingVertical: spacing.medium,
-    borderRadius: spacing.medium,
-    alignItems: 'center',
-    alignSelf: 'center',
-    width: '30%',
-  },
-  submitText: {
-    color: '#fff',
-    fontSize: fonts.normal,
-    fontWeight: weight.bold,
-  },
-});

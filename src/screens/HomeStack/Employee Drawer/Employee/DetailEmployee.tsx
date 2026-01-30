@@ -36,11 +36,12 @@ import ModalTreeView from '../../../../components/modal/ModalTreeView';
 import ModalEmployeePicker from '../../../../components/modal/ModalEmployeePicker';
 import ModalProcedurePicker from '../../../../components/modal/ModalProcedurePicker';
 import AppButton from '../../../../components/AppButton';
-import { colors } from '../../../../utils/color';
 import { validateLayoutForm } from '../../../../utils/helper';
 import { useTranslation } from 'react-i18next';
+import { useColors } from '../../../../hooks/useColors';
 
 const DetailEmployee = ({ route }) => {
+  const colors = useColors();
   const navigation = useNavigation<DrawerNavigationProp<any>>();
 
   const employeeId = route?.params?.id;

@@ -1,7 +1,6 @@
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { Screen_Name } from './ScreenName';
 import Profile from '../screens/HomeStack/Profile';
-import { colors } from '../utils/color';
 import { Image } from 'react-native';
 import icons from '../assets/icons';
 import { ms } from '../utils/spacing';
@@ -31,6 +30,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { form_application } from '../utils/form';
 import { navigate } from './RootNavigator';
+import { useColors } from '../hooks/useColors';
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
@@ -38,6 +38,7 @@ const Stack = createNativeStackNavigator();
 export const AttendanceDrawer = () => {
   const [showQuick, setShowQuick] = useState(false);
   const { t } = useTranslation();
+  const colors = useColors();
 
   return (
     <>
@@ -45,13 +46,14 @@ export const AttendanceDrawer = () => {
         id={undefined}
         screenOptions={({ route }) => ({
           headerShown: false,
-          drawerStyle: { width: '60%' },
-          drawerActiveTintColor: colors.blue,
-          drawerActiveBackgroundColor: colors.blue,
-          drawerLabelStyle: { color: 'black' },
+          drawerStyle: { width: '60%', backgroundColor: colors.surface },
+          drawerActiveTintColor: colors.primary,
+          drawerActiveBackgroundColor: colors.primary + '20',
+          drawerInactiveTintColor: colors.text,
+          drawerLabelStyle: { color: colors.text },
           drawerItemStyle: { borderRadius: border.radiusExtraLarge },
 
-          drawerIcon: ({ focused }) => {
+          drawerIcon: ({ focused, color, size }) => {
             const iconMap = {
               [Screen_Name.Home]: focused ? icons.home_focus : icons.home,
               [Screen_Name.Attendance]: focused ? icons.home_focus : icons.home,
@@ -62,7 +64,7 @@ export const AttendanceDrawer = () => {
             return (
               <Image
                 source={iconMap[route.name]}
-                style={{ width: ms(24), height: ms(24) }}
+                style={{ width: ms(24), height: ms(24), tintColor: color }}
                 resizeMode="contain"
               />
             );
@@ -86,40 +88,48 @@ export const AttendanceDrawer = () => {
   );
 };
 
-export const EmployeeDrawer = () => (
-  <Drawer.Navigator
-    id={undefined}
-    screenOptions={{
-      headerShown: false,
-      drawerStyle: { width: '60%' },
-      drawerActiveTintColor: colors.blue,
-      drawerActiveBackgroundColor: colors.blue,
-      drawerLabelStyle: { color: 'black' },
-    }}
-    initialRouteName={Screen_Name.Employee}
-  >
-    <Drawer.Screen name={Screen_Name.HomeStack} component={HomeStack} />
-    <Drawer.Screen name={Screen_Name.Attendance} component={AttendanceTabs} />
-    <Drawer.Screen name={Screen_Name.Employee} component={EmployeeTabs} />
-    <Drawer.Screen name={Screen_Name.PayRoll} component={PayrollTabs} />
-  </Drawer.Navigator>
-);
+export const EmployeeDrawer = () => {
+  const colors = useColors();
+  return (
+    <Drawer.Navigator
+      id={undefined}
+      screenOptions={{
+        headerShown: false,
+        drawerStyle: { width: '60%', backgroundColor: colors.surface },
+        drawerActiveTintColor: colors.primary,
+        drawerActiveBackgroundColor: colors.primary + '20',
+        drawerInactiveTintColor: colors.text,
+        drawerLabelStyle: { color: colors.text },
+      }}
+      initialRouteName={Screen_Name.Employee}
+    >
+      <Drawer.Screen name={Screen_Name.HomeStack} component={HomeStack} />
+      <Drawer.Screen name={Screen_Name.Attendance} component={AttendanceTabs} />
+      <Drawer.Screen name={Screen_Name.Employee} component={EmployeeTabs} />
+      <Drawer.Screen name={Screen_Name.PayRoll} component={PayrollTabs} />
+    </Drawer.Navigator>
+  );
+};
 
-export const PayRollDrawer = () => (
-  <Drawer.Navigator
-    id={undefined}
-    screenOptions={{
-      headerShown: false,
-      drawerStyle: { width: '60%' },
-      drawerActiveTintColor: colors.blue,
-      drawerActiveBackgroundColor: colors.blue,
-      drawerLabelStyle: { color: 'black' },
-    }}
-    initialRouteName={Screen_Name.PayRoll}
-  >
-    <Drawer.Screen name={Screen_Name.Home} component={HomeStack} />
-    <Drawer.Screen name={Screen_Name.Attendance} component={AttendanceTabs} />
-    <Drawer.Screen name={Screen_Name.Employee} component={EmployeeTabs} />
-    <Drawer.Screen name={Screen_Name.PayRoll} component={PayrollTabs} />
-  </Drawer.Navigator>
-);
+export const PayRollDrawer = () => {
+  const colors = useColors();
+  return (
+    <Drawer.Navigator
+      id={undefined}
+      screenOptions={{
+        headerShown: false,
+        drawerStyle: { width: '60%', backgroundColor: colors.surface },
+        drawerActiveTintColor: colors.primary,
+        drawerActiveBackgroundColor: colors.primary + '20',
+        drawerInactiveTintColor: colors.text,
+        drawerLabelStyle: { color: colors.text },
+      }}
+      initialRouteName={Screen_Name.PayRoll}
+    >
+      <Drawer.Screen name={Screen_Name.Home} component={HomeStack} />
+      <Drawer.Screen name={Screen_Name.Attendance} component={AttendanceTabs} />
+      <Drawer.Screen name={Screen_Name.Employee} component={EmployeeTabs} />
+      <Drawer.Screen name={Screen_Name.PayRoll} component={PayrollTabs} />
+    </Drawer.Navigator>
+  );
+};

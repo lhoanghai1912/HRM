@@ -1,8 +1,8 @@
 import React from 'react';
 import { Modal, View, TouchableOpacity, StyleSheet, Text } from 'react-native';
 import { Calendar } from 'react-native-calendars';
-import { colors } from '../../utils/color';
 import { border } from '../../utils/fontSize';
+import { useColors } from '../../hooks/useColors';
 
 export default function ModalCalendar({
   visible,
@@ -11,10 +11,11 @@ export default function ModalCalendar({
   onSelect,
   onClose,
 }) {
+  const colors = useColors();
   return (
     <Modal visible={visible} transparent animationType="fade">
       <View style={styles.overlay}>
-        <View style={styles.box}>
+        <View style={[styles.box, { backgroundColor: colors.surface }]}>
           <Calendar
             initialDate={value} // yyyy-MM-dd
             onDayPress={day => {
@@ -28,11 +29,13 @@ export default function ModalCalendar({
               },
             }}
             theme={{
-              backgroundColor: '#ffffff',
-              calendarBackground: '#ffffff',
+              backgroundColor: colors.surface,
+              calendarBackground: colors.surface,
               todayTextColor: colors.primary,
               selectedDayBackgroundColor: colors.primary,
-              selectedDayTextColor: '#ffffff',
+              selectedDayTextColor: colors.buttonText,
+              dayTextColor: colors.text,
+              monthTextColor: colors.text,
             }}
           />
 
@@ -48,13 +51,12 @@ export default function ModalCalendar({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.3)',
+    backgroundColor: 'rgba(0,0,0,0.5)',
     justifyContent: 'center',
     alignItems: 'center',
   },
   box: {
     width: '90%',
-    backgroundColor: '#fff',
     borderRadius: border.radiusMedium,
     padding: 10,
   },

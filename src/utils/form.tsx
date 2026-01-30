@@ -4,8 +4,8 @@ import i18next from 'i18next';
 import { Linking } from 'react-native';
 import { link } from './constants';
 import { navigate } from '../navigation/RootNavigator';
-import { logout } from '../store/reducers/userSlice';
-import { colors } from './color';
+import { logoutThunk } from '../store/slices/auth';
+// colors intentionally not imported here; UI should apply theme via hooks in components
 
 export type GetAllParams = {
   Page?: string; // Trang hiện tại
@@ -61,7 +61,7 @@ export const form_user = (
     id: 'logout',
     title: t('label.user_logout'),
     icon: icons.logout,
-    action: () => dispatch && dispatch(logout()), // Đảm bảo hàm được truyền vào
+    action: () => dispatch && dispatch(logoutThunk()), // Gọi logoutThunk
   },
 ];
 
@@ -198,21 +198,21 @@ export const form_application = (t = i18next.t.bind(i18next)) => [
     id: 'leave',
     title: t('label.application_leave'),
     icon: icons.list,
-    bg: colors.blue,
+    bg: '#EDF6FF',
     screen: Screen_Name.Leave,
   },
   {
     id: 'lateEarly',
     title: t('label.application_late_early'),
     icon: icons.list,
-    bg: colors.darkGray,
+    bg: '#EAF1FF',
     screen: Screen_Name.Late_Early,
   },
   {
     id: 'overTime',
     title: t('label.application_over_time'),
     icon: icons.list,
-    bg: colors.secondary,
+    bg: '#FFF0F0',
     screen: Screen_Name.Overtime,
   },
   // {

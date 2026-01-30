@@ -16,7 +16,6 @@ import {
 } from './DrawerNavigator';
 import HomeStack from './HomeStack';
 // import BottomTabNavigator from './BottomTabNavigator';
-import Home from '../screens/HomeStack/Home';
 
 const Stack = createNativeStackNavigator();
 

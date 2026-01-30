@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { colors } from '../../utils/color';
 import { ms, spacing } from '../../utils/spacing';
 import { fonts } from '../../utils/fontSize';
 import CustomHeader from '../../components/CustomHeader';
@@ -9,13 +8,16 @@ import AppStyles from '../../components/AppStyle';
 import icons from '../../assets/icons';
 import { useNavigation } from '@react-navigation/native';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
+import { useColors } from '../../hooks/useColors';
+import { colors } from '../../constants';
 
 const PayRoll = () => {
   const navigation = useNavigation<DrawerNavigationProp<any>>();
   const { t } = useTranslation();
+  const colors = useColors();
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <CustomHeader
         label={t('payroll')}
         leftIcon={icons.menu}

@@ -10,12 +10,12 @@ import {
   FlatList,
   ActivityIndicator,
 } from 'react-native';
-import { colors } from '../../utils/color';
 import { ms, spacing } from '../../utils/spacing';
 import icons from '../../assets/icons';
 import AppStyles from '../AppStyle';
 import images from '../../assets/images';
 import { border, fonts, weight } from '../../utils/fontSize';
+import { useColors } from '../../hooks/useColors';
 
 const ModalProcedurePicker = ({
   visible,
@@ -29,6 +29,7 @@ const ModalProcedurePicker = ({
   onLoadMore,
   hasMore = false,
 }) => {
+  const colors = useColors();
   const [searchText, setSearchText] = useState('');
 
   useEffect(() => {
@@ -92,7 +93,10 @@ const ModalProcedurePicker = ({
           <View style={styles.header}>
             <Text style={styles.title}>Chọn thủ tục</Text>
             <TouchableOpacity onPress={onClose}>
-              <Image source={icons.clear} style={AppStyles.icon} />
+              <Image
+                source={icons.clear}
+                style={[AppStyles.icon, { tintColor: colors.text }]}
+              />
             </TouchableOpacity>
           </View>
 
@@ -109,12 +113,18 @@ const ModalProcedurePicker = ({
               <TouchableOpacity onPress={handleClearSearch}>
                 <Image
                   source={icons.clear}
-                  style={[AppStyles.icon, { marginRight: spacing.small }]}
+                  style={[
+                    AppStyles.icon,
+                    { marginRight: spacing.small, tintColor: colors.text },
+                  ]}
                 />
               </TouchableOpacity>
             ) : null}
             <TouchableOpacity onPress={handleSearch}>
-              <Image source={icons.search} style={AppStyles.icon} />
+              <Image
+                source={icons.search}
+                style={[AppStyles.icon, { tintColor: colors.text }]}
+              />
             </TouchableOpacity>
           </View>
 
@@ -161,16 +171,16 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: fonts.normal,
-    color: colors.black,
+    color: '#000000',
   },
   container: {
-    backgroundColor: colors.white,
+    backgroundColor: '#FFFFFF',
     borderRadius: border.radiusLarge,
     width: '90%',
     minHeight: '50%',
     maxHeight: '75%',
     padding: spacing.medium,
-    shadowColor: colors.black,
+    shadowColor: '#000000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
@@ -185,14 +195,14 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: weight.bold,
-    color: colors.black,
+    color: '#000000',
   },
   toolbar: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.white,
+    backgroundColor: '#FFFFFF',
     marginBottom: spacing.small,
-    borderColor: colors.Gray,
+    borderColor: '#E5E7EB',
     borderWidth: 1,
     borderRadius: border.radiusMedium,
     paddingHorizontal: spacing.small,
@@ -209,9 +219,9 @@ const styles = StyleSheet.create({
     padding: spacing.small,
     borderRadius: border.radiusMedium,
     borderWidth: 1,
-    borderColor: colors.Gray,
+    borderColor: '#E5E7EB',
     marginBottom: spacing.small,
-    backgroundColor: colors.white,
+    backgroundColor: '#FFFFFF',
   },
   row: {
     flexDirection: 'row',
@@ -220,7 +230,7 @@ const styles = StyleSheet.create({
     marginVertical: spacing.small,
     borderRadius: border.radiusMedium,
     borderWidth: 1,
-    borderColor: colors.Gray,
+    borderColor: '#E5E7EB',
     minHeight: 44, // Đảm bảo chiều cao tối thiểu cho dễ touch
   },
   rowText: {
@@ -230,11 +240,11 @@ const styles = StyleSheet.create({
     textAlign: 'left',
   },
   selectedText: {
-    color: colors.white,
+    color: '#FFFFFF',
     fontWeight: '500',
   },
   selectedItem: {
-    borderColor: colors.primary,
+    borderColor: '#007AFF',
   },
   procedureInfo: {
     flex: 1,
@@ -249,7 +259,7 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 14,
-    color: colors.Gray,
+    color: '#6B7280',
   },
   footerLoader: {
     paddingVertical: spacing.medium,

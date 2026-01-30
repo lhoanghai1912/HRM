@@ -44,6 +44,15 @@ export default {
     apply_now: 'ສະໝັກຕອນນີ້',
     add_section: 'ເພີ່ມຫົວຂໍ້',
     pickImage: 'ເລືອກຮູບ',
+    change: 'ປ່ຽນ',
+  },
+
+  theme: {
+    theme: 'ທີມ',
+    light: 'ສວ່າງ',
+    dark: 'ມືດ',
+    system: 'ຕາມລະບົບ',
+    select: 'ເລືອກທີມ',
   },
 
   label: {

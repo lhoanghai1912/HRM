@@ -7,23 +7,26 @@ import { ms, spacing } from '../utils/spacing';
 import images from '../assets/images';
 import AppInput from './AppInput';
 import icons from '../assets/icons';
-import { colors } from '../utils/color';
 import AppButton from './AppButton';
 import { t } from 'i18next';
 import AppStyles from './AppStyle';
 import { forgot_pw, login } from '../services/auth';
-import { setToken } from '../store/reducers/userSlice';
+import { setToken } from '../store/slices/auth';
 import { navigate } from '../navigation/RootNavigator';
 import { Screen_Name } from '../navigation/ScreenName';
 import { border } from '../utils/fontSize';
+import { useColors } from '../hooks/useColors';
 
 interface Props {
   navigation: any;
   route: any;
 }
 const SetPassword: React.FC<Props> = ({ navigation, route }) => {
+  const colors = useColors();
   const dispatch = useDispatch();
-  const { verificationToken } = useSelector((state: any) => state.user);
+  const verificationToken = useSelector(
+    (state: any) => state.auth.user?.verificationToken,
+  );
 
   const [password, SetPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -58,7 +61,7 @@ const SetPassword: React.FC<Props> = ({ navigation, route }) => {
     }
   };
   return (
-    <View style={[styles.container]}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <NavBar title={'Tạo mật khẩu'} onPress={() => navigation.goBack()} />
       <View style={styles.body}>
         <View style={{ marginBottom: spacing.large }}>
@@ -103,10 +106,10 @@ const SetPassword: React.FC<Props> = ({ navigation, route }) => {
             <Text
               style={{
                 color: !password
-                  ? colors.Gray
+                  ? colors.textSecondary
                   : hasMinLength
-                  ? colors.Gray
-                  : colors.red,
+                  ? colors.textSecondary
+                  : colors.error,
               }}
             >
               {t('message.valid_password_length')}
@@ -120,10 +123,10 @@ const SetPassword: React.FC<Props> = ({ navigation, route }) => {
             <Text
               style={{
                 color: !password
-                  ? colors.Gray
+                  ? colors.textSecondary
                   : hasUpperCase
-                  ? colors.Gray
-                  : colors.red,
+                  ? colors.textSecondary
+                  : colors.error,
               }}
             >
               {t('message.valid_password_uppercase')}
@@ -137,10 +140,10 @@ const SetPassword: React.FC<Props> = ({ navigation, route }) => {
             <Text
               style={{
                 color: !password
-                  ? colors.Gray
+                  ? colors.textSecondary
                   : hasNumber
-                  ? colors.Gray
-                  : colors.red,
+                  ? colors.textSecondary
+                  : colors.error,
               }}
             >
               {t('message.valid_password_number')}
@@ -154,10 +157,10 @@ const SetPassword: React.FC<Props> = ({ navigation, route }) => {
             <Text
               style={{
                 color: !password
-                  ? colors.Gray
+                  ? colors.textSecondary
                   : hasSpecialChar
-                  ? colors.Gray
-                  : colors.red,
+                  ? colors.textSecondary
+                  : colors.error,
               }}
             >
               {t('message.valid_password_special')}
@@ -171,10 +174,10 @@ const SetPassword: React.FC<Props> = ({ navigation, route }) => {
             <Text
               style={{
                 color: !password
-                  ? colors.Gray
+                  ? colors.textSecondary
                   : isMatch
-                  ? colors.Gray
-                  : colors.red,
+                  ? colors.textSecondary
+                  : colors.error,
               }}
             >
               {t('message.valid_password_match')}
@@ -215,7 +218,6 @@ const SetPassword: React.FC<Props> = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.white,
   },
   body: {
     paddingHorizontal: spacing.medium,
@@ -224,7 +226,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 0,
-    borderColor: colors.Gray,
     borderRadius: border.radiusExtraLarge,
     overflow: 'hidden',
     backgroundColor: '#F4F5F5',

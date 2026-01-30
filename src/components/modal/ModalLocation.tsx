@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { spacing } from '../../utils/spacing';
 import { fonts, weight } from '../../utils/fontSize';
-import { colors } from '../../utils/color';
+import { useColors } from '../../hooks/useColors';
 
 const ModalLocation = ({
   visible,
@@ -18,6 +18,7 @@ const ModalLocation = ({
   onClose,
   title = 'Chọn địa điểm',
 }) => {
+  const colors = useColors();
   const [selectedLocation, setSelectedLocation] = React.useState(null);
   return (
     <Modal
@@ -27,14 +28,20 @@ const ModalLocation = ({
       onRequestClose={onClose}
     >
       <View style={styles.overlay}>
-        <View style={styles.container}>
-          <Text style={styles.title}>{title}</Text>
+        <View style={[styles.container, { backgroundColor: colors.surface }]}>
+          <Text style={[styles.title, { color: colors.text }]}>{title}</Text>
           <FlatList
             data={data}
             keyExtractor={item => item.locationId}
             renderItem={({ item }) => (
               <TouchableOpacity
-                style={styles.item}
+                style={[
+                  styles.item,
+                  {
+                    borderColor: colors.border,
+                    backgroundColor: colors.background,
+                  },
+                ]}
                 onPress={() => {
                   setSelectedLocation(item.locationId);
                   const value = item.locationId;
@@ -47,10 +54,11 @@ const ModalLocation = ({
                   style={[
                     styles.itemText,
                     {
+                      color: colors.text,
                       backgroundColor:
                         selectedLocation === item.locationId
                           ? colors.primary
-                          : colors.white,
+                          : undefined,
                     },
                   ]}
                 >
@@ -59,13 +67,19 @@ const ModalLocation = ({
               </TouchableOpacity>
             )}
             ListEmptyComponent={
-              <Text style={{ textAlign: 'center', margin: spacing.medium }}>
+              <Text
+                style={{
+                  textAlign: 'center',
+                  margin: spacing.medium,
+                  color: colors.textSecondary,
+                }}
+              >
                 Không có dữ liệu
               </Text>
             }
           />
           <TouchableOpacity style={styles.closeBtn} onPress={onClose}>
-            <Text style={{ color: '#1890ff', fontWeight: weight.bold }}>
+            <Text style={{ color: colors.text, fontWeight: weight.bold }}>
               Đóng
             </Text>
           </TouchableOpacity>
@@ -85,7 +99,7 @@ const styles = StyleSheet.create({
   container: {
     width: '85%',
     maxHeight: '70%',
-    backgroundColor: colors.background,
+    backgroundColor: '#fff',
     borderRadius: spacing.medium,
     padding: spacing.medium,
     elevation: 4,
@@ -99,10 +113,10 @@ const styles = StyleSheet.create({
   item: {
     paddingVertical: spacing.medium,
     borderBottomWidth: 0.5,
-    borderColor: colors.underline,
+    borderColor: '#e0e0e0',
     borderWidth: 0.5,
     borderRadius: spacing.medium,
-    backgroundColor: colors.white,
+    backgroundColor: '#fff',
   },
   itemText: {
     fontSize: spacing.medium,

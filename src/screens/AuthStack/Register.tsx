@@ -16,7 +16,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import AppStyles from '../../components/AppStyle';
 import { useTranslation } from 'react-i18next';
 import AppInput from '../../components/AppInput';
-import { colors } from '../../utils/color';
 import icons from '../../assets/icons';
 import AppButton from '../../components/AppButton';
 import { navigate } from '../../navigation/RootNavigator';
@@ -24,13 +23,15 @@ import { Screen_Name } from '../../navigation/ScreenName';
 import ModalEnterOtp from '../../components/modal/ModalEnterOtp';
 import { register } from '../../services/auth';
 import { useDispatch, useSelector } from 'react-redux';
-import { setToken } from '../../store/reducers/userSlice';
+import { setToken } from '../../store/slices/auth';
 import { fonts } from '../../utils/fontSize';
+import { useColors } from '../../hooks/useColors';
 // import { enterOtp, register } from '../../services/auth';
 
 const RegisterScreen = () => {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
+  const colors = useColors();
   const [username, setUsername] = useState('');
   const [mail, setMail] = useState('');
   const [password, setPassword] = useState('');
@@ -48,7 +49,7 @@ const RegisterScreen = () => {
   const isValid =
     hasMinLength && hasUpperCase && hasNumber && hasSpecialChar && isMatch;
   const dispatch = useDispatch();
-  const token = useSelector((state: any) => state.user.token);
+  const token = useSelector((state: any) => state.auth.token);
   console.log('token', token);
 
   const handleregister = async () => {
@@ -67,7 +68,7 @@ const RegisterScreen = () => {
   console.log();
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={[styles.header, { paddingTop: insets.top }]}>
         <Image
           source={images.company_logo}
@@ -79,11 +80,15 @@ const RegisterScreen = () => {
           }}
         />
 
-        <Text style={AppStyles.text}>{t('message.welcome')}</Text>
+        <Text style={[AppStyles.text, { color: colors.textSecondary }]}>
+          {t('message.welcome')}
+        </Text>
       </View>
 
       <View style={styles.body}>
-        <Text style={AppStyles.title}>{t('button.register')}</Text>
+        <Text style={[AppStyles.title, { color: colors.text }]}>
+          {t('button.register')}
+        </Text>
         <View>
           <AppInput
             leftIcon={icons.mail}
@@ -126,10 +131,10 @@ const RegisterScreen = () => {
               <Text
                 style={{
                   color: !password
-                    ? colors.Gray
+                    ? colors.textSecondary
                     : hasMinLength
-                    ? colors.Gray
-                    : colors.red,
+                    ? colors.success
+                    : colors.error,
                 }}
               >
                 Mật khẩu tối thiểu 8 ký tự
@@ -143,10 +148,10 @@ const RegisterScreen = () => {
               <Text
                 style={{
                   color: !password
-                    ? colors.Gray
+                    ? colors.textSecondary
                     : hasUpperCase
-                    ? colors.Gray
-                    : colors.red,
+                    ? colors.success
+                    : colors.error,
                 }}
               >
                 Chứa ít nhất 1 ký tự viết hoa
@@ -160,10 +165,10 @@ const RegisterScreen = () => {
               <Text
                 style={{
                   color: !password
-                    ? colors.Gray
+                    ? colors.textSecondary
                     : hasNumber
-                    ? colors.Gray
-                    : colors.red,
+                    ? colors.success
+                    : colors.error,
                 }}
               >
                 Chứa ít nhất 1 ký tự số
@@ -177,10 +182,10 @@ const RegisterScreen = () => {
               <Text
                 style={{
                   color: !password
-                    ? colors.Gray
+                    ? colors.textSecondary
                     : hasSpecialChar
-                    ? colors.Gray
-                    : colors.red,
+                    ? colors.success
+                    : colors.error,
                 }}
               >
                 Chứa ít nhất 1 ký tự đặc biệt
@@ -194,10 +199,10 @@ const RegisterScreen = () => {
               <Text
                 style={{
                   color: !password
-                    ? colors.Gray
+                    ? colors.textSecondary
                     : isMatch
-                    ? colors.Gray
-                    : colors.red,
+                    ? colors.success
+                    : colors.error,
                 }}
               >
                 Mật khẩu và xác nhận mật khẩu trùng khớp
@@ -220,7 +225,9 @@ const RegisterScreen = () => {
           ]}
         />
         <View style={styles.notHave_account}>
-          <Text style={AppStyles.text}>{t('message.have_account')}</Text>
+          <Text style={[AppStyles.text, { color: colors.text }]}>
+            {t('message.have_account')}
+          </Text>
           <TouchableOpacity
             onPress={() => {
               navigate(Screen_Name.Login);
@@ -229,7 +236,7 @@ const RegisterScreen = () => {
             <Text
               style={[
                 AppStyles.text,
-                { color: colors.blue, marginLeft: spacing.small },
+                { color: colors.primary, marginLeft: spacing.small },
               ]}
             >
               {t('button.login')}
@@ -280,7 +287,6 @@ const RegisterScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.white,
   },
   header: { alignItems: 'center', marginBottom: spacing.xlarge },
   body: { paddingHorizontal: spacing.medium },

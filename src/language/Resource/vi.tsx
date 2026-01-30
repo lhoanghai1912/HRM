@@ -44,6 +44,15 @@ export default {
     pickImage: 'Chọn ảnh',
     add_item: 'Thêm',
     save: 'Lưu',
+    change: 'Thay đổi',
+  },
+
+  theme: {
+    theme: 'Giao diện',
+    light: 'Sáng',
+    dark: 'Tối',
+    system: 'Theo hệ thống',
+    select: 'Chọn giao diện',
   },
 
   label: {

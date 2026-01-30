@@ -12,7 +12,6 @@ import { ms, spacing } from '../../utils/spacing';
 import AppStyles from '../../components/AppStyle';
 import { useTranslation } from 'react-i18next';
 import AppInput from '../../components/AppInput';
-import { colors } from '../../utils/color';
 import AppButton from '../../components/AppButton';
 import { navigate } from '../../navigation/RootNavigator';
 import { Screen_Name } from '../../navigation/ScreenName';
@@ -20,12 +19,14 @@ import NavBar from '../../components/Navbar';
 import ModalEnterOtp from '../../components/modal/ModalEnterOtp';
 import { sendOtp } from '../../services/auth';
 import { border } from '../../utils/fontSize';
+import { useColors } from '../../hooks/useColors';
 // import { login, loginFirebase } from '../../services/auth';
 // import { GoogleSignin } from '@react-native-google-signin/google-signin';
 // import auth from '@react-native-firebase/auth';
 
 const ForgotPassword = ({ navigation }) => {
   const { t } = useTranslation();
+  const colors = useColors();
   const [isEnterOtpModalVisible, setIsEnterOtpModalVisible] = useState(false);
   const [resetContact, setResetContact] = useState(''); // giữ email từ OTPModal
   const [resetOtp, setResetOtp] = useState('');
@@ -53,7 +54,7 @@ const ForgotPassword = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <NavBar
         title={t('button.forgot_pw')}
         onPress={() => navigation.goBack()}
@@ -70,7 +71,12 @@ const ForgotPassword = ({ navigation }) => {
             }}
           />
 
-          <Text style={[AppStyles.text, { textAlign: 'center' }]}>
+          <Text
+            style={[
+              AppStyles.text,
+              { textAlign: 'center', color: colors.text },
+            ]}
+          >
             {t('button.forgot_pw')}
           </Text>
         </View>
@@ -124,27 +130,18 @@ const ForgotPassword = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.white,
   },
   body: {
     paddingHorizontal: spacing.medium,
   },
   input: {
     borderWidth: 1,
-    borderColor: colors.Gray,
     borderRadius: border.radiusMedium,
     padding: spacing.medium,
     marginVertical: spacing.medium,
     fontSize: 16,
   },
-  modalContainer: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.3)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   modalContent: {
-    backgroundColor: colors.white,
     borderRadius: 12,
     padding: spacing.large,
     alignItems: 'center',
@@ -159,12 +156,10 @@ const styles = StyleSheet.create({
     width: 40,
     height: 50,
     borderWidth: 1,
-    borderColor: colors.Gray,
     borderRadius: border.radiusMedium,
     marginHorizontal: 6,
     fontSize: 24,
     textAlign: 'center',
-    backgroundColor: colors.white,
   },
 });
 export default ForgotPassword;

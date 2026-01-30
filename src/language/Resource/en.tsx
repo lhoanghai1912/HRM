@@ -46,6 +46,15 @@ export default {
     pickImage: 'Pick Image',
     add_item: 'Add item',
     save: 'Save',
+    change: 'Change',
+  },
+
+  theme: {
+    theme: 'Theme',
+    light: 'Light',
+    dark: 'Dark',
+    system: 'System',
+    select: 'Select Theme',
   },
 
   label: {

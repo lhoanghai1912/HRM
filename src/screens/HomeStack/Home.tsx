@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
-import { useSelector } from 'react-redux';
+import { useAppSelector } from '../../store/hooks';
 import { ms, spacing } from '../../utils/spacing';
-import { colors, darken } from '../../utils/color';
+import useColors, { darken } from '../../hooks/useColors';
 import icons from '../../assets/icons';
 import AppStyles from '../../components/AppStyle';
 import CustomHeader from '../../components/CustomHeader';
@@ -12,19 +12,22 @@ import { navigate } from '../../navigation/RootNavigator';
 import { border } from '../../utils/fontSize';
 
 const Home = () => {
-  const { userData } = useSelector((state: any) => state.user);
+  const colors = useColors();
+  const user = useAppSelector(state => state.auth.user);
+  const profile = useAppSelector(state => state.userProfile.profile);
   const { t } = useTranslation();
-  console.log('userData', userData);
+  console.log('user', user);
+  console.log('profile', profile);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <CustomHeader
-        label={userData?.employee?.fullName}
+        label={profile?.fullName || user?.fullName || user?.username}
         Home={true}
         profileIcon={icons.settings}
       />
-      <View style={styles.bodyItem}>
-        <Text style={AppStyles.label}>HRM</Text>
+      <View style={[styles.bodyItem, { backgroundColor: colors.surface }]}>
+        <Text style={[AppStyles.label, { color: colors.text }]}>HRM</Text>
         <View style={styles.grid}>
           {form_itemStack(t).map(item => (
             <TouchableOpacity
@@ -34,11 +37,15 @@ const Home = () => {
             >
               <Image
                 source={item.icon}
-                style={styles.icon}
+                style={[styles.icon, { tintColor: colors.text }]}
                 resizeMode="contain"
-                tintColor={darken(item.bg, 50)}
               />
-              <Text style={[AppStyles.text, { textAlign: 'center' }]}>
+              <Text
+                style={[
+                  AppStyles.text,
+                  { textAlign: 'center', color: colors.text },
+                ]}
+              >
                 {item.title}
               </Text>
             </TouchableOpacity>
@@ -61,7 +68,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     margin: spacing.small,
-    backgroundColor: colors.white,
   },
   text: {
     fontSize: 24,
@@ -90,7 +96,6 @@ const styles = StyleSheet.create({
   },
   bodyItem: {
     marginHorizontal: ms(spacing.medium),
-    backgroundColor: colors.white,
     padding: ms(spacing.medium),
     marginBottom: spacing.medium,
     borderRadius: border.radiusExtraLarge,

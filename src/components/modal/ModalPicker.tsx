@@ -8,11 +8,11 @@ import {
   ScrollView,
   ActivityIndicator,
 } from 'react-native';
-import { colors } from '../../utils/color';
 import { spacing } from '../../utils/spacing';
 import { lo } from '../../language/Resource';
 import AppStyles from '../AppStyle';
 import { border, weight } from '../../utils/fontSize';
+import { useColors } from '../../hooks/useColors';
 
 const ModalPicker = ({
   visible,
@@ -26,6 +26,7 @@ const ModalPicker = ({
   hasMore = false,
   fieldLabel = '',
 }) => {
+  const colors = useColors();
   const [multiValue, setMultiValue] = useState([]);
 
   console.log('ModalPicker selectedValue:', selectedValue);
@@ -173,21 +174,48 @@ const ModalPicker = ({
         activeOpacity={1}
         onPress={onClose}
       >
-        <View style={styles.container}>
+        <View
+          style={[
+            styles.container,
+            { backgroundColor: colors.surface, shadowColor: colors.black },
+          ]}
+        >
           {!data?.pageData || data.pageData.length === 0 ? (
             <View style={styles.loadingContainer}>
               {loadingMore ? (
                 <>
-                  <ActivityIndicator size="large" color="#007AFF" />
-                  <Text style={styles.loadingText}>Đang tải dữ liệu...</Text>
+                  <ActivityIndicator size="large" color={colors.primary} />
+                  <Text
+                    style={[
+                      styles.loadingText,
+                      { color: colors.textSecondary },
+                    ]}
+                  >
+                    Đang tải dữ liệu...
+                  </Text>
                 </>
               ) : (
-                <Text style={styles.loadingText}>Không có dữ liệu</Text>
+                <Text
+                  style={[styles.loadingText, { color: colors.textSecondary }]}
+                >
+                  Không có dữ liệu
+                </Text>
               )}
             </View>
           ) : multi ? (
             <View style={styles.multiContainer}>
-              <Text style={styles.headerText}>Chọn {fieldLabel}</Text>
+              <Text
+                style={[
+                  styles.headerText,
+                  {
+                    color: colors.text,
+                    backgroundColor: colors.surface,
+                    borderBottomColor: colors.border,
+                  },
+                ]}
+              >
+                Chọn {fieldLabel}
+              </Text>
               <ScrollView
                 onScroll={handleScroll}
                 scrollEventThrottle={100}
@@ -211,11 +239,25 @@ const ModalPicker = ({
                       onPress={() => handleSelect(item)}
                     >
                       <View
-                        style={[styles.checkbox, checked && styles.checked]}
+                        style={[
+                          styles.checkbox,
+                          checked && {
+                            backgroundColor: colors.primary,
+                            borderColor: colors.primary,
+                          },
+                        ]}
                       >
-                        {checked && <Text style={styles.checkText}>✓</Text>}
+                        {checked && (
+                          <Text
+                            style={[styles.checkText, { color: colors.white }]}
+                          >
+                            ✓
+                          </Text>
+                        )}
                       </View>
-                      <Text style={styles.rowText}>{label}</Text>
+                      <Text style={[styles.rowText, { color: colors.text }]}>
+                        {label}
+                      </Text>
                     </TouchableOpacity>
                   );
                 })}
@@ -233,7 +275,10 @@ const ModalPicker = ({
                   </TouchableOpacity>
                 )}
               </ScrollView>
-              <TouchableOpacity style={styles.doneBtn} onPress={handleDone}>
+              <TouchableOpacity
+                style={[styles.doneBtn, { backgroundColor: colors.primary }]}
+                onPress={handleDone}
+              >
                 <Text style={{ color: colors.white, fontWeight: weight.bold }}>
                   Xong
                 </Text>
@@ -267,13 +312,19 @@ const ModalPicker = ({
                   return (
                     <TouchableOpacity
                       key={value ?? idx}
-                      style={[styles.row, isSelected && styles.selectedRow]}
+                      style={[
+                        styles.row,
+                        isSelected && {
+                          backgroundColor: colors.primary,
+                          borderColor: colors.primary,
+                        },
+                      ]}
                       onPress={() => handleSelect(item)}
                     >
                       <Text
                         style={[
                           styles.rowText,
-                          isSelected && styles.selectedText,
+                          { color: isSelected ? colors.white : colors.text },
                         ]}
                       >
                         {label}
@@ -291,7 +342,7 @@ const ModalPicker = ({
                     style={styles.loadMoreBtn}
                     onPress={onLoadMore}
                   >
-                    <Text style={{ color: '#007AFF' }}>Tải thêm</Text>
+                    <Text style={{ color: colors.primary }}>Tải thêm</Text>
                   </TouchableOpacity>
                 )}
               </ScrollView>
@@ -313,12 +364,12 @@ const styles = StyleSheet.create({
     padding: spacing.medium,
   },
   container: {
-    backgroundColor: colors.white,
+    backgroundColor: '#FFFFFF',
     borderRadius: 12,
     minWidth: '80%',
     // maxWidth: '90%',
     // maxHeight: '70%',
-    shadowColor: colors.black,
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
@@ -346,7 +397,7 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.medium,
     paddingHorizontal: spacing.medium,
     borderBottomWidth: 1,
-    borderBottomColor: colors.underline,
+    borderBottomColor: '#E5E7EB',
     backgroundColor: '#f8f9fa',
     borderRadius: 12,
   },
@@ -365,12 +416,12 @@ const styles = StyleSheet.create({
     marginVertical: spacing.small,
     borderRadius: border.radiusMedium,
     borderWidth: 1,
-    borderColor: colors.Gray,
+    borderColor: '#E5E7EB',
     minHeight: 44, // Đảm bảo chiều cao tối thiểu cho dễ touch
   },
   selectedRow: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primary,
+    backgroundColor: '#1976D2',
+    borderColor: '#1976D2',
   },
   rowText: {
     fontSize: 16,
@@ -379,7 +430,7 @@ const styles = StyleSheet.create({
     textAlign: 'left',
   },
   selectedText: {
-    color: colors.white,
+    color: '#FFFFFF',
     fontWeight: '500',
   },
   checkbox: {
@@ -387,8 +438,8 @@ const styles = StyleSheet.create({
     height: 22,
     borderRadius: border.radiusSmall,
     borderWidth: 2,
-    borderColor: colors.Gray,
-    backgroundColor: colors.white,
+    borderColor: '#E5E7EB',
+    backgroundColor: '#FFFFFF',
     marginRight: spacing.medium,
     justifyContent: 'center',
     alignItems: 'center',
@@ -398,7 +449,7 @@ const styles = StyleSheet.create({
     borderColor: '#007AFF',
   },
   checkText: {
-    color: colors.white,
+    color: '#FFFFFF',
     fontWeight: weight.bold,
     fontSize: 12,
   },
@@ -412,7 +463,7 @@ const styles = StyleSheet.create({
     minWidth: 80,
   },
   doneBtnText: {
-    color: colors.white,
+    color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '600',
     textAlign: 'center',
@@ -423,11 +474,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.medium,
     borderRadius: border.radiusSmall,
     borderWidth: 1,
-    borderColor: colors.Gray,
+    borderColor: '#E5E7EB',
     alignSelf: 'center',
   },
   checkedRow: {
-    backgroundColor: colors.primary,
+    backgroundColor: '#1976D2',
     borderColor: '#1976d2',
   },
   checkedText: {

@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { colors, darken } from '../../utils/color';
+import useColors, { darken } from '../../hooks/useColors';
 import { ms, spacing } from '../../utils/spacing';
 import { border, fonts, weight } from '../../utils/fontSize';
 import NavBar from '../../components/Navbar';
@@ -16,16 +16,17 @@ import { form_itemHRM } from '../../utils/form';
 import AppStyles from '../../components/AppStyle';
 
 const Menu = ({ navigation }) => {
+  const colors = useColors();
   const { t } = useTranslation();
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <NavBar
         title="Menu"
         onPress={() => navigation.goBack()}
         textStyle={{ textAlign: 'auto' }}
       />
-      <View style={styles.bodyItem}>
+      <View style={[styles.bodyItem, { backgroundColor: colors.surface }]}>
         <Text style={AppStyles.label}>HRM</Text>
         <View style={styles.grid}>
           {form_itemHRM(t).map(item => (
@@ -59,18 +60,15 @@ const styles = StyleSheet.create({
   title: {
     fontSize: fonts.normal,
     fontWeight: weight.bold,
-    color: colors.black,
   },
   bodyItem: {
     marginHorizontal: ms(spacing.medium),
-    backgroundColor: colors.white,
     padding: ms(spacing.medium),
     marginBottom: spacing.medium,
     borderRadius: border.radiusExtraLarge,
   },
   section: {
     marginHorizontal: ms(spacing.medium),
-    backgroundColor: colors.white,
     padding: spacing.medium,
     borderRadius: border.radiusMedium,
   },
@@ -78,7 +76,6 @@ const styles = StyleSheet.create({
     fontSize: fonts.normal,
     fontWeight: weight.bold,
     marginBottom: spacing.medium,
-    color: colors.black,
   },
   grid: {
     flexDirection: 'row',
@@ -104,7 +101,6 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: fonts.small,
-    color: colors.black,
     textAlign: 'center',
   },
 });

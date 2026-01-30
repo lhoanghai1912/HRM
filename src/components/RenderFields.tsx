@@ -12,10 +12,10 @@ import icons from '../assets/icons';
 import { getDisplayValue, mapFieldType, renderField } from '../utils/formField';
 import { navigate } from '../navigation/RootNavigator';
 import { Screen_Name } from '../navigation/ScreenName';
-import { colors } from '../utils/color';
 import { spacing } from '../utils/spacing';
 import { border, fonts, weight } from '../utils/fontSize';
 import { formatDate } from '../utils/helper';
+import { useColors } from '../hooks/useColors';
 
 interface RenderFieldsProps {
   field: any;
@@ -88,6 +88,7 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
   isEditMode = false,
   validationErrors = {},
 }) => {
+  const colors = useColors();
   try {
     if (!field || !field.pageData) return null;
 
@@ -166,7 +167,7 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
               alignItems: 'center',
               justifyContent: 'space-between',
               borderBottomWidth: 0.5,
-              borderBottomColor: colors.underline,
+              borderBottomColor: colors.border,
               paddingVertical: spacing.small,
               width: `100%`,
               paddingHorizontal: spacing.small,
@@ -293,7 +294,7 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
         padding: spacing.small,
         marginHorizontal: spacing.medium,
         borderRadius: border.radiusExtraLarge,
-        backgroundColor: colors.white,
+        backgroundColor: colors.surface,
         marginBottom: spacing.medium,
         zindex: 0,
       } as const;
@@ -370,10 +371,10 @@ export const RenderFields: React.FC<RenderFieldsProps> = ({
           style={{
             marginHorizontal: spacing.medium,
             borderBottomWidth: expanded ? 0 : 0.7,
-            borderBottomColor: colors.underline,
-            borderColor: colors.lightGray,
+            borderBottomColor: colors.border,
+            borderColor: colors.gray200,
             zIndex: 10,
-            backgroundColor: colors.background, // Reverting to original background color
+            backgroundColor: colors.background,
           }}
         >
           <View

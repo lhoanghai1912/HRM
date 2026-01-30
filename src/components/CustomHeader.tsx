@@ -7,12 +7,12 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
-import { colors } from '../utils/color';
 import { ms, spacing } from '../utils/spacing';
 import icons from '../assets/icons';
 import AppStyles from './AppStyle';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { useAppSelector } from '../store';
 import { navigate } from '../navigation/RootNavigator';
 import { Screen_Name } from '../navigation/ScreenName';
 import { form_user } from '../utils/form';
@@ -23,6 +23,7 @@ import i18n from '../language';
 import { languages } from '../utils/language';
 import User from '../screens/HomeStack/User';
 import { useNavigation } from '@react-navigation/native';
+import { useColors } from '../hooks/useColors';
 
 interface CustomHeaderProps {
   Home?: boolean;
@@ -50,19 +51,27 @@ const CustomHeader: React.FC<CustomHeaderProps> = ({
   style,
 }) => {
   const { t } = useTranslation();
+  const colors = useColors();
   const [showUser, setShowUser] = useState(false);
   const [modalLanguage, setModalLanguage] = useState(false);
   const dispatch = useDispatch();
   // const navigation = useNavigation();
   const inset = useSafeAreaInsets();
-  const { userData } = useSelector((state: any) => state.user);
+  // Use the correct selector for user profile
+  const userProfile = useAppSelector(state => state.userProfile?.profile);
 
   const handleChangeLanguage = (lang: string) => {
     i18n.changeLanguage(lang);
     setModalLanguage(false);
   };
   return (
-    <View style={[styles.header, style, { paddingTop: inset.top }]}>
+    <View
+      style={[
+        styles.header,
+        style,
+        { paddingTop: inset.top, backgroundColor: colors.surface },
+      ]}
+    >
       <View style={[styles.headerItem]}>
         {leftIcon && (
           <TouchableOpacity
@@ -153,7 +162,6 @@ const CustomHeader: React.FC<CustomHeaderProps> = ({
 const styles = StyleSheet.create({
   header: {
     width: '100%',
-    backgroundColor: colors.white,
     marginBottom: spacing.medium,
     flexDirection: 'row',
     paddingHorizontal: spacing.medium,

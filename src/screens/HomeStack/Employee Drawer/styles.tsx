@@ -1,18 +1,17 @@
 import { StyleSheet } from 'react-native';
 import { spacing } from '../../../utils/spacing';
-import { colors } from '../../../utils/color';
 import { border, weight } from '../../../utils/fontSize';
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.white },
+  container: { flex: 1, backgroundColor: '#fff' },
   toolbar: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: spacing.medium,
     paddingVertical: spacing.small,
-    backgroundColor: colors.white,
+    backgroundColor: '#fff',
     borderBottomWidth: 1,
-    borderBottomColor: colors.underline,
+    borderBottomColor: '#e0e0e0',
   },
 
   tableHeader: {},
@@ -24,11 +23,11 @@ const styles = StyleSheet.create({
     borderRadius: spacing.small,
     borderWidth: 1,
     marginRight: spacing.medium,
-    borderColor: colors.Gray,
+    borderColor: '#ccc',
   },
   table: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: '#fff',
   },
   tableRowHeader: {
     flexDirection: 'row',
@@ -41,11 +40,11 @@ const styles = StyleSheet.create({
   },
   tableRow: {
     flexDirection: 'row',
-    backgroundColor: colors.white,
+    backgroundColor: '#fff',
     paddingHorizontal: 8,
     paddingVertical: 8,
     borderBottomWidth: 1,
-    borderBottomColor: colors.underline,
+    borderBottomColor: '#e0e0e0',
     alignItems: 'center',
   },
   checkboxCell: {
@@ -56,9 +55,9 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     borderWidth: 1,
-    borderColor: colors.Gray,
+    borderColor: '#ccc',
     borderRadius: border.radiusSmall,
-    backgroundColor: colors.white,
+    backgroundColor: '#fff',
   },
   cell: {
     color: '#222',

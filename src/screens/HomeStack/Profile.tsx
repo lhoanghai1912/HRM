@@ -1,16 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import CustomHeader from '../../components/CustomHeader';
 import icons from '../../assets/icons';
-import { colors } from '../../utils/color';
+import useColors from '../../hooks/useColors';
 import { spacing } from '../../utils/spacing';
 import images from '../../assets/images';
 import AppStyles from '../../components/AppStyle';
 import { border } from '../../utils/fontSize';
 import { Screen_Name } from '../../navigation/ScreenName';
 import { navigate } from '../../navigation/RootNavigator';
+import ThemeSelector from '../../components/modal/ThemeSelector';
+import { useTheme } from '../../contexts/ThemeContext';
+import { useTranslation } from 'react-i18next';
 
 const Profile = ({ route, navigation }) => {
+  const colors = useColors();
+  const [showThemeModal, setShowThemeModal] = useState(false);
+  const { theme } = useTheme();
+  const { t } = useTranslation();
   const fullName = 'Phạm Quỳnh Anh';
   const jobPosition = `Nhân viên kinh doanh`;
   const orgStruc = `Trung tâm R&D`;
@@ -18,7 +25,7 @@ const Profile = ({ route, navigation }) => {
   const userName = 'nguyenvana@gmail.com';
   const status = 'Đang hoạt động';
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <CustomHeader
         label="Thông tin tài khoản"
         leftIcon={icons.back}
@@ -49,7 +56,7 @@ const Profile = ({ route, navigation }) => {
         </View>
       </View>
 
-      <View style={[styles.section]}>
+      <View style={[styles.section, { backgroundColor: colors.surface }]}>
         <View style={styles.row}>
           <View style={{ width: '60%' }}>
             <Text style={AppStyles.label}>Mã nhân viên</Text>
@@ -88,8 +95,33 @@ const Profile = ({ route, navigation }) => {
             </TouchableOpacity>
           </View>
         </View>
-        <View style={styles.row}></View>
+        <View style={styles.row}>
+          <View style={{ width: '60%' }}>
+            <Text style={AppStyles.label}>
+              {t('theme.theme') || 'Giao diện'}
+            </Text>
+            <Text style={AppStyles.text}>
+              {theme === 'light'
+                ? t('theme.light') || 'Sáng'
+                : theme === 'dark'
+                ? t('theme.dark') || 'Tối'
+                : t('theme.system') || 'Theo hệ thống'}
+            </Text>
+          </View>
+          <View style={{ width: '40%' }}>
+            <TouchableOpacity onPress={() => setShowThemeModal(true)}>
+              <Text style={[AppStyles.text, AppStyles.linkText]}>
+                {t('button.change') || 'Thay đổi'}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
       </View>
+
+      <ThemeSelector
+        visible={showThemeModal}
+        onClose={() => setShowThemeModal(false)}
+      />
     </View>
   );
 };
@@ -97,13 +129,11 @@ const Profile = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
   },
   section: {
     marginTop: spacing.medium,
     marginHorizontal: spacing.medium,
     padding: spacing.medium,
-    backgroundColor: colors.white,
   },
   row: {
     flexDirection: 'row',

@@ -3,11 +3,11 @@ import { useEffect, useState } from 'react';
 import { navigationRef } from './RootNavigator';
 import HomeNavigator from './HomeNavigator';
 import SplashScreen from '../screens/Splash';
-import { useSelector } from 'react-redux';
+import { useAppSelector } from '../store';
 import AuthNavigator from './AuthNavigator';
 const AppNavigator = () => {
   const [showSplash, setShowSplash] = useState(true);
-  const token = useSelector((state: any) => state.user.token);
+  const token = useAppSelector(state => state.auth.token);
   useEffect(() => {
     // delay splash 1.5s để hiển thị logo
     const timeout = setTimeout(() => {

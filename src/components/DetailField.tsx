@@ -6,10 +6,11 @@ import CustomHeader from './CustomHeader';
 import icons from '../assets/icons';
 import { useNavigation } from '@react-navigation/native';
 import { spacing } from '../utils/spacing';
-import { colors } from '../utils/color';
+import { useColors } from '../hooks/useColors';
 
 const Detail_Field = ({ route }) => {
   const navigation = useNavigation();
+  const colors = useColors();
 
   const { parent, formData, handleChange, handlers, customConfigs } =
     route.params;

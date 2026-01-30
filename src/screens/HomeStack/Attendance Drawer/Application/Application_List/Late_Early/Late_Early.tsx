@@ -9,13 +9,14 @@ import { navigate } from '../../../../../../navigation/RootNavigator';
 import { Screen_Name } from '../../../../../../navigation/ScreenName';
 import { border, fonts, weight } from '../../../../../../utils/fontSize';
 import { ms, spacing } from '../../../../../../utils/spacing';
-import { colors } from '../../../../../../utils/color';
 import AppStyles from '../../../../../../components/AppStyle';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import styles from '../style';
+import { useColors } from '../../../../../../hooks/useColors';
 
 export default function Late_Early({ navigation, route }) {
   const { t } = useTranslation();
+  const colors = useColors();
 
   const { label, status } = route.params;
   const [mode, setMode] = useState(route.params.status);

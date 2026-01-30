@@ -14,11 +14,12 @@ import { border, fonts, weight } from '../../../../utils/fontSize';
 import { Image } from 'react-native';
 import AppStyles from '../../../../components/AppStyle';
 import { ms, spacing } from '../../../../utils/spacing';
-import { colors } from '../../../../utils/color';
+import { useColors } from '../../../../hooks/useColors';
 
 moment.locale('vi');
 
 const DetailTimeSheet = ({ route, navigation }) => {
+  const colors = useColors();
   const { selectedDay, dots } = route.params;
   const [expand, setExpand] = useState(false);
   const detailTimesheetData = [
@@ -70,17 +71,29 @@ const DetailTimeSheet = ({ route, navigation }) => {
     return (
       <View style={AppStyles.row}>
         <View style={{ width: '30%' }}>
-          <Text style={[styles.text, { textAlign: 'left' }]}>
+          <Text
+            style={[styles.text, { textAlign: 'left', color: colors.text }]}
+          >
             {item.status || ' - '}
           </Text>
         </View>
         <View style={{ width: '30%' }}>
-          <Text style={[styles.text, { fontWeight: weight.bold }]}>
+          <Text
+            style={[
+              styles.text,
+              { fontWeight: weight.bold, color: colors.text },
+            ]}
+          >
             {item.time || ' - '}
           </Text>
         </View>
         <View style={{ width: '30%' }}>
-          <Text style={[styles.text, { fontWeight: weight.bold }]}>
+          <Text
+            style={[
+              styles.text,
+              { fontWeight: weight.bold, color: colors.text },
+            ]}
+          >
             {item.location || ' - '}
           </Text>
         </View>
@@ -88,14 +101,14 @@ const DetailTimeSheet = ({ route, navigation }) => {
     );
   };
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <CustomHeader
         label={'Chi tiết Công'}
         leftIcon={icons.back}
         leftPress={() => navigation.goBack()}
         style={{ marginBottom: 0 }}
       />
-      <View style={styles.header}>
+      <View style={[styles.header, { backgroundColor: colors.surface }]}>
         <View style={[AppStyles.row, { marginTop: 0 }]}>
           <TouchableOpacity onPress={handlePrevDay}>
             <View style={styles.iconWrap}>
@@ -114,11 +127,12 @@ const DetailTimeSheet = ({ route, navigation }) => {
             marginTop: spacing.small,
             paddingVertical: spacing.small,
             paddingHorizontal: spacing.xxlarge,
-            backgroundColor: dots.color || null,
+            backgroundColor: dots?.color || colors.textSecondary,
             borderRadius: border.radiusSmall,
+            color: colors.textInverse,
           }}
         >
-          {dots.key || 'Trạng thái'}
+          {dots?.key || 'Trạng thái'}
         </Text>
       </View>
 
@@ -134,7 +148,7 @@ const DetailTimeSheet = ({ route, navigation }) => {
           <View style={[AppStyles.row, { justifyContent: null, marginTop: 0 }]}>
             <Image
               source={expand ? icons.down : icons.up}
-              style={AppStyles.icon}
+              style={[AppStyles.icon, { tintColor: colors.text }]}
             />
             <Text>Số công tính lương</Text>
           </View>
@@ -150,15 +164,21 @@ const DetailTimeSheet = ({ route, navigation }) => {
           </View>
         )}
         <View style={AppStyles.row}>
-          <Text style={AppStyles.text}>Đi muộn (phút)</Text>
+          <Text style={[AppStyles.text, { color: colors.text }]}>
+            Đi muộn (phút)
+          </Text>
           <Text style={[styles.text, { fontWeight: weight.bold }]}>0</Text>
         </View>
         <View style={AppStyles.row}>
-          <Text style={AppStyles.text}>Về sớm (phút)</Text>
+          <Text style={[AppStyles.text, { color: colors.text }]}>
+            Về sớm (phút)
+          </Text>
           <Text style={[styles.text, { fontWeight: weight.bold }]}>0</Text>
         </View>
         <View style={AppStyles.row}>
-          <Text style={AppStyles.text}>Làm thêm giờ (giờ)</Text>
+          <Text style={[AppStyles.text, { color: colors.text }]}>
+            Làm thêm giờ (giờ)
+          </Text>
           <Text style={[styles.text, { fontWeight: weight.bold }]}>0</Text>
         </View>
       </View>
@@ -169,14 +189,12 @@ const DetailTimeSheet = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
   },
   dateText: {
     fontSize: fonts.normal,
   },
   header: {
     alignItems: 'center',
-    backgroundColor: colors.white,
   },
   body: {
     flex: 1,

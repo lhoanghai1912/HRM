@@ -1,7 +1,6 @@
 import React, { useCallback, useState, useEffect, useMemo } from 'react';
 import { View, StyleSheet, TouchableOpacity, Text, Image } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { colors } from '../../../../utils/color';
 import { ms, spacing } from '../../../../utils/spacing';
 import AppStyles from '../../../../components/AppStyle';
 import CustomHeader from '../../../../components/CustomHeader';
@@ -18,13 +17,7 @@ import { navigate } from '../../../../navigation/RootNavigator';
 import { Screen_Name } from '../../../../navigation/ScreenName';
 import { FlatList } from 'react-native-gesture-handler';
 import images from '../../../../assets/images';
-
-const timeSheetStatus = {
-  full: colors.green,
-  lack: colors.orange,
-  unPaid: colors.darkGray,
-  paid: colors.blue,
-};
+import { useColors } from '../../../../hooks/useColors';
 
 LocaleConfig.locales['vi'] = {
   monthNames: [
@@ -85,6 +78,14 @@ const TimeSheet = () => {
   });
   const navigation = useNavigation<DrawerNavigationProp<any>>();
   const { t } = useTranslation();
+  const colors = useColors();
+
+  const timeSheetStatus = {
+    full: colors.success,
+    lack: colors.warning,
+    unPaid: colors.gray500 || colors.gray,
+    paid: colors.primary,
+  };
   const [selectedDate, setDate] = useState(moment());
   const [show, setShow] = useState(false);
   const [state, setState] = useState('List');
@@ -132,7 +133,7 @@ const TimeSheet = () => {
         color: timeSheetStatus.paid,
       },
     ],
-    [t],
+    [t, colors],
   );
 
   const dayConfigs = [
@@ -494,7 +495,10 @@ const TimeSheet = () => {
         onPress={() => showPicker(true)}
       >
         <Text style={styles.text}>{`${formattedDate || 'Open'}`}</Text>
-        <Image source={icons.down} style={AppStyles.icon} />
+        <Image
+          source={icons.down}
+          style={[AppStyles.icon, { tintColor: colors.text }]}
+        />
       </TouchableOpacity>
 
       <View style={styles.body}>
@@ -594,7 +598,7 @@ const styles = StyleSheet.create({
   },
   body: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: '#FFFFFF',
     margin: spacing.small,
     marginTop: spacing.medium,
   },
@@ -604,10 +608,10 @@ const styles = StyleSheet.create({
     padding: spacing.medium,
     borderWidth: 1,
     marginHorizontal: spacing.small,
-    borderColor: colors.darkGray,
+    borderColor: '#D1D5DB',
   },
   listDate: {
-    backgroundColor: colors.darkGray,
+    backgroundColor: '#D1D5DB',
     alignItems: 'center',
     padding: spacing.small,
     alignContent: 'center',
@@ -639,7 +643,7 @@ const styles = StyleSheet.create({
   selectedDate: {
     marginTop: 20,
     fontSize: 18,
-    color: colors.red,
+    color: '#EF4444',
     textAlign: 'center',
   },
   statusBar: {
@@ -658,7 +662,7 @@ const styles = StyleSheet.create({
   },
   emptyStateText: {
     marginTop: spacing.small,
-    color: colors.darkGray,
+    color: '#6B7280',
   },
   listBottomSpacer: {
     height: spacing.xxlarge,

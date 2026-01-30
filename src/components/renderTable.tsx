@@ -12,10 +12,10 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { renderField } from '../utils/formField';
 import { ms, spacing } from '../utils/spacing';
 import AppStyles from './AppStyle';
-import { colors } from '../utils/color';
 import { Image } from 'react-native';
 import icons from '../assets/icons';
 import { border } from '../utils/fontSize';
+import { useColors } from '../hooks/useColors';
 
 interface RenderTableProps {
   layoutFields: any[];
@@ -52,6 +52,7 @@ const RenderTable: React.FC<RenderTableProps> = ({
   headerStyle = {},
   cellStyle = {},
 }) => {
+  const colors = useColors();
   const onEndReachedCalledDuringMomentum = useRef(false);
   const flatListRef = useRef<FlatList>(null);
 
@@ -81,10 +82,21 @@ const RenderTable: React.FC<RenderTableProps> = ({
   };
 
   const renderHeader = () => (
-    <View style={[styles.tableRowHeader, headerStyle]}>
+    <View
+      style={[
+        styles.tableRowHeader,
+        { backgroundColor: colors.gray100 },
+        headerStyle,
+      ]}
+    >
       {/* Cột STT */}
-      <View style={[styles.checkboxCell, { minWidth: 40, width: 40 }]}>
-        <Text>#</Text>
+      <View
+        style={[
+          styles.checkboxCell,
+          { minWidth: 40, width: 40, borderColor: colors.border },
+        ]}
+      >
+        <Text style={{ color: colors.text }}>#</Text>
       </View>
       {layoutFields.map((field, index) => (
         <View
@@ -95,10 +107,13 @@ const RenderTable: React.FC<RenderTableProps> = ({
               minWidth: getColWidth(field),
               width: getColWidth(field),
               flex: 0,
+              borderColor: colors.border,
             },
           ]}
         >
-          <Text style={{ textAlign: 'left' }}>{field.label}</Text>
+          <Text style={{ textAlign: 'left', color: colors.text }}>
+            {field.label}
+          </Text>
         </View>
       ))}
     </View>
@@ -107,11 +122,20 @@ const RenderTable: React.FC<RenderTableProps> = ({
   const renderItem = ({ item, index }) => (
     <TouchableOpacity
       key={keyExtractor(item)}
-      style={[styles.tableRow, tableRowStyle]}
+      style={[
+        styles.tableRow,
+        { borderColor: colors.border, backgroundColor: colors.surface },
+        tableRowStyle,
+      ]}
       onPress={() => onRowPress?.(item)}
     >
-      <View style={[styles.checkboxCell, { minWidth: 40, width: 40 }]}>
-        <Text>{index + 1}</Text>
+      <View
+        style={[
+          styles.checkboxCell,
+          { minWidth: 40, width: 40, borderColor: colors.border },
+        ]}
+      >
+        <Text style={{ color: colors.text }}>{index + 1}</Text>
       </View>
       {layoutFields.map(field => (
         <View
@@ -122,6 +146,7 @@ const RenderTable: React.FC<RenderTableProps> = ({
               minWidth: getColWidth(field),
               width: getColWidth(field),
               flex: 0,
+              borderColor: colors.border,
             },
             cellStyle,
           ]}
@@ -171,7 +196,7 @@ const RenderTable: React.FC<RenderTableProps> = ({
             alignItems: 'center',
           }}
         >
-          <Text style={{ color: '#888' }}>Đã hết dữ liệu</Text>
+          <Text style={{ color: colors.textSecondary }}>Đã hết dữ liệu</Text>
         </View>
       );
     }
@@ -202,7 +227,7 @@ const RenderTable: React.FC<RenderTableProps> = ({
                   <Text
                     style={[
                       AppStyles.label,
-                      { textAlign: 'center', color: '#888' },
+                      { textAlign: 'center', color: colors.textSecondary },
                     ]}
                   >
                     {emptyMessage}
@@ -240,7 +265,10 @@ const RenderTable: React.FC<RenderTableProps> = ({
         </View>
       </ScrollView>
       {showScrollTop && (
-        <TouchableOpacity style={styles.scrollTopBtn} onPress={scrollToTop}>
+        <TouchableOpacity
+          style={[styles.scrollTopBtn, { backgroundColor: colors.primary }]}
+          onPress={scrollToTop}
+        >
           <Image source={icons.up} style={AppStyles.icon} />
         </TouchableOpacity>
       )}
@@ -252,32 +280,27 @@ const styles = StyleSheet.create({
   table: { flex: 1 },
   tableRowHeader: {
     flexDirection: 'row',
-    backgroundColor: '#f5f5f5',
     alignItems: 'center',
   },
   tableRow: {
     flexDirection: 'row',
     alignItems: 'center',
     borderBottomWidth: 0.5,
-    borderColor: colors.underline,
   },
   headerCell: {
     padding: spacing.small,
     borderRightWidth: 0.5,
-    borderColor: colors.Gray,
     justifyContent: 'center',
   },
   cell: {
     padding: spacing.small,
     paddingHorizontal: spacing.medium,
     borderRightWidth: 0.5,
-    borderColor: colors.Gray,
     justifyContent: 'center',
     alignItems: 'flex-start',
   },
   checkboxCell: {
     borderRightWidth: 0.5,
-    borderColor: colors.Gray,
     justifyContent: 'center',
     alignItems: 'center',
     padding: spacing.small,
@@ -286,7 +309,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 20,
     right: 20,
-    backgroundColor: colors.primary || '#1976D2',
     padding: 12,
     borderRadius: border.radiusExtraLarge,
     elevation: 5,

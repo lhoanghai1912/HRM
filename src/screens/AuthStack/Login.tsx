@@ -14,68 +14,75 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import AppStyles from '../../components/AppStyle';
 import { useTranslation } from 'react-i18next';
 import AppInput from '../../components/AppInput';
-import { colors } from '../../utils/color';
+import useColors from '../../hooks/useColors';
 import icons from '../../assets/icons';
 import { border, fonts } from '../../utils/fontSize';
 import AppButton from '../../components/AppButton';
 import { navigate } from '../../navigation/RootNavigator';
 import { Screen_Name } from '../../navigation/ScreenName';
 import Toast from 'react-native-toast-message';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  setToken,
-  setUserData,
-  setUserId,
-} from '../../store/reducers/userSlice';
+import { useAppDispatch } from '../../store/hooks';
+import { loginThunk } from '../../store/slices/auth/authThunks';
+import { fetchProfileThunk } from '../../store/slices/user/userThunks';
 import i18n from '../../language';
 import LanguageModal from '../../components/modal/ModalLanguage';
-import { login } from '../../services/auth';
 import { languages } from '../../utils/language';
-import { getMe } from '../../services/user';
 // import { login, loginFirebase } from '../../services/auth';
 // import { GoogleSignin } from '@react-native-google-signin/google-signin';
 // import auth from '@react-native-firebase/auth';
 
 const LoginScreen = () => {
+  const colors = useColors();
   const insets = useSafeAreaInsets();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { t } = useTranslation();
   const [username, setUserName] = useState('admin');
   const [password, setPassword] = useState('1234@Abcd');
   const [company, setCompany] = useState('');
   const [loading, setLoading] = useState(false);
   const [modalLanguage, setModalLanguage] = useState(false);
-  const { userData } = useSelector((state: any) => state.user);
+  // const { userData } = useSelector((state: any) => state.user);
   // const [loginText, setLoginText] = useState('');
   const handleLogin = async () => {
     try {
       setLoading(true);
-      const res = await login(username, password);
-      console.log('login res', res);
 
-      if (res?.success) {
-        await dispatch(setToken({ token: res.data.accessToken }));
-        await dispatch(setUserData({ userData: res.data.user }));
+      // Gọi loginThunk để xử lý đăng nhập
+      const resultAction = await dispatch(loginThunk({ username, password }));
+
+      if (loginThunk.fulfilled.match(resultAction)) {
+        // Đăng nhập thành công
+        Toast.show({
+          type: 'success',
+          text2: t('message.login_success') || 'Đăng nhập thành công',
+        });
+
+        // Lấy thông tin user profile
+        try {
+          await dispatch(fetchProfileThunk());
+        } catch (err) {
+          console.log('Error fetching user profile:', err);
+        }
+
+        // AppNavigator sẽ tự động điều hướng dựa vào token trong store
       } else {
+        // Đăng nhập thất bại
+        const errorMessage = resultAction.payload || 'Đăng nhập thất bại';
         Toast.show({
           type: 'error',
-          text2: `Lỗi: }`,
+          text2: errorMessage as string,
         });
       }
-
-      // setLoginText('success');
-    } catch (error) {
+    } catch (error: any) {
       Toast.show({
         type: 'error',
-        text2: `Lỗi: ${error}`,
+        text2: error?.message || 'Đã xảy ra lỗi',
       });
-
-      // setLoginText(error);
     } finally {
       setLoading(false);
     }
   };
-  console.log('userdata', userData);
+  // console.log('userdata', userData);
 
   const handleGoogleLogin = async () => {};
 
@@ -98,7 +105,7 @@ const LoginScreen = () => {
     setModalLanguage(false);
   };
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.surface }]}>
       <View style={[styles.header, { paddingTop: insets.top }]}>
         <Image
           source={images.company_logo}
@@ -185,7 +192,7 @@ const LoginScreen = () => {
             style={{
               padding: spacing.small,
               borderWidth: 1,
-              borderColor: colors.Gray,
+              borderColor: colors.gray,
               borderRadius: border.radiusCircle,
               marginRight: spacing.medium,
             }}
@@ -197,20 +204,26 @@ const LoginScreen = () => {
               handleFacebookLogin()
             }
           >
-            <Image source={icons.facebook} style={[AppStyles.icon]} />
+            <Image
+              source={icons.facebook}
+              style={[AppStyles.icon, { tintColor: colors.text }]}
+            />
           </TouchableOpacity>
           {/* Google button: luôn hiển thị trên Android/iOS */}
           <TouchableOpacity
             style={{
               padding: spacing.small,
               borderWidth: 1,
-              borderColor: colors.Gray,
+              borderColor: colors.gray,
               borderRadius: border.radiusCircle,
               marginRight: spacing.medium,
             }}
             onPress={() => handleGoogleLogin()}
           >
-            <Image source={icons.google} style={[AppStyles.icon]} />
+            <Image
+              source={icons.google}
+              style={[AppStyles.icon, { tintColor: colors.text }]}
+            />
           </TouchableOpacity>
           {/* Apple button: chỉ hiển thị trên iOS */}
           {Platform.OS === 'ios' && (
@@ -218,7 +231,7 @@ const LoginScreen = () => {
               style={{
                 padding: spacing.small,
                 borderWidth: 1,
-                borderColor: colors.Gray,
+                borderColor: colors.gray,
                 borderRadius: border.radiusCircle,
               }}
               onPress={() =>
@@ -228,7 +241,10 @@ const LoginScreen = () => {
                 })
               }
             >
-              <Image source={icons.apple} style={[AppStyles.icon]} />
+              <Image
+                source={icons.apple}
+                style={[AppStyles.icon, { tintColor: colors.text }]}
+              />
             </TouchableOpacity>
           )}
         </View>
@@ -269,7 +285,7 @@ const LoginScreen = () => {
         </TouchableOpacity> */}
         <View>
           <TouchableOpacity
-            style={styles.language}
+            style={[styles.language, { borderBottomColor: colors.underline }]}
             onPress={() => setModalLanguage(true)}
           >
             <View>
@@ -277,7 +293,10 @@ const LoginScreen = () => {
               <Text style={AppStyles.text}>{t('label.language')}</Text>
             </View>
             <View>
-              <Image source={icons.down} style={AppStyles.icon} />
+              <Image
+                source={icons.down}
+                style={[AppStyles.icon, { tintColor: colors.text }]}
+              />
             </View>
           </TouchableOpacity>
         </View>
@@ -309,7 +328,6 @@ const LoginScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.white,
   },
   header: { alignItems: 'center', marginBottom: spacing.xlarge },
   body: { paddingHorizontal: spacing.medium },
@@ -328,7 +346,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: spacing.small,
     paddingBottom: spacing.small,
-    borderBottomColor: colors.underline,
     justifyContent: 'center',
   },
 });

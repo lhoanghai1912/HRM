@@ -14,9 +14,9 @@ import {
 import AppStyles from './AppStyle';
 import icons from '../assets/icons';
 import { ms, spacing } from '../utils/spacing';
-import { colors } from '../utils/color';
 import { ImageSourcePropType } from 'react-native';
 import { border, fonts } from '../utils/fontSize';
+import { useColors } from '../hooks/useColors';
 
 interface AppInputProps extends TextInputProps {
   leftIcon?: ImageSourcePropType;
@@ -44,6 +44,7 @@ const AppInput: React.FC<AppInputProps> = ({
   rightPress,
   ...props
 }) => {
+  const colors = useColors();
   const [isShow, setIsShow] = useState(false);
   const handleShowHide = async () => {
     setIsShow(!isShow);
@@ -53,8 +54,15 @@ const AppInput: React.FC<AppInputProps> = ({
   };
   return (
     <View style={styles.wrapper}>
-      {label && <Text style={styles.label}>{label}</Text>}
-      <View style={[styles.input]}>
+      {label && (
+        <Text style={[styles.label, { color: colors.text }]}>{label}</Text>
+      )}
+      <View
+        style={[
+          styles.input,
+          { borderColor: colors.border, backgroundColor: colors.surface },
+        ]}
+      >
         {leftIcon && (
           <Image
             source={leftIcon}
@@ -71,14 +79,15 @@ const AppInput: React.FC<AppInputProps> = ({
           keyboardType={keyboardType}
           style={[
             style,
-            error && styles.errorBorder,
+            error && { borderColor: colors.error },
             {
               fontSize: fonts.normal,
               flex: 1,
               marginRight: spacing.small,
+              color: colors.text,
             },
           ]}
-          placeholderTextColor="#999999"
+          placeholderTextColor={colors.textTertiary}
           {...props}
         />
         {editable && (
@@ -135,19 +144,14 @@ const styles = StyleSheet.create({
   label: {
     fontSize: fonts.normal,
     marginBottom: spacing.small,
-    color: colors.black,
   },
   input: {
     flexDirection: 'row',
     alignItems: 'center',
     borderRadius: border.radiusLarge,
     paddingHorizontal: spacing.medium,
-    color: '999999',
     fontSize: fonts.normal,
     borderWidth: 0.5,
-  },
-  errorBorder: {
-    borderColor: colors.Gray,
   },
   errorText: {
     color: '#ff5a5f',

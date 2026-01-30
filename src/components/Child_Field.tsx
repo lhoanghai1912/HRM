@@ -7,15 +7,16 @@ import { navigate } from '../navigation/RootNavigator';
 import { Screen_Name } from '../navigation/ScreenName';
 import CustomHeader from './CustomHeader';
 import { border, fonts, weight } from '../utils/fontSize';
-import { colors } from '../utils/color';
+import { useColors } from '../hooks/useColors';
 
 const Child_Field = ({ route }) => {
+  const colors = useColors();
   const navigation = useNavigation();
   const { children, formData, handleChange, handlers, customConfigs } =
     route.params;
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.white }}>
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
       <CustomHeader
         label="Detail Appointment"
         leftIcon={icons.back}

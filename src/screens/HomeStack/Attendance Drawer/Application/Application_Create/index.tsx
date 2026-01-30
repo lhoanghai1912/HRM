@@ -5,17 +5,18 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { Screen_Name } from '../../../../../navigation/ScreenName';
 import { Modal } from 'react-native';
-import { colors } from '../../../../../utils/color';
 import { spacing } from '../../../../../utils/spacing';
 import { fonts, weight } from '../../../../../utils/fontSize';
 import { form_application } from '../../../../../utils/form';
 import { useTranslation } from 'react-i18next';
 import { navigate } from '../../../../../navigation/RootNavigator';
+import { useColors } from '../../../../../hooks/useColors';
 
 const CreateApplication = () => {
   const navigation = useNavigation<DrawerNavigationProp<any>>();
   const [visible, setVisible] = React.useState(true);
   const { t } = useTranslation();
+  const colors = useColors();
   return (
     <Modal
       visible={visible}
@@ -66,7 +67,6 @@ const styles = StyleSheet.create({
   container: {
     width: '85%',
     maxHeight: '70%',
-    backgroundColor: colors.background,
     borderRadius: spacing.medium,
     padding: spacing.medium,
     elevation: 4,
@@ -80,10 +80,8 @@ const styles = StyleSheet.create({
   item: {
     paddingVertical: spacing.medium,
     borderBottomWidth: 0.5,
-    borderColor: colors.underline,
     borderWidth: 0.5,
     borderRadius: spacing.medium,
-    backgroundColor: colors.white,
   },
   itemText: {
     fontSize: spacing.medium,

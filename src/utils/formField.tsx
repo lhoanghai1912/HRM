@@ -6,7 +6,6 @@ import AppStyles from '../components/AppStyle';
 import { lo } from '../language/Resource';
 import { joinString, splitString } from '../components/stringHelper';
 import { ms, spacing } from './spacing';
-import { colors } from './color';
 import { formatDate } from './helper';
 import { border, weight } from './fontSize';
 
@@ -342,7 +341,7 @@ export const renderField = (
               style={{
                 color: 'red',
                 flex: 1,
-                borderColor: colors.Gray,
+                borderColor: '#ccc',
                 borderWidth: 1,
                 padding: spacing.small,
                 borderRadius: border.radiusMedium,
@@ -481,7 +480,10 @@ export const renderField = (
                   return 'Chọn...';
                 })()}
               </Text>
-              <Image source={icons.down} style={AppStyles.icon} />
+              <Image
+                source={icons.down}
+                style={[AppStyles.icon, { tintColor: '#000' }]}
+              />
             </TouchableOpacity>
           </>
         );
@@ -727,7 +729,10 @@ export const renderField = (
                   }}
                   style={{ padding: 4 }}
                 >
-                  <Image source={icons.clear} style={AppStyles.icon}></Image>
+                  <Image
+                    source={icons.clear}
+                    style={[AppStyles.icon, { tintColor: '#000' }]}
+                  ></Image>
                 </TouchableOpacity>
               )}
             </View>
@@ -759,9 +764,9 @@ export const renderField = (
               width: ms(20),
               height: ms(20),
               borderWidth: 1,
-              borderColor: colors.Gray,
+              borderColor: '#ccc',
               borderRadius: border.radiusSmall,
-              backgroundColor: value ? '#1890ff' : colors.white,
+              backgroundColor: value ? '#1890ff' : '#fff',
               alignItems: 'center',
               justifyContent: 'center',
             }}
@@ -922,7 +927,7 @@ const styles = StyleSheet.create({
   cell: {
     padding: spacing.small,
     borderWidth: 0.5,
-    borderColor: colors.Gray,
+    borderColor: '#ccc',
     justifyContent: 'center',
   },
   text: {
@@ -934,6 +939,6 @@ const styles = StyleSheet.create({
     // borderWidth: 1,
     padding: spacing.small,
     borderRadius: border.radiusMedium,
-    backgroundColor: colors.lightGray,
+    backgroundColor: '#f3f4f6',
   },
 });

@@ -1,4 +1,4 @@
-import { logout } from '../store/reducers/userSlice';
+import { logoutThunk } from '../store/slices/auth';
 
 export const MESSAGES = {
   loginSuccess: 'Login successful!',

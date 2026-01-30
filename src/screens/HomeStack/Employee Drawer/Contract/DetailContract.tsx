@@ -37,10 +37,11 @@ import {
 } from '../../../../components/hooks/useSelectPicker';
 import ModalTreeView from '../../../../components/modal/ModalTreeView';
 import ModalEmployeePicker from '../../../../components/modal/ModalEmployeePicker';
-import { colors } from '../../../../utils/color';
 import { validateLayoutForm } from '../../../../utils/helper';
+import { useColors } from '../../../../hooks/useColors';
 
 const DetailContract = ({ route }) => {
+  const colors = useColors();
   const navigation = useNavigation<DrawerNavigationProp<any>>();
   const contractId = route?.params?.id;
   const [isEditMode, setIsEditMode] = useState(false);

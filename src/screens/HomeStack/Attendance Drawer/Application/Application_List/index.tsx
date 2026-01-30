@@ -9,12 +9,13 @@ import { form_application } from '../../../../../utils/form';
 import { useTranslation } from 'react-i18next';
 import { navigate } from '../../../../../navigation/RootNavigator';
 import { ms, spacing } from '../../../../../utils/spacing';
-import { colors } from '../../../../../utils/color';
 import AppStyles from '../../../../../components/AppStyle';
 import { border } from '../../../../../utils/fontSize';
+import { useColors } from '../../../../../hooks/useColors';
 
 const ListApplication = () => {
   const { t } = useTranslation();
+  const colors = useColors();
   const navigation = useNavigation<DrawerNavigationProp<any>>();
   const data = form_application(t);
 
@@ -25,15 +26,21 @@ const ListApplication = () => {
         navigate(item.screen, { label: item.title, status: 'view' })
       }
     >
-      <Image source={item.icon} style={AppStyles.icon} />
-      <Text numberOfLines={2} style={(AppStyles.text, styles.title)}>
+      <Image
+        source={item.icon}
+        style={[AppStyles.icon, { tintColor: colors.text }]}
+      />
+      <Text
+        numberOfLines={2}
+        style={[AppStyles.text, styles.title, { color: colors.text }]}
+      >
         {item.title}
       </Text>
     </TouchableOpacity>
   );
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <CustomHeader
         label="Danh sách đơn"
         leftIcon={icons.menu}
@@ -61,7 +68,6 @@ const ListApplication = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
   },
 
   row: {

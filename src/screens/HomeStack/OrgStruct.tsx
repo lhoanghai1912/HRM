@@ -21,10 +21,11 @@ import { spacing } from '../../utils/spacing';
 import tableStyles from '../../components/TableStyle';
 import AppStyles from '../../components/AppStyle';
 import { useTranslation } from 'react-i18next';
-import { colors } from '../../utils/color';
 import { border } from '../../utils/fontSize';
+import { useColors } from '../../hooks/useColors';
 
 const OrnStruct = ({ navigation }: any) => {
+  const colors = useColors();
   const [loading, setLoading] = useState(false);
   const [loadingOrgStruct, setLoadingOrgStruct] = useState(false);
   const [loadingOrlLevel, setLoadingOrlLevel] = useState(false);

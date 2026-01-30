@@ -12,9 +12,9 @@ import {
   ImageSourcePropType,
   ImageStyle,
 } from 'react-native';
-import { colors } from '../utils/color';
 import { spacing } from '../utils/spacing';
 import { border, fonts } from '../utils/fontSize';
+import { useColors } from '../hooks/useColors';
 
 interface AppButtonProps {
   // key?: number;
@@ -37,37 +37,34 @@ const AppButton: React.FC<AppButtonProps> = ({
   textStyle,
   iconStyle,
 }) => {
+  const colors = useColors();
   return (
     <TouchableOpacity
       // key={key}
       disabled={disabled}
       onPress={onPress}
       style={[
-        disabled ? styles.buttonDisabled : styles.button,
+        disabled
+          ? [styles.buttonDisabled, { backgroundColor: colors.buttonDisabled }]
+          : [
+              styles.button,
+              { backgroundColor: colors.button, shadowColor: colors.primary },
+            ],
         customStyle,
         { opacity: disabled ? 0.5 : 1 },
       ]}
     >
-      <View style={leftIcon ? styles.contentWrapper : ''}>
+      <View style={leftIcon ? styles.contentWrapper : undefined}>
         {leftIcon && (
           <Image
             source={leftIcon}
-            style={[styles.icon, iconStyle]}
+            style={[styles.icon, iconStyle, { tintColor: colors.buttonText }]}
             resizeMode="contain"
           />
         )}
 
         <Text
-          style={[
-            styles.buttonText,
-            textStyle,
-
-            {
-              color:
-                // disabled ? colors.black : textStyle?.color ||
-                colors.white,
-            },
-          ]}
+          style={[styles.buttonText, textStyle, { color: colors.buttonText }]}
         >
           {title}
         </Text>
@@ -83,31 +80,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   button: {
-    backgroundColor: colors.button,
     borderRadius: border.radiusExtraLarge,
     justifyContent: 'center',
     alignContent: 'center',
     paddingVertical: spacing.small,
     paddingHorizontal: spacing.medium,
-    shadowColor: colors.primary,
     shadowOpacity: 0.2,
     shadowOffset: { width: 0, height: 3 },
     shadowRadius: 6,
   },
 
   buttonDisabled: {
-    backgroundColor: colors.buttonDisable,
     borderRadius: border.radiusExtraLarge,
     justifyContent: 'center',
     alignContent: 'center',
     paddingVertical: spacing.small,
     paddingHorizontal: spacing.medium,
-    shadowColor: colors.primary,
   },
   buttonText: {
-    color: colors.white,
     fontSize: fonts.normal,
-    fontWeight: 500,
+    fontWeight: '500',
     textAlign: 'center',
   },
 
@@ -115,7 +107,6 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     marginRight: spacing.small,
-    tintColor: colors.white,
   },
 });
 

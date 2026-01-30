@@ -20,10 +20,12 @@ import { navigate } from '../../../../navigation/RootNavigator';
 import { Screen_Name } from '../../../../navigation/ScreenName';
 import { ms, spacing } from '../../../../utils/spacing';
 import AppStyles from '../../../../components/AppStyle';
+import { useColors } from '../../../../hooks/useColors';
 import RenderTable from '../../../../components/renderTable';
 
 const Group = ({ route }) => {
   const navigation = useNavigation<DrawerNavigationProp<any>>();
+  const colors = useColors();
   const [loading, setLoading] = React.useState(false);
   const [groupData, setGroupData] = React.useState([]);
   const { groupConfig, groupLabel, id, layout } = route.params;
@@ -107,12 +109,15 @@ const Group = ({ route }) => {
           >
             <Image
               source={searchInput ? icons.clear : null}
-              style={AppStyles.icon}
+              style={[AppStyles.icon, { tintColor: colors.text }]}
             />
           </TouchableOpacity>
         </View>
         <TouchableOpacity onPress={() => setSearchQuery(searchInput)}>
-          <Image source={icons.search} style={AppStyles.icon} />
+          <Image
+            source={icons.search}
+            style={[AppStyles.icon, { tintColor: colors.text }]}
+          />
         </TouchableOpacity>
       </View>
       <View style={styles.footer}>

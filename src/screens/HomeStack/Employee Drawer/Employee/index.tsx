@@ -21,10 +21,12 @@ import { DrawerNavigationProp } from '@react-navigation/drawer';
 import styles from '../styles';
 import { getLayout } from '../../../../services/data';
 import RenderTable from '../../../../components/renderTable';
+import { useColors } from '../../../../hooks/useColors';
 
 const PAGE_SIZE = 15;
 
 const Employee = ({}) => {
+  const colors = useColors();
   const navigation = useNavigation<DrawerNavigationProp<any>>();
   const FIELD_COLUMNS = 'employeeCode,fullName,mobile,email';
 
@@ -82,6 +84,8 @@ const Employee = ({}) => {
         <View style={[styles.searchInput, AppStyles.row, { marginTop: 0 }]}>
           <TextInput
             placeholder="Tìm kiếm"
+            placeholderTextColor={colors.textSecondary}
+            style={{ color: colors.text }}
             value={searchInput}
             onChangeText={setSearchInput}
           />
@@ -92,20 +96,23 @@ const Employee = ({}) => {
           >
             <Image
               source={searchInput ? icons.clear : null}
-              style={AppStyles.icon}
+              style={[AppStyles.icon, { tintColor: colors.text }]}
             />
           </TouchableOpacity>
         </View>
         <TouchableOpacity onPress={() => setSearchQuery(searchInput)}>
-          <Image source={icons.search} style={AppStyles.icon} />
+          <Image
+            source={icons.search}
+            style={[AppStyles.icon, { tintColor: colors.text }]}
+          />
         </TouchableOpacity>
       </View>
       <View style={styles.footer}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <Text style={AppStyles.text}>
+          <Text style={[AppStyles.text, { color: colors.text }]}>
             Đang hiển thị {employee.length} bản ghi
           </Text>
-          <Text style={AppStyles.text}></Text>
+          <Text style={[AppStyles.text, { color: colors.text }]}></Text>
           {/* <Text style={AppStyles.text}>{visibleCount}</Text> */}
         </View>
       </View>

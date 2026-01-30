@@ -13,9 +13,9 @@ import {
 import AppStyles from './AppStyle';
 import { fonts } from '../utils/fontSize';
 import icons from '../assets/icons';
-import { colors } from '../utils/color';
 import { spacing } from '../utils/spacing';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useColors } from '../hooks/useColors';
 
 interface NavBarProps {
   title?: string;
@@ -41,8 +41,15 @@ const NavBar = ({
   iconStyle,
 }: NavBarProps) => {
   const insets = useSafeAreaInsets();
+  const colors = useColors();
   return (
-    <View style={[styles.navBar, customStyle, { paddingTop: insets.top }]}>
+    <View
+      style={[
+        styles.navBar,
+        customStyle,
+        { paddingTop: insets.top, backgroundColor: colors.surface },
+      ]}
+    >
       {/* Left icon */}
       <View style={styles.leftIconWrap}>
         <TouchableOpacity onPress={onPress} style={styles.iconButton}>
@@ -52,7 +59,10 @@ const NavBar = ({
 
       {/* Title */}
       <View style={styles.titleWrap}>
-        <Text style={[styles.navTitle, textStyle]} numberOfLines={2}>
+        <Text
+          style={[styles.navTitle, { color: colors.text }, textStyle]}
+          numberOfLines={2}
+        >
           {title}
         </Text>
       </View>
@@ -81,7 +91,6 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.small,
     marginBottom: spacing.medium,
     position: 'relative',
-    backgroundColor: colors.white,
   },
 
   titleWrap: {
@@ -90,7 +99,6 @@ const styles = StyleSheet.create({
   },
   navTitle: {
     fontSize: fonts.xlarge,
-    color: colors.black,
     fontWeight: '500',
     // textAlign: 'center',
   },

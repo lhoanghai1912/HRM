@@ -9,10 +9,10 @@ import {
   Image,
   Pressable,
 } from 'react-native';
-import { colors, darken } from '../../utils/color';
 import { ms, spacing } from '../../utils/spacing';
 import { border, fonts } from '../../utils/fontSize';
 import AppStyles from '../../components/AppStyle';
+import { useColors } from '../../hooks/useColors';
 
 interface Item {
   id: string;
@@ -36,6 +36,23 @@ const QuickPin: React.FC<Props> = ({
   onSelect,
   title = 'Quick Pin',
 }) => {
+  const colors = useColors();
+  // Helper function to darken colors
+  const darken = (color: string, percent: number) => {
+    const num = parseInt(color.replace('#', ''), 16);
+    const amt = Math.round(2.55 * percent);
+    const R = (num >> 16) - amt;
+    const G = ((num >> 8) & 0x00ff) - amt;
+    const B = (num & 0x0000ff) - amt;
+    return `#${(
+      0x1000000 +
+      (R < 255 ? (R < 0 ? 0 : R) : 255) * 0x10000 +
+      (G < 255 ? (G < 0 ? 0 : G) : 255) * 0x100 +
+      (B < 255 ? (B < 0 ? 0 : B) : 255)
+    )
+      .toString(16)
+      .slice(1)}`;
+  };
   return (
     <Modal
       visible={visible}
@@ -44,10 +61,9 @@ const QuickPin: React.FC<Props> = ({
       onRequestClose={onClose}
     >
       <Pressable style={styles.backdrop} onPress={onClose} />
-      <View style={styles.sheet}>
+      <View style={[styles.sheet, { backgroundColor: colors.surface }]}>
         <View style={{}}>
           {items.map(it => {
-            const tint = darken(it.bg, 35);
             return (
               <TouchableOpacity
                 key={it.id}
@@ -57,10 +73,10 @@ const QuickPin: React.FC<Props> = ({
               >
                 <Image
                   source={it.icon}
-                  style={[styles.icon, { tintColor: tint }]}
+                  style={[styles.icon, { tintColor: colors.text }]}
                 />
                 <Text
-                  style={[AppStyles.text, { color: tint }]}
+                  style={[AppStyles.text, { color: colors.text }]}
                   numberOfLines={1}
                 >
                   {it.title}
@@ -84,7 +100,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: colors.white,
+    backgroundColor: '#FFFFFF',
     borderTopLeftRadius: ms(20),
     borderTopRightRadius: ms(20),
     padding: spacing.medium,

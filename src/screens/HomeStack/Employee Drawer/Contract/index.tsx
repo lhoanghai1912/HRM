@@ -15,6 +15,7 @@ import { usePaginatedList } from '../../../../components/Paginated';
 import { ms, spacing } from '../../../../utils/spacing';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import AppStyles from '../../../../components/AppStyle';
+import { useColors } from '../../../../hooks/useColors';
 import { navigate } from '../../../../navigation/RootNavigator';
 import { Screen_Name } from '../../../../navigation/ScreenName';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
@@ -30,6 +31,7 @@ const PAGE_SIZE = 15;
 
 const Contract = ({}) => {
   const navigation = useNavigation<DrawerNavigationProp<any>>();
+  const colors = useColors();
   const FIELD_COLUMNS =
     'contractNo,contractSubject,contractPeriodID,startDate,salaryBasic,salaryRate,jobTitleID,onBehalfOfEmployerID,contractStatusID';
 
@@ -105,12 +107,15 @@ const Contract = ({}) => {
           >
             <Image
               source={searchInput ? icons.clear : null}
-              style={AppStyles.icon}
+              style={[AppStyles.icon, { tintColor: colors.text }]}
             />
           </TouchableOpacity>
         </View>
         <TouchableOpacity onPress={() => setSearchQuery(searchInput)}>
-          <Image source={icons.search} style={AppStyles.icon} />
+          <Image
+            source={icons.search}
+            style={[AppStyles.icon, { tintColor: colors.text }]}
+          />
         </TouchableOpacity>
       </View>
       <View style={styles.footer}>
@@ -118,7 +123,7 @@ const Contract = ({}) => {
           <Text style={AppStyles.text}>
             Đang hiển thị {contract.length} bản ghi
           </Text>
-          <Text style={AppStyles.text}></Text>
+          <Text style={[AppStyles.text, { color: colors.text }]}></Text>
         </View>
       </View>
       {/* <RenderTable

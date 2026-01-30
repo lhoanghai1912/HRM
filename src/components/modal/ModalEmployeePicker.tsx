@@ -10,12 +10,12 @@ import {
   FlatList,
   ActivityIndicator,
 } from 'react-native';
-import { colors } from '../../utils/color';
 import { ms, spacing } from '../../utils/spacing';
 import icons from '../../assets/icons';
 import AppStyles from '../AppStyle';
 import images from '../../assets/images';
 import { border, fonts, weight } from '../../utils/fontSize';
+import { useColors } from '../../hooks/useColors';
 
 const ModalEmployeePicker = ({
   visible,
@@ -29,6 +29,7 @@ const ModalEmployeePicker = ({
   onLoadMore,
   hasMore = false,
 }) => {
+  const colors = useColors();
   const [searchText, setSearchText] = useState('');
 
   useEffect(() => {
@@ -52,22 +53,36 @@ const ModalEmployeePicker = ({
     const isSelected = item.EmployeeID === selectedId;
     return (
       <TouchableOpacity
-        style={[isSelected && styles.selectedItem]}
+        style={[
+          isSelected && [styles.selectedItem, { borderColor: colors.primary }],
+        ]}
         onPress={() => {
           console.log('Selected employee:', item);
           onSelect(item);
         }}
       >
-        <View style={styles.employeeItem}>
+        <View
+          style={[
+            styles.employeeItem,
+            { borderColor: colors.border, backgroundColor: colors.surface },
+          ]}
+        >
           <Image source={images.avt_default} style={AppStyles.avartar} />
           <View style={{ marginLeft: spacing.medium }}>
             <View style={styles.employeeInfo}>
-              <Text>{item.fullName}</Text>
-              <Text style={[AppStyles.text, { marginLeft: spacing.small }]}>
+              <Text style={{ color: colors.text }}>{item.fullName}</Text>
+              <Text
+                style={[
+                  AppStyles.text,
+                  { marginLeft: spacing.small, color: colors.textSecondary },
+                ]}
+              >
                 ({item.employeeCode})
               </Text>
             </View>
-            <Text>{item.jobPositionName}</Text>
+            <Text style={{ color: colors.textSecondary }}>
+              {item.jobPositionName}
+            </Text>
           </View>
         </View>
       </TouchableOpacity>
@@ -91,18 +106,34 @@ const ModalEmployeePicker = ({
       onRequestClose={onClose}
     >
       <View style={styles.overlay}>
-        <View style={styles.container}>
+        <View
+          style={[
+            styles.container,
+            { backgroundColor: colors.surface, shadowColor: colors.black },
+          ]}
+        >
           <View style={styles.header}>
-            <Text style={styles.title}>Chọn nhân viên</Text>
+            <Text style={[styles.title, { color: colors.text }]}>
+              Chọn nhân viên
+            </Text>
             <TouchableOpacity onPress={onClose}>
-              <Image source={icons.clear} style={AppStyles.icon} />
+              <Image
+                source={icons.clear}
+                style={[AppStyles.icon, { tintColor: colors.text }]}
+              />
             </TouchableOpacity>
           </View>
 
-          <View style={styles.toolbar}>
+          <View
+            style={[
+              styles.toolbar,
+              { borderColor: colors.border, backgroundColor: colors.surface },
+            ]}
+          >
             <TextInput
               placeholder="Tìm kiếm nhân viên..."
-              style={styles.searchInput}
+              style={[styles.searchInput, { color: colors.text }]}
+              placeholderTextColor={colors.textSecondary}
               value={searchText}
               onChangeText={setSearchText}
               onSubmitEditing={handleSearch}
@@ -112,12 +143,18 @@ const ModalEmployeePicker = ({
               <TouchableOpacity onPress={handleClearSearch}>
                 <Image
                   source={icons.clear}
-                  style={[AppStyles.icon, { marginRight: spacing.small }]}
+                  style={[
+                    AppStyles.icon,
+                    { marginRight: spacing.small, tintColor: colors.text },
+                  ]}
                 />
               </TouchableOpacity>
             ) : null}
             <TouchableOpacity onPress={handleSearch}>
-              <Image source={icons.search} style={AppStyles.icon} />
+              <Image
+                source={icons.search}
+                style={[AppStyles.icon, { tintColor: colors.text }]}
+              />
             </TouchableOpacity>
           </View>
 
@@ -130,7 +167,9 @@ const ModalEmployeePicker = ({
             style={styles.listContent}
             ListEmptyComponent={
               <View style={styles.emptyContainer}>
-                <Text style={styles.emptyText}>
+                <Text
+                  style={[styles.emptyText, { color: colors.textSecondary }]}
+                >
                   {loading ? 'Đang tải...' : 'Không tìm thấy nhân viên'}
                 </Text>
               </View>
@@ -172,16 +211,13 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: fonts.normal,
-    color: colors.black,
   },
   container: {
-    backgroundColor: colors.white,
     borderRadius: border.radiusLarge,
     width: '90%',
     minHeight: '50%',
     maxHeight: '75%',
     padding: spacing.medium,
-    shadowColor: colors.black,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
@@ -196,14 +232,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: weight.bold,
-    color: colors.black,
   },
   toolbar: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.white,
     marginBottom: spacing.small,
-    borderColor: colors.Gray,
     borderWidth: 1,
     borderRadius: border.radiusMedium,
     paddingHorizontal: spacing.small,
@@ -218,19 +251,13 @@ const styles = StyleSheet.create({
   },
   employeeItem: {
     flexDirection: 'row',
-    // justifyContent: 'space-between',
     alignItems: 'flex-start',
     padding: spacing.medium,
     borderRadius: border.radiusMedium,
     borderWidth: 1,
-    borderColor: colors.Gray,
     marginBottom: spacing.small,
-    backgroundColor: colors.white,
   },
-  selectedItem: {
-    // backgroundColor: colors.primary,
-    borderColor: colors.primary,
-  },
+  selectedItem: {},
   employeeInfo: {
     flex: 1,
     flexDirection: 'row',
@@ -240,20 +267,15 @@ const styles = StyleSheet.create({
   employeeName: {
     fontSize: 16,
     fontWeight: '600',
-    color: colors.black,
     marginBottom: 4,
   },
-  selectedText: {
-    color: colors.white,
-  },
+  selectedText: {},
   employeeCode: {
     fontSize: 13,
-    color: colors.Gray,
     marginBottom: 2,
   },
   employeeDetail: {
     fontSize: 12,
-    color: colors.Gray,
   },
   emptyContainer: {
     alignItems: 'center',
@@ -262,7 +284,6 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 14,
-    color: colors.Gray,
   },
   footerLoader: {
     paddingVertical: spacing.medium,

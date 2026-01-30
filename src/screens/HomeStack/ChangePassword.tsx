@@ -6,7 +6,6 @@ import AppInput from '../../components/AppInput';
 import { useTranslation } from 'react-i18next';
 import icons from '../../assets/icons';
 import { spacing } from '../../utils/spacing';
-import { colors } from '../../utils/color';
 import AppButton from '../../components/AppButton';
 import { border, fonts } from '../../utils/fontSize';
 import { password_Change } from '../../services/user';
@@ -14,8 +13,10 @@ import Toast from 'react-native-toast-message';
 import { navigate } from '../../navigation/RootNavigator';
 import { Screen_Name } from '../../navigation/ScreenName';
 import CustomHeader from '../../components/CustomHeader';
+import { useColors } from '../../hooks/useColors';
 
 const ChangePassword = ({ navigation }) => {
+  const colors = useColors();
   const [currentPassword, setCurrentPassword] = useState('');
   const [password, SetPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -45,13 +46,13 @@ const ChangePassword = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <CustomHeader
         label={t('button.change_pw')}
         leftIcon={icons.back}
         leftPress={() => navigation.goBack()}
       />
-      <View style={styles.body}>
+      <View style={[styles.body, { backgroundColor: colors.surface }]}>
         {/* <Text
           style={{
             textAlign: 'center',
@@ -92,22 +93,28 @@ const ChangePassword = ({ navigation }) => {
             value={confirmPassword}
           />
         </View>
-        <Text style={{ textAlign: 'center', marginBottom: spacing.medium }}>
+        <Text
+          style={{
+            textAlign: 'center',
+            marginBottom: spacing.medium,
+            color: colors.textSecondary,
+          }}
+        >
           {t('message.valid')}
         </Text>
         <View style={{ marginBottom: spacing.large }}>
           <View style={{ flexDirection: 'row' }}>
             <Image
               source={hasMinLength ? icons.valid : icons.dot}
-              style={{ width: 20, height: 20 }}
+              style={{ width: 20, height: 20, tintColor: colors.text }}
             />
             <Text
               style={{
                 color: !password
-                  ? colors.Gray
+                  ? colors.textSecondary
                   : hasMinLength
-                  ? colors.Gray
-                  : colors.red,
+                  ? colors.success
+                  : colors.error,
               }}
             >
               {t('message.valid_password_length')}
@@ -116,15 +123,15 @@ const ChangePassword = ({ navigation }) => {
           <View style={{ flexDirection: 'row' }}>
             <Image
               source={hasUpperCase ? icons.valid : icons.dot}
-              style={{ width: 20, height: 20 }}
+              style={{ width: 20, height: 20, tintColor: colors.text }}
             />
             <Text
               style={{
                 color: !password
-                  ? colors.Gray
+                  ? colors.textSecondary
                   : hasUpperCase
-                  ? colors.Gray
-                  : colors.red,
+                  ? colors.success
+                  : colors.error,
               }}
             >
               {t('message.valid_password_uppercase')}
@@ -133,15 +140,15 @@ const ChangePassword = ({ navigation }) => {
           <View style={{ flexDirection: 'row' }}>
             <Image
               source={hasNumber ? icons.valid : icons.dot}
-              style={{ width: 20, height: 20 }}
+              style={{ width: 20, height: 20, tintColor: colors.text }}
             />
             <Text
               style={{
                 color: !password
-                  ? colors.Gray
+                  ? colors.textSecondary
                   : hasNumber
-                  ? colors.Gray
-                  : colors.red,
+                  ? colors.success
+                  : colors.error,
               }}
             >
               {t('message.valid_password_number')}
@@ -150,15 +157,15 @@ const ChangePassword = ({ navigation }) => {
           <View style={{ flexDirection: 'row' }}>
             <Image
               source={hasSpecialChar ? icons.valid : icons.dot}
-              style={{ width: 20, height: 20 }}
+              style={{ width: 20, height: 20, tintColor: colors.text }}
             />
             <Text
               style={{
                 color: !password
-                  ? colors.Gray
+                  ? colors.textSecondary
                   : hasSpecialChar
-                  ? colors.Gray
-                  : colors.red,
+                  ? colors.success
+                  : colors.error,
               }}
             >
               {t('message.valid_password_special')}
@@ -167,15 +174,15 @@ const ChangePassword = ({ navigation }) => {
           <View style={{ flexDirection: 'row' }}>
             <Image
               source={isMatch ? icons.valid : icons.dot}
-              style={{ width: 20, height: 20 }}
+              style={{ width: 20, height: 20, tintColor: colors.text }}
             />
             <Text
               style={{
                 color: !password
-                  ? colors.Gray
+                  ? colors.textSecondary
                   : isMatch
-                  ? colors.Gray
-                  : colors.red,
+                  ? colors.success
+                  : colors.error,
               }}
             >
               {t('message.valid_password_match')}
@@ -211,7 +218,7 @@ const ChangePassword = ({ navigation }) => {
             zIndex: 10,
           }}
         >
-          <ActivityIndicator size="large" color="#E53935" />
+          <ActivityIndicator size="large" color={colors.primary} />
         </View>
       )}
     </View>

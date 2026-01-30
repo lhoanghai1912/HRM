@@ -11,7 +11,7 @@ import {
   ViewStyle,
   ActivityIndicator,
 } from 'react-native';
-import { colors } from '../utils/color';
+import { useColors } from '../hooks/useColors';
 import { border } from '../utils/fontSize';
 
 if (
@@ -69,6 +69,7 @@ export default function CustomTreeView({
   selectedIds,
   onChangeSelected,
 }: CustomTreeViewProps) {
+  const colors = useColors();
   const [open, setOpen] = useState<Set<Id>>(new Set(initiallyOpen));
   const [loading, setLoading] = useState<Set<Id>>(new Set());
   const [internalSelected, setInternalSelected] = useState<Set<Id>>(new Set());
@@ -161,7 +162,11 @@ export default function CustomTreeView({
       renderLabel(node, { isOpen, hasChildren, depth, isMatch })
     ) : (
       <Text
-        style={[styles.label, isMatch && styles.labelHit]}
+        style={[
+          styles.label,
+          { color: colors.text },
+          isMatch && styles.labelHit,
+        ]}
         numberOfLines={1}
       >
         {node.label}
@@ -173,7 +178,10 @@ export default function CustomTreeView({
         <Pressable
           onPress={() => (hasChildren ? toggle(node) : onSelect?.(node))}
           onLongPress={() => multiselect && toggleSelect(node)}
-          style={({ pressed }) => [styles.row, pressed && styles.rowPressed]}
+          style={({ pressed }) => [
+            styles.row,
+            pressed && { backgroundColor: colors.gray100 },
+          ]}
         >
           {multiselect && (
             <Pressable
@@ -181,10 +189,17 @@ export default function CustomTreeView({
               style={styles.cbBox}
               hitSlop={6}
             >
-              <Text style={styles.cbTxt}>{sel.has(node.id) ? '☑' : '☐'}</Text>
+              <Text style={[styles.cbTxt, { color: colors.text }]}>
+                {sel.has(node.id) ? '☑' : '☐'}
+              </Text>
             </Pressable>
           )}
-          <Text style={[styles.chev, { marginLeft: depth * indent }]}>
+          <Text
+            style={[
+              styles.chev,
+              { marginLeft: depth * indent, color: colors.textSecondary },
+            ]}
+          >
             {hasChildren ? (isLoading ? '…' : isOpen ? '▼' : '▶') : '•'}
           </Text>
           <View style={styles.labelWrap}>{label}</View>
@@ -203,7 +218,11 @@ export default function CustomTreeView({
 
   return (
     <ScrollView
-      style={[styles.container, customStyle]}
+      style={[
+        styles.container,
+        { borderColor: colors.border, backgroundColor: colors.surface },
+        customStyle,
+      ]}
       contentContainerStyle={{ paddingVertical: 4 }}
     >
       {data.map(n => (
@@ -211,7 +230,7 @@ export default function CustomTreeView({
       ))}
       {loading && (
         <View style={{ paddingVertical: 24 }}>
-          <ActivityIndicator />
+          <ActivityIndicator color={colors.primary} />
         </View>
       )}
     </ScrollView>
@@ -250,7 +269,6 @@ function findPath(nodes: TreeNode[], id: Id): TreeNode[] | null {
 const styles = StyleSheet.create({
   container: {
     borderWidth: 1,
-    borderColor: colors.Gray,
     borderRadius: border.radiusMedium,
   },
   row: {
@@ -260,10 +278,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: border.radiusMedium,
   },
-  rowPressed: { backgroundColor: '#F8FAFC' },
-  chev: { width: 16, textAlign: 'center', color: '#64748B' },
+  chev: { width: 16, textAlign: 'center' },
   labelWrap: { marginLeft: 8, flexShrink: 1, flex: 1 },
-  label: { fontSize: 14, color: '#0F172A', fontWeight: '600' },
+  label: { fontSize: 14, fontWeight: '600' },
   labelHit: {
     backgroundColor: '#FEF9C3',
     paddingHorizontal: 4,

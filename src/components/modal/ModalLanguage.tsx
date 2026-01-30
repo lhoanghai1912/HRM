@@ -1,9 +1,9 @@
 import React from 'react';
 import { Modal, View, Text, Pressable, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { colors } from '../../utils/color';
 import { spacing } from '../../utils/spacing';
 import { border, fonts, weight } from '../../utils/fontSize';
+import { useColors } from '../../hooks/useColors';
 
 interface LanguageModalProps {
   visible: boolean;
@@ -21,6 +21,7 @@ const LanguageModal = ({
   languages,
 }: LanguageModalProps) => {
   const { t, i18n } = useTranslation();
+  const colors = useColors();
 
   return (
     <Modal
@@ -30,8 +31,12 @@ const LanguageModal = ({
       onRequestClose={onClose}
     >
       <View style={styles.overlay}>
-        <View style={styles.modalContainer}>
-          <Text style={styles.title}>{t('button.choose_language')}</Text>
+        <View
+          style={[styles.modalContainer, { backgroundColor: colors.surface }]}
+        >
+          <Text style={[styles.title, { color: colors.text }]}>
+            {t('button.choose_language')}
+          </Text>
 
           {languages.map(lang => (
             <Pressable
@@ -43,7 +48,8 @@ const LanguageModal = ({
                   backgroundColor:
                     selectedLanguage === lang.code
                       ? colors.primary
-                      : colors.white,
+                      : colors.surface,
+                  borderBottomColor: colors.divider,
                 },
               ]}
             >
@@ -52,8 +58,8 @@ const LanguageModal = ({
                   fontSize: 16,
                   color:
                     selectedLanguage === lang.code
-                      ? colors.white
-                      : colors.black,
+                      ? colors.buttonText
+                      : colors.text,
                 }}
               >
                 {lang.label}
@@ -62,7 +68,9 @@ const LanguageModal = ({
           ))}
 
           <Pressable onPress={onClose} style={styles.closeButton}>
-            <Text style={styles.closeText}>{t('button.close')}</Text>
+            <Text style={[styles.closeText, { color: colors.primary }]}>
+              {t('button.close')}
+            </Text>
           </Pressable>
         </View>
       </View>
@@ -75,12 +83,11 @@ export default LanguageModal;
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.3)',
+    backgroundColor: 'rgba(0,0,0,0.5)',
     justifyContent: 'center',
     alignItems: 'center',
   },
   modalContainer: {
-    backgroundColor: colors.white,
     borderRadius: border.radiusLarge,
     padding: spacing.medium,
     width: '60%',
@@ -93,7 +100,6 @@ const styles = StyleSheet.create({
   },
   languageItem: {
     borderBottomWidth: 1,
-    borderBottomColor: colors.underline,
     paddingVertical: spacing.small,
     paddingHorizontal: spacing.medium,
   },
@@ -102,7 +108,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   closeText: {
-    color: '#1A7FEE',
     fontWeight: weight.bold,
     fontSize: 16,
   },

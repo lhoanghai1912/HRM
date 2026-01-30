@@ -1,10 +1,9 @@
 import { StyleSheet } from 'react-native';
 import { ms, spacing } from '../../../../../utils/spacing';
 import { border, fonts, weight } from '../../../../../utils/fontSize';
-import { colors } from '../../../../../utils/color';
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f5f5fborder.radiusMedium' },
+  container: { flex: 1, backgroundColor: '#f5f5f5' },
   header: {
     height: spacing.small,
     justifyContent: 'center',
@@ -28,14 +27,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: spacing.small,
     borderBottomWidth: 1,
-    borderColor: colors.underline,
+    borderColor: '#e0e0e0',
   },
   rowLabel: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: spacing.small,
   },
-  label: { fontSize: ms(fonts.normal + 0), color: colors.black },
+  label: { fontSize: ms(fonts.normal + 0), color: '#000' },
   required: { color: 'red', fontSize: fonts.normal },
   value: {},
   valueBold: { fontWeight: weight.bold },

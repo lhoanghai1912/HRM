@@ -1,6 +1,6 @@
 // components/TableStyle.ts
 import { StyleSheet } from 'react-native';
-import { colors } from '../utils/color';
+// colors intentionally not imported here; theme applied inline in components
 import { spacing } from '../utils/spacing';
 import { border } from '../utils/fontSize';
 
@@ -10,7 +10,7 @@ const tableStyles = StyleSheet.create({
   table: {
     marginHorizontal: spacing.small,
     borderWidth: hair, // ⬅️ viền ngoài
-    borderColor: colors.Gray,
+    borderColor: '#ccc',
     borderRadius: border.radiusSmall,
     overflow: 'hidden',
     position: 'relative', // ⬅️ cần để overlay tuyệt đối
@@ -20,7 +20,7 @@ const tableStyles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#F8FAFC',
     borderBottomWidth: hair,
-    borderBottomColor: colors.underline,
+    borderBottomColor: '#e0e0e0',
   },
   row: {
     flexDirection: 'row',
@@ -29,7 +29,7 @@ const tableStyles = StyleSheet.create({
   },
   rowSep: {
     borderBottomWidth: hair, // ⬅️ ngăn cách giữa các dòng
-    borderBottomColor: colors.underline,
+    borderBottomColor: '#e0e0e0',
   },
   cell: {
     paddingVertical: spacing.small,
@@ -37,7 +37,7 @@ const tableStyles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  cellRight: { borderRightWidth: hair, borderRightColor: colors.Gray },
+  cellRight: { borderRightWidth: hair, borderRightColor: '#ccc' },
 
   th: { fontWeight: '700', color: '#0F172A', textAlign: 'center' },
   td: { color: '#0F172A', textAlign: 'center' },

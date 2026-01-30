@@ -3,10 +3,11 @@ import { useTranslation } from 'react-i18next';
 import { View, Text, StyleSheet, Modal, TextInput } from 'react-native';
 import AppButton from '../AppButton';
 import { useDispatch } from 'react-redux';
-import { setVerificationToken } from '../../store/reducers/userSlice';
+// Note: setVerificationToken should be added to auth slice if needed
+import { setToken } from '../../store/slices/auth';
 import { forgot_pw } from '../../services/auth';
-import { colors } from '../../utils/color';
 import { border, weight } from '../../utils/fontSize';
+import { useColors } from '../../hooks/useColors';
 // import { enterOtp } from '../../services/auth';
 
 interface EnterOtpProp {
@@ -23,6 +24,7 @@ const ModalEnterOtp: React.FC<EnterOtpProp> = ({
   email,
 }) => {
   const { t } = useTranslation();
+  const colors = useColors();
   const [error, setError] = useState(false); // Lỗi nếu mã OTP không hợp lệ
   const [otp, setOtp] = useState(['', '', '', '', '', '']); // Lưu trữ 6 ký tự OTP
   const inputsRef = useRef<(TextInput | null)[]>([]);
@@ -85,8 +87,12 @@ const ModalEnterOtp: React.FC<EnterOtpProp> = ({
           paddingHorizontal: 13,
         }}
       >
-        <View style={styles.modalContent}>
-          <Text style={styles.title}>{t('message.enter_otp')}</Text>
+        <View
+          style={[styles.modalContent, { backgroundColor: colors.surface }]}
+        >
+          <Text style={[styles.title, { color: colors.text }]}>
+            {t('message.enter_otp')}
+          </Text>
 
           <View style={styles.otpContainer}>
             {otp.map((digit, index) => (
@@ -95,7 +101,11 @@ const ModalEnterOtp: React.FC<EnterOtpProp> = ({
                 ref={ref => {
                   inputsRef.current[index] = ref;
                 }}
-                style={[styles.otpInput, error && styles.errorInput]}
+                style={[
+                  styles.otpInput,
+                  { borderColor: colors.border, color: colors.text },
+                  error && { borderColor: colors.error },
+                ]}
                 keyboardType="number-pad"
                 maxLength={1}
                 value={digit}
@@ -104,7 +114,11 @@ const ModalEnterOtp: React.FC<EnterOtpProp> = ({
               />
             ))}
           </View>
-          {error && <Text style={styles.errorText}>{`abc`}</Text>}
+          {error && (
+            <Text
+              style={[styles.errorText, { color: colors.error }]}
+            >{`abc`}</Text>
+          )}
           <View
             style={{
               marginVertical: 9,
@@ -152,17 +166,17 @@ const styles = StyleSheet.create({
   otpInput: {
     width: 40,
     borderWidth: 1,
-    borderColor: colors.Gray,
+    borderColor: '#ccc',
     textAlign: 'center',
     fontSize: 18,
     borderRadius: 5,
     marginLeft: 9,
   },
   errorInput: {
-    borderColor: 'red',
+    borderColor: '#f44336',
   },
   errorText: {
-    color: 'red',
+    color: '#f44336',
     fontSize: 12,
     marginBottom: 10,
   },

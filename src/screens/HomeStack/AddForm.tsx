@@ -1,19 +1,22 @@
 import React from 'react';
 import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { colors } from '../../utils/color';
 import { ms, spacing } from '../../utils/spacing';
 import { fonts } from '../../utils/fontSize';
 import AppStyles from '../../components/AppStyle';
 import CustomHeader from '../../components/CustomHeader';
+import { useColors } from '../../hooks/useColors';
 
 const AddForm = () => {
   const { t } = useTranslation();
+  const colors = useColors();
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <CustomHeader />
-      <Text style={AppStyles.label}>{`Add form`}</Text>
+      <Text
+        style={[AppStyles.label, { color: colors.text }]}
+      >{`Add form`}</Text>
       {/* ✨ Your content goes here */}
     </View>
   );
@@ -30,7 +33,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     margin: spacing.small,
-    backgroundColor: colors.white,
   },
   text: {
     fontSize: 24,

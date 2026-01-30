@@ -1,23 +1,20 @@
 import { StyleSheet } from 'react-native';
 import { border, fonts, weight } from '../utils/fontSize';
-import { colors } from '../utils/color';
 import { ms, spacing } from '../utils/spacing';
 
+// Base styles - colors should be applied inline using useColors() hook
 const AppStyles = StyleSheet.create({
   title: {
     fontSize: fonts.xlarge,
-    color: colors.black,
     textAlign: 'left',
     fontWeight: weight.bold,
     marginBottom: spacing.small,
   },
   label: {
     fontSize: fonts.large,
-    color: colors.darkGray,
   },
   line: {
     marginVertical: spacing.small,
-    borderColor: colors.Gray,
     borderWidth: 0.7,
     width: '100%',
   },
@@ -29,14 +26,11 @@ const AppStyles = StyleSheet.create({
   },
   input: {
     height: 50,
-    backgroundColor: colors.white,
     borderRadius: border.radiusMedium,
     paddingHorizontal: spacing.medium,
     verticalAlign: 'middle',
     fontSize: fonts.normal,
     borderWidth: 1,
-    borderColor: colors.Gray,
-    shadowColor: colors.black,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 6,
@@ -46,14 +40,11 @@ const AppStyles = StyleSheet.create({
   disable: {
     opacity: 0.5,
     height: 50,
-    backgroundColor: colors.white,
     borderRadius: border.radiusMedium,
     paddingHorizontal: spacing.medium,
     verticalAlign: 'middle',
     fontSize: fonts.normal,
     borderWidth: 1,
-    borderColor: colors.Gray,
-    shadowColor: colors.black,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 6,
@@ -67,13 +58,12 @@ const AppStyles = StyleSheet.create({
   },
   text: {
     fontSize: fonts.normal,
-    color: colors.black,
   },
   whitetext: {
     fontSize: fonts.normal,
-    color: colors.white,
   },
 
+  // Icon base style - tintColor should be applied inline using colors.text
   icon: { width: ms(25), height: ms(25) },
 
   iconSingle: {
@@ -97,7 +87,6 @@ const AppStyles = StyleSheet.create({
   },
 
   buttonGroup: {
-    // width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: spacing.medium,
@@ -108,33 +97,28 @@ const AppStyles = StyleSheet.create({
     paddingHorizontal: spacing.medium,
   },
   scrollContent: {
-    paddingBottom: spacing.large, // Đảm bảo có đủ không gian khi cuộn
+    paddingBottom: spacing.large,
   },
   dropdownWrapper: {
-    position: 'relative', // Quan trọng để định vị dropdown tuyệt đối bên trong
+    position: 'relative',
   },
   dropdown: {
     position: 'absolute',
-    top: 90, // Tùy chỉnh tùy theo chiều cao input
+    top: 90,
     left: 0,
     right: 0,
-    backgroundColor: colors.white,
     borderWidth: 1,
-    borderColor: colors.Gray,
     borderRadius: border.radiusSmall,
     zIndex: 100,
   },
   dropdownItem: {
     padding: 12,
     borderBottomWidth: 1,
-    borderBottomColor: colors.underline,
   },
 
   linkText: {
-    color: colors.primary,
     fontSize: fonts.normal,
     textDecorationLine: 'underline',
-    textDecorationColor: colors.blue,
   },
 });
 

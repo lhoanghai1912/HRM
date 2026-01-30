@@ -14,6 +14,7 @@ import { appoint_GetAll } from '../../../../services/hr';
 import { spacing } from '../../../../utils/spacing';
 import { TextInput } from 'react-native-gesture-handler';
 import AppStyles from '../../../../components/AppStyle';
+import { useColors } from '../../../../hooks/useColors';
 import { navigate } from '../../../../navigation/RootNavigator';
 import { Screen_Name } from '../../../../navigation/ScreenName';
 import { useNavigation } from '@react-navigation/native';
@@ -26,6 +27,7 @@ const PAGE_SIZE = 15;
 
 const Appointment = ({}) => {
   const navigation = useNavigation<DrawerNavigationProp<any>>();
+  const colors = useColors();
   const FIELD_COLUMNS =
     'employeeId,EffectiveDate,organizationUnitAppointID,jobPositionAppointID,employeeOrganizationUnitID,procedureID,appointStatusID,ExpirationDate';
 
@@ -95,7 +97,10 @@ const Appointment = ({}) => {
           onChangeText={setSearchInput}
         />
         <TouchableOpacity onPress={() => setSearchQuery(searchInput)}>
-          <Image source={icons.search} style={AppStyles.icon} />
+          <Image
+            source={icons.search}
+            style={[AppStyles.icon, { tintColor: colors.text }]}
+          />
         </TouchableOpacity>
       </View>
       <View style={styles.footer}>
@@ -103,7 +108,7 @@ const Appointment = ({}) => {
           <Text style={AppStyles.text}>
             Đang hiển thị {appointment.length} bản ghi
           </Text>
-          <Text style={AppStyles.text}></Text>
+          <Text style={[AppStyles.text, { color: colors.text }]}></Text>
           {/* <Text style={AppStyles.text}>{visibleCount}</Text> */}
         </View>
       </View>
